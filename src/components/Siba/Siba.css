@@ -1,0 +1,42 @@
+#Siba{
+    z-index: 9998;
+    position: absolute;
+    top: 480px;
+    left: 10px;
+    cursor: pointer;
+}
+
+#Siba img{
+    border-radius: 50%;
+    border: 1px solid #555555;
+}
+
+#Siba .talk{
+    position: absolute;
+    top: 55px;
+    left: 10px;
+    background-color: #FFEB33;
+    border-radius: 3px;
+    width: 100px;
+    height: 40px;
+    z-index: 9999;
+    font-size: 13px;
+    padding: 5px;
+    box-shadow: 2px 2px 2px gray;
+    cursor: default;
+}
+
+#Siba .talk-tri{
+    position: absolute;
+    top: 45px;
+    left: 20px;
+    width: 0px;
+    height: 0px;
+    cursor: pointer;
+    border-radius: 17px 17px 0px 0px / 17px 17px 0px 0px;
+    border-bottom: 10px solid #FFEB33;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    z-index: 9999;
+    cursor: default;
+}

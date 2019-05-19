@@ -1,0 +1,219 @@
+/* #SibaSideBar{
+    position: fixed;
+    top: 44px;
+    left: 0;
+    width: 30px;
+    margin: 0;
+    height: 100%;
+    z-index: 9998;
+    display: flex;
+    padding-top: 10px;
+    justify-content: center;
+} */
+
+#SibaSideBar-addon{
+    border-radius: 2px;
+    position: absolute;
+    top: 48px;
+    /* left: 30px; */
+    width: 200px;
+    /* height: calc(100%-50px);
+    max-height: 1200px; */
+    border: 1px solid #888888;
+    /*background-color: #282D32;*/
+    background-color: white;
+    /* box-shadow: 5px 5px 5px gray; */
+    z-index: 9995;
+    transition: .3s;
+}
+
+#SibaSideBar-addon section{
+    border-radius: 2px;
+    padding: 3px 2px 3px 20px;
+    background-color: gray;
+}
+
+#SibaSideBar-addon section header{
+    position: absolute;
+    top: 180px;
+    left: -80px;
+    font-size: 12px;
+    font-style: italic;
+    color: #282C2F;
+    width:190px; 
+    height:20px; 
+    -webkit-transform: rotate(270deg); 
+    -ms-transform: rotate(270deg); 
+}
+
+#SibaSideBar-addon > header{
+    font-size: 15px;
+    margin: 6px 3px 0 18px;
+    height: 30px;
+}
+
+#SibaSideBar-addon article{
+    padding: 5px;
+    border-top: 1px solid #DDDDDD;
+}
+
+#SibaSideBar-addon article select{
+    width: 100%;
+    margin-bottom: 6px;
+    text-align: center;
+    text-align-last: center;
+}
+
+#SibaSideBar-addon article option{
+    text-align: left;
+}
+
+#SibaSideBar-addon footer{
+    font-size: 12px;
+    background-color: white;
+}
+
+#SibaSideBar-addon .left{
+    margin-left: 6px;
+    float: left;
+}
+
+#SibaSideBar-addon .left::before, .center::before{
+    position: relative;
+    left: -3px;
+    border-radius: 50%;
+    width:8px;
+    height:8px;
+    content: '';
+    display: inline-block;
+}
+
+#SibaSideBar-addon .left::before{
+    background-color: #45A163;
+}
+
+#SibaSideBar-addon .center::before{
+    background-color: #E43133;
+}
+
+#SibaSideBar-addon .right{
+    text-align: right;
+    margin-right:3px;
+}
+
+#SibaSideBar-addon .center{
+    margin-left: 15px;
+    float: left;
+}
+
+#SibaSideBar-addon .wrap{
+    background-color: #F9FAFC;
+    border-bottom: 1px solid #DDDDDD;
+    height: 276px;
+}
+
+#SibaSideBar-addon article .info{
+    background-color: #EEEEEE;
+    display: flex;
+    width: 100%;
+    font-size: 12px;
+    color: #000;
+    border-bottom: 1px solid #D3D3D3;
+}
+
+#SibaSideBar-addon article .st{
+    display: block;
+    text-align: center;
+    width: 21%;
+    padding: 2px 0;
+}
+
+#SibaSideBar-addon article .dev-name{
+    display: block;
+    width: 79%;
+    text-align: center;
+    padding: 2px 0;
+}
+
+#SibaSideBar-addon article .device{
+    display: flex;
+    width: 100%;
+    font-size: 14px;
+    border-bottom: 1px solid #D3D3D3;
+}
+
+#SibaSideBar-addon .device{
+    background-color: white;
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+}
+
+#SibaSideBar-addon .device .dev-name{
+    text-align: left;
+    padding-left: 25px;
+}
+
+#SibaSideBar-addon .device .enable, #SibaSideBar-addon .device .disable{
+    margin: 1px 0 0 2px;
+    border-radius: 45%;
+    color: white;
+    width: 21%;
+    height: 14px;
+    font-size: 9px;
+    text-align: center;
+    display: block;
+    padding-top: 3px;
+}
+
+#SibaSideBar-addon .device .enable{
+    background-color: #45A163;
+}
+
+#SibaSideBar-addon .device .disable{
+    background-color: #E43133;
+}
+
+#SibaSideBar-addon .wrap .device-add-btn{
+    /* background-color:gray; */
+    padding: 4px;
+    border-bottom: 1px solid #D3D3D3;
+    width: 100%;
+    border: 0;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    /* font-weight: bold; */
+    position: relative;
+}
+
+#SibaSideBar-addon .btn{
+    position: absolute;
+    top: 105px;
+    right: -20px;
+    width: 0;
+    height: 80px;
+    /* background-color: #EEEEEE; */
+    padding-top:30%;
+    cursor: pointer;
+    /* border-radius: 20px 40px 60px -40px / 80px 60px 40px 0px; */
+    border-radius: 0px 17px 17px 0px / 0px 17px 17px 0px;
+    border-left: 20px solid #848E97;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    z-index: 9994;
+    /* box-shadow: 5px 5px 5px gray; */
+}
+
+#SibaSideBar-addon article h3{
+    font-size: 14px;
+    margin: 0;
+    font-weight: 500;
+    color: #555555;
+}
+
+#SibaSideBar-addon header h2{
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0;
+}

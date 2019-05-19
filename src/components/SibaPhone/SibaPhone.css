@@ -1,0 +1,135 @@
+#SibaPhone{
+    z-index: 9999
+}
+
+#SibaPhone .phone{
+    z-index: 9999;
+    position: fixed;
+    width: 398px;
+    height: calc(100vh - 58px);
+    background-color: beige;
+    margin-top: 48px;
+    right: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid #888888;
+}
+
+/* #SibaPhone .PhoneContent{
+    margin: 40px 8px 30px 8px;
+    border-radius: 10px;
+    width: 382px;
+    height: calc(100% - 70px);
+    background-color: #B2C7D9;
+} */
+
+#SibaPhone .add-on{
+    /* z-index: 9998; */
+    position: fixed;
+    width: 300px;
+    height: 400px;
+    background-color: white;
+    right: 414px;
+    bottom: 8px;
+    border: 1px solid #888888;
+    border-radius: 8px;
+    transition: .3s;
+    font-size: 15px;
+}
+
+#SibaPhone .add-on .add-on-wrap{
+    padding: 6px;
+}
+
+#SibaPhone .add-on table{
+    width: 100%;
+    font-size: 12px;
+}
+
+#SibaPhone .add-on th{
+    padding: 2px;
+    font-weight: 400;
+    background-color: #D3D3D3;
+}
+
+#SibaPhone .add-on thead{
+    width: 100%;
+    display: block;
+}
+
+#SibaPhone .add-on tbody{
+    width: 100%;
+    display: block;
+    height: 170px;
+    overflow-y: scroll;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+
+#SibaPhone .add-on td{
+    text-align: center;
+}
+
+#SibaPhone .add-on .table-wrap{
+    border: 1px solid #DDDDDD;
+    height: 200px;
+    padding: 4px;
+}
+
+#SibaPhone .add-on .add-on-wrap footer{
+    font-size: 12px;
+    float: right;
+}
+
+#SibaPhone .add-on .add-on-wrap header{
+    color: #555555;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#SibaPhone .add-on > .menu-btn{
+    position: absolute;
+    top: -18px;
+    width: 80px;
+    height: 0px;
+    cursor: pointer;
+    border-radius: 17px 17px 0px 0px / 17px 17px 0px 0px;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    text-align: center;
+    font-size: 11px;
+}
+
+#SibaPhone .add-on > .menu-btn-shadow{
+    position: absolute;
+    top: -19px;
+    width: 82px;
+    height: 0px;
+    cursor: pointer;
+    border-radius: 17px 17px 0px 0px / 17px 17px 0px 0px;
+    border-bottom: 19px solid #848E97;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    text-align: center;
+    font-size: 11px;
+}
+
+#SibaPhone .add-on > .btn{
+    position: absolute;
+    top: 105px;
+    left: -20.5px;
+    width: 0;
+    height: 95.4px;
+    /* background-color: #EEEEEE; */
+    padding-top: 25%;
+    cursor: pointer;
+    /* border-radius: 20px 40px 60px -40px / 80px 60px 40px 0px; */
+    border-radius: 17px 0px 0px 17px / 17px 0px 0px 17px;
+    /* border-right: 20px solid #AAAAAA; */
+    border-right: 20px solid #848E97;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    z-index: 9996;
+    /* box-shadow: 5px 5px 5px gray; */
+}
