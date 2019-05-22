@@ -3,12 +3,11 @@
     -webkit-flex : 1;
     flex : 1;
     /* margin-left: 50px; */
-    top: 68px;
+    top: 48px;
     /* background-color: white; */
-    height: 300px;
+    height: calc(100vh - 80px);
     /* height: calc(100%-50px); */
     transition: .3s;
-    border: 1px solid #555555;
 }
 
 #SibaContent .btn{

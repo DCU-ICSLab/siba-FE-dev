@@ -1,0 +1,28 @@
+#DevicePallet{
+    font-size: 12px;
+    /* background-color: #B2C7D9; */
+}
+
+#DevicePallet .pallet{
+    position: absolute;
+    border-top: 1px solid #dadce0;
+    top: 55px;
+    z-index: 1;
+    left: 0px;
+    bottom: 0px;
+    right: 240px;
+    overflow: auto;
+}
+
+#DevicePallet .side{
+    border-top: 1px solid #dadce0;
+    border-left: 1px solid #dadce0;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    position: absolute;
+    width: 240px;
+    z-index: 1;
+    right: 0px;
+    bottom: 0px;
+    top: 55px;
+}

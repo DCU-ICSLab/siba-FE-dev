@@ -7,6 +7,8 @@ const PHONE_ADD_ON_TOGGLE = 'basic/PHONE_ADD_ON_TOGGLE';
 const PHONE_ADD_ON_TAB_TOGGLE = 'basic/PHONE_ADD_ON_TAB_TOGGLE';
 const SB_TALK = 'basic/SB_TALK';
 const SB_CALL = 'basic/SB_CALL';
+const DEVICE_ADD_BOX_CHANGE = 'basic/DEVICE_ADD_BOX_CHANGE';
+const DEVICE_WORK_BOX_CHANGE = 'basic/DEVICE_WORK_BOX_CHANGE';
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -14,6 +16,8 @@ export const phoneAddOnToggle = createAction(PHONE_ADD_ON_TOGGLE);
 export const phoneAddOnTabToggle = createAction(PHONE_ADD_ON_TAB_TOGGLE);
 export const sbTalk = createAction(SB_TALK);
 export const sbCall = createAction(SB_CALL);
+export const deviceAddBoxChange = createAction(DEVICE_ADD_BOX_CHANGE);
+export const deviceWorkBoxChange = createAction(DEVICE_WORK_BOX_CHANGE);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -23,6 +27,8 @@ const initialState = Map({
         sbCall: false,
         phoneAddOn: true,
         phoneAddOnTab: true,
+        deviceAddBox: false,
+        deviceWorkBox: false,
     }),
     
 });
@@ -47,6 +53,14 @@ export default handleActions({
 
     [PHONE_ADD_ON_TAB_TOGGLE]: (state, action) => {
         return state.setIn(['frameState', 'phoneAddOnTab'], action.payload);
+    },
+
+    [DEVICE_ADD_BOX_CHANGE]: (state, action) => {
+        return state.setIn(['frameState', 'deviceAddBox'], action.payload);
+    },
+
+    [DEVICE_WORK_BOX_CHANGE]: (state, action) => {
+        return state.setIn(['frameState', 'deviceWorkBox'], action.payload);
     },
 
 }, initialState);

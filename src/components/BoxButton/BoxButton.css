@@ -1,0 +1,24 @@
+#BoxButton{
+    position: absolute;
+    top: 38px;
+    height: 0px;
+    cursor: pointer;
+    border-radius: 17px 17px 0px 0px / 17px 17px 0px 0px;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    text-align: center;
+    font-size: 11px;
+}
+
+#BoxButtonShadow{
+    position: absolute;
+    top: 37px;
+    height: 0px;
+    cursor: pointer;
+    border-radius: 17px 17px 0px 0px / 17px 17px 0px 0px;
+    border-bottom: 19px solid #dadce0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    text-align: center;
+    font-size: 11px;
+}

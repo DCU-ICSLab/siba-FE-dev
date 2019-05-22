@@ -15,7 +15,7 @@ class Welcome extends Component {
 
     _sibaTalk = (e) => {
         const { basicActions, sbTalk, sbCall } = this.props;
-        if(!sbCall){
+        if (!sbCall) {
             basicActions.sbTalk(sbTalk);
         }
     }
@@ -42,11 +42,28 @@ class Welcome extends Component {
         basicActions.phoneAddOnTabToggle(!phoneAddOnTab);
     }
 
+    _deviceAddBoxChange = () => {
+        const { basicActions, deviceAddBox } = this.props;
+        basicActions.deviceAddBoxChange(!deviceAddBox);
+    }
+
+    _deviceWorkBoxChange = () => {
+        const { basicActions, deviceWorkBox } = this.props;
+        basicActions.deviceWorkBoxChange(!deviceWorkBox);
+    }
+
     componentDidMount() {
     }
 
     render() {
-        const { sb, sbTalk, sbCall, phoneAddOn, phoneAddOnTab } = this.props;
+        const {
+            sb,
+            sbTalk,
+            sbCall,
+            phoneAddOn,
+            phoneAddOnTab,
+            deviceAddBox,
+            deviceWorkBox } = this.props;
 
         return (
             <Fragment>
@@ -60,7 +77,11 @@ class Welcome extends Component {
                     phoneAddOn={phoneAddOn}
                     phoneAddOnFunc={this._phoneAddOnToggle}
                     phoneAddOnTab={phoneAddOnTab}
-                    phoneAddOnTabFunc={this._phoneAddOnTabToggle}>
+                    phoneAddOnTabFunc={this._phoneAddOnTabToggle}
+                    deviceAddBoxChangeFunc={this._deviceAddBoxChange}
+                    deviceAddBox={deviceAddBox}
+                    deviceWorkBox={deviceWorkBox}
+                    deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}>
                 </SibaFrame>
             </Fragment>
         )
@@ -77,6 +98,8 @@ export default withRouter(
             sbCall: state.basic.getIn(['frameState', 'sbCall']),
             phoneAddOn: state.basic.getIn(['frameState', 'phoneAddOn']),
             phoneAddOnTab: state.basic.getIn(['frameState', 'phoneAddOnTab']),
+            deviceAddBox: state.basic.getIn(['frameState', 'deviceAddBox']),
+            deviceWorkBox: state.basic.getIn(['frameState', 'deviceWorkBox']),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

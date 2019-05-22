@@ -7,10 +7,10 @@ import {
 } from 'react-icons/md'
 import './SibaSideBar.css';
 
-const Device = ({ devInfo }) => {
+const Device = ({ devInfo, deviceWorkBoxChangeFunc }) => {
     let st = devInfo.state;
     return (
-        <button className="device">
+        <button className="device" onClick={deviceWorkBoxChangeFunc}>
             <span className={`${st ? 'enable' : 'disable'}`}>
                 {st ? 'ON' : 'OFF'}
             </span>
@@ -19,7 +19,7 @@ const Device = ({ devInfo }) => {
     )
 }
 
-const SideBarAddOn = ({ sbToggle, sbState }) => {
+const SideBarAddOn = ({ sbToggle, sbState, deviceAddBoxOpenFunc, deviceAddBox, deviceWorkBoxChangeFunc }) => {
     let devList = [
         { devName: 'test', state: true }
         , { devName: 'test2', state: false }
@@ -37,16 +37,16 @@ const SideBarAddOn = ({ sbToggle, sbState }) => {
         <div id="SibaSideBar-addon" style={{
             left: sbState ? '10px' : '-202px'
         }}>
-            <header>
+            {/* <header>
                 <h2>등록 디바이스 정보</h2>
-            </header>
+            </header> */}
             <article>
-                <h3>
-                    <MdDeviceHub size={15} style={{
+                <span>
+                    <MdDeviceHub size={13} style={{
                         float: 'left',
                         marginTop: '3px',
                         marginRight: '3px'
-                    }}/> 가상 허브</h3>
+                    }}/> 가상 허브 정보</span>
                 <select name="hub">
                     <option value="1" defaultValue>virtual hub #1</option>
                     <option value="2">virtual hub #2</option>
@@ -63,9 +63,24 @@ const SideBarAddOn = ({ sbToggle, sbState }) => {
                             <span className="st">상태</span>
                             <span className="dev-name">디바이스명</span>
                         </div>
-                        {devList.map(devInfo => { return <Device devInfo={devInfo} key={cnt++} /> })}
-                        {devList.length < 10 && <button className="device-add-btn">
-                            <MdAdd size={15} style={{
+                        {devList.map(devInfo => { 
+                            return <Device 
+                            devInfo={devInfo} 
+                            key={cnt++} 
+                            deviceWorkBoxChangeFunc={deviceWorkBoxChangeFunc}/> 
+                            })
+                        }
+                        {devList.length < 10 && 
+                        <button 
+                            className="device-add-btn" 
+                            onClick={deviceAddBoxOpenFunc} 
+                            disabled={deviceAddBox}
+                            style={{
+                                cursor: deviceAddBox ? 'default' : 'pointer'
+                            }}>
+                            <MdAdd 
+                            size={15} 
+                            style={{
                                 position: 'absolute',
                                 top: '3px',
                                 left: '29px'
@@ -111,12 +126,15 @@ const SideBarAddOn = ({ sbToggle, sbState }) => {
     )
 }
 
-const SibaSideBar = ({ sbToggle, sbState }) => {
+const SibaSideBar = ({ sbToggle, sbState, deviceAddBoxOpenFunc, deviceAddBox, deviceWorkBoxChangeFunc }) => {
     return (
         <Fragment>
-            {/* <div id="SibaSideBar">
-            </div> */}
-            <SideBarAddOn sbToggle={sbToggle} sbState={sbState} />
+            <SideBarAddOn 
+            sbToggle={sbToggle} 
+            sbState={sbState} 
+            deviceAddBoxOpenFunc={deviceAddBoxOpenFunc}
+            deviceAddBox={deviceAddBox}
+            deviceWorkBoxChangeFunc={deviceWorkBoxChangeFunc}/>
         </Fragment>
     )
 }
