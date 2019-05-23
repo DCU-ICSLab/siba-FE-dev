@@ -12,6 +12,16 @@
     bottom: 0px;
     right: 240px;
     overflow: auto;
+    touch-action: none;
+    overflow: auto;
+}
+
+#DevicePallet .background{
+    position: absolute;
+    border: 1px solid #000;
+    overflow: hidden;
+    width: 826px;
+    height: 1168px;
 }
 
 #DevicePallet .side{
@@ -25,4 +35,37 @@
     right: 0px;
     bottom: 0px;
     top: 55px;
+}
+
+#DevicePallet .side-title{
+    text-align: center;
+    font-size: 13px;
+    padding: 5px;
+}
+
+#DevicePallet .side-section{
+    border-top: 1px solid #dadce0;
+    touch-action: none;
+    display: block;
+    padding: 10px;
+}
+
+#DevicePallet article{
+    padding: 12px 0 12px 18px;
+}
+
+#DevicePallet .item{
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    cursor: move;
+}
+
+#DevicePallet .text-box{
+    transform: translate(0.5,0.5);
+    visibility: visible;
+    cursor: move;
+    position: absolute;
+    /* pointer-events: none; */
+    z-index: 3;
 }
