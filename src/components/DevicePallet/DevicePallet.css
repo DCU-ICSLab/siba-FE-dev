@@ -3,25 +3,38 @@
     /* background-color: #B2C7D9; */
 }
 
+#DevicePallet .overflow-trick{
+    position: absolute;
+    /* bottom: -10px;
+    right: -10px; */
+    bottom: 32px;
+    right: 255px;
+    width: 10px;
+    height: 10px;
+    position: fixed;
+    z-index: 2;
+    background: #f1f1f1; 
+}
+
 #DevicePallet .pallet{
     position: absolute;
     border-top: 1px solid #dadce0;
     top: 55px;
     z-index: 1;
-    left: 0px;
+    left: 1px;
     bottom: 0px;
     right: 240px;
-    overflow: auto;
+    overflow: scroll;
     touch-action: none;
-    overflow: auto;
 }
 
 #DevicePallet .background{
     position: absolute;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     overflow: hidden;
-    width: 826px;
-    height: 1168px;
+    width: 1718px;
+    height: 1151px;
+    background-color: #b2c7d9;
 }
 
 #DevicePallet .side{
@@ -47,7 +60,40 @@
     border-top: 1px solid #dadce0;
     touch-action: none;
     display: block;
-    padding: 10px;
+    padding: 10px 2px 0 2px;
+}
+
+#DevicePallet .side-section-title{
+    margin-left: 10px;
+}
+
+#DevicePallet .draggable-wrap{
+    width: 90%;
+    margin: auto;
+}
+
+#DevicePallet .pv-wrap{
+    margin-top: 10px;
+    width: 100%;
+    cursor: default;
+}
+
+#DevicePallet th{
+    background-color: #e5e5e5;
+    font-weight: 500;
+}
+
+#DevicePallet td{
+    color: #707070;
+}
+
+#DevicePallet th, td{
+    text-align: left;
+    padding: 1px 0 1px 5px;
+}
+
+#DevicePallet tr:nth-child(even) {
+    background: #fcfcfc;
 }
 
 #DevicePallet article{
@@ -67,5 +113,27 @@
     cursor: move;
     position: absolute;
     /* pointer-events: none; */
+    /* z-index: 3; */
+}
+
+#DevicePallet .text-box-inner{
+    padding: 3px 4px;
+}
+
+#DevicePallet .text-box-inner ol{
+    padding-left: 14px;
+}
+
+#DevicePallet .text-box-shadow{
+    border: 1px dashed #000;
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
     z-index: 3;
+    position: absolute;
+    visibility: visible;
+}
+
+#DevicePallet .text-box .inner{
+    cursor: move;
 }
