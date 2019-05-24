@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
 import * as deviceActions from 'store/modules/device';
 import { DeviceWorkBox, DevicePallet } from 'components';
-import { switchCase } from '@babel/types';
 
 class DeviceWork extends Component {
 
@@ -110,7 +109,6 @@ class DeviceWork extends Component {
     //drag가 종료되서 drag를 놓는 장소에 위치한 객체에서 발생(svg 전용)
     _dropSwap = (e, index) => {
 
-        console.log('end')
         const { deviceActions } = this.props;
 
         //텍스트박스 Shadow를 사라지게
@@ -122,7 +120,6 @@ class DeviceWork extends Component {
 
     //drag 시작 시 발생, src를 새로운 위치로 이동(svg 전용)
     _dragSwap = (e, x, y, index) => {
-        console.log('swap')
 
         const { deviceActions } = this.props;
 
@@ -145,7 +142,7 @@ class DeviceWork extends Component {
         const pos = this._getPosition(e);
 
         //선택한 텍스트 박스 새로운 위치로
-        deviceActions.devTextboxLocChange({
+        selectedBox && deviceActions.devTextboxLocChange({
             index: selectedBox.get('index'),
             top: pos.translateY,
             left: pos.translateX
@@ -190,6 +187,10 @@ class DeviceWork extends Component {
 
     componentWillUnmount() {
 
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.pallet !== this.props.pallet;
     }
 
     render() {

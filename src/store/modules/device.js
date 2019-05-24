@@ -38,6 +38,7 @@ const initialState = Map({
     //드래그시 사용하는 original x,y 박스
     tempBox: null,
 
+    //선택되어진 요소의 세부 정보를 TextBoxShadow에 표현하기 위해 사용
     selectedBox: null,
 
     //pallet div 내에서 scroll한 x,y 포지션 구하기 위함
@@ -113,8 +114,8 @@ export default handleActions({
     },
 
     [DEV_TEXTBOX_LOC_CHANGE]: (state, action) => {
-        return state.updateIn(['selectedDevice','pallet'], pallet =>
-            pallet.setIn([action.payload.index, 'pos'], Map({
+        return state.updateIn(['selectedDevice','pallet', action.payload.index], item =>
+            item.set('pos', Map({
                 top: action.payload.top,
                 left: action.payload.left,
                 isDragging: true

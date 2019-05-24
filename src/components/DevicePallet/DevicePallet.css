@@ -100,40 +100,6 @@
     padding: 12px 0 12px 18px;
 }
 
-#DevicePallet .item{
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    cursor: move;
-}
-
-#DevicePallet .text-box{
-    transform: translate(0.5,0.5);
-    visibility: visible;
-    cursor: move;
-    position: absolute;
-    /* pointer-events: none; */
-    /* z-index: 3; */
-}
-
-#DevicePallet .text-box-inner{
-    padding: 3px 4px;
-}
-
-#DevicePallet .text-box-inner ol{
-    padding-left: 14px;
-}
-
-#DevicePallet .text-box-shadow{
-    border: 1px dashed #000;
-    width: 120px;
-    height: 120px;
-    pointer-events: none;
-    z-index: 3;
-    position: absolute;
-    visibility: visible;
-}
-
 #DevicePallet .text-box .inner{
     cursor: move;
 }
