@@ -32,7 +32,7 @@
     position: absolute;
     /* border: 1px solid #000; */
     overflow: hidden;
-    width: 1718px;
+    width: 1808px;
     height: 1151px;
     background-color: #b2c7d9;
 }
@@ -102,4 +102,18 @@
 
 #DevicePallet .text-box .inner{
     cursor: move;
+}
+
+#DevicePallet textarea{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    /* border: 1px solid #dadce0; */
+    border: none;
+    background-color: transparent;
+    /* outline: none; */
+    resize: none;
+    overflow: auto;
+    height: 40px;
+    width: 147px;
 }

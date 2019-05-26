@@ -6,17 +6,21 @@ const DEV_SELECT = 'device/DEV_SELECT';
 const DEV_BOX_SELECT = 'device/DEV_BOX_SELECT';
 const DEV_BOX_UNSELECT = 'device/DEV_BOX_UNSELECT';
 const DEV_DRAG_START = 'device/DEV_DRAG_START';
-const DEV_DRAG_OVER = 'device/DEV_DRAG_OVER';
+const DEV_DRAG_STATE_CHANGE = 'device/DEV_DRAG_STATE_CHANGE';
 const DEV_ADD_TEXTBOX = 'device/DEV_ADD_TEXTBOX';
 const DEV_POSITION_CHANGE = 'device/DEV_POSITION_CHANGE';
 const DEV_TEXTBOX_LOC_CHANGE = "device/DEV_TEXTBOX_LOC_CHANGE"
 const DEV_BLOCK_ID_CNT = 'device/DEV_BLOCK_ID_CNT';
-const DEV_TYPE_SELECT= 'device/DEV_TYPE_SELECT';
+const DEV_TYPE_SELECT = 'device/DEV_TYPE_SELECT';
+const DEV_ADD_BTN = 'device/DEV_ADD_BTN';
+const DEV_CP_BTN = 'device/DEV_CP_BTN';
+const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
+const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
-export const devDragOver = createAction(DEV_DRAG_OVER);
+export const devDragStateChange = createAction(DEV_DRAG_STATE_CHANGE);
 export const devBoxSelect = createAction(DEV_BOX_SELECT);
 export const devBoxUnSelect = createAction(DEV_BOX_UNSELECT);
 export const devAddTextBox = createAction(DEV_ADD_TEXTBOX);
@@ -24,6 +28,11 @@ export const devPositionChange = createAction(DEV_POSITION_CHANGE);
 export const devTextboxLocChange = createAction(DEV_TEXTBOX_LOC_CHANGE);
 export const devBlockIdCnt = createAction(DEV_BLOCK_ID_CNT);
 export const devTypeSelect = createAction(DEV_TYPE_SELECT);
+export const devAddBtn = createAction(DEV_ADD_BTN);
+export const devCopyBtn = createAction(DEV_CP_BTN);
+export const devInputChange = createAction(DEV_INPUT_CHANGE);
+export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
+
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -35,7 +44,7 @@ const initialState = Map({
         pallet: List([]),
     }),
 
-    //드래그시 사용하는 original x,y 박스
+    //select시 가시적으로 나타나는 focus 박스 좌표
     tempBox: null,
 
     //선택되어진 요소의 세부 정보를 TextBoxShadow에 표현하기 위해 사용
@@ -47,6 +56,10 @@ const initialState = Map({
         left: 0
     }),
 
+    //svg 내부에서 드래그 시작 및 종료시에 사용
+    isDragging: false,
+
+    //사이드바에서 최초 드래그 시 타입 식별을 위해 사용
     dragType: 1,
 
     //블록 아이디를 발급해주기 위함
@@ -64,7 +77,7 @@ export default handleActions({
     [DEV_BOX_SELECT]: (state, action) => {
         return state.set('selectedBox', Map({
             index: action.payload.index,
-            block: Map(state.getIn(['selectedDevice','pallet', action.payload.index]))
+            block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
         }));
     },
 
@@ -80,10 +93,8 @@ export default handleActions({
         return state.set('tempBox', action.payload ? Map(action.payload) : null);
     },
 
-    [DEV_DRAG_OVER]: (state, action) => {
-        return state.updateIn(['selectedDevice','pallet'], pallet =>
-            pallet.setIn([action.payload.index, 'pos', 'isDragging'], false)
-        )
+    [DEV_DRAG_STATE_CHANGE]: (state, action) => {
+        return state.set('isDragging', action.payload.state);
     },
 
     [DEV_POSITION_CHANGE]: (state, action) => {
@@ -91,17 +102,16 @@ export default handleActions({
     },
 
     [DEV_ADD_TEXTBOX]: (state, action) => {
-        return state.updateIn(['selectedDevice','pallet'], pallet =>
+        return state.updateIn(['selectedDevice', 'pallet'], pallet =>
             pallet.push(
                 Map({
                     pos: Map({
                         top: action.payload.top,
                         left: action.payload.left,
-                        isDragging: false
                     }),
                     type: action.payload.type, //1이면 button, 2이면 dynamic, 3이면 time
-                    preorder: null,
-                    postorder: null,
+                    preorder: action.payload.preorder,
+                    postorder: action.payload.postorder,
                     linkedId: null,
                     linkingId: null,
                     id: action.payload.id,
@@ -113,12 +123,45 @@ export default handleActions({
         )
     },
 
+    [DEV_ADD_BTN]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet', action.payload.index, 'info', 'buttons'], buttons =>
+            buttons.push(
+                Map({
+                    code: null,
+                    name: null,
+                    blockId: null
+                })
+            )
+        )
+    },
+
+    [DEV_CP_BTN]: (state, action) => {
+        return state.updateIn(['selectedBox', 'block', 'info','buttons'], buttons =>
+            buttons.push(
+                Map({
+                    code: null,
+                    name: null,
+                    blockId: null
+                })
+            )
+        )
+    },
+
+    [DEV_INPUT_CHANGE]: (state, action) => {
+        return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.text)
+    },
+
+    [DEV_INPUT_TARGET_CHANGE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet =>
+            pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), action.payload.key],action.payload.text)
+        )
+    },
+
     [DEV_TEXTBOX_LOC_CHANGE]: (state, action) => {
-        return state.updateIn(['selectedDevice','pallet', action.payload.index], item =>
+        return state.updateIn(['selectedDevice', 'pallet', action.payload.index], item =>
             item.set('pos', Map({
                 top: action.payload.top,
                 left: action.payload.left,
-                isDragging: true
             }))
         )
     },

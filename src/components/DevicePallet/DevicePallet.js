@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
-import TextBox, {DraggableTextBox, TextBoxShadow} from 'components/TextBox/TextBox';
+import { DraggableTextBox, TextBoxShadow, FocusBox } from 'components/TextBox/TextBoxHelper';
+import TextBox from 'components/TextBox/TextBox';
+import { BUTTON_TYPE } from 'constants/index';
 
 const DevicePallet = ({
     children,
@@ -12,14 +14,22 @@ const DevicePallet = ({
     dragStartSwap,
     dropSwap,
     tempBox,
-    selectedBox }) => {
+    selectedBox,
+    focus,
+    isDragging,
+    changeTextBoxInfo,
+    focusClear,
+    addBtnFunc }) => {
+
+    let type = selectedBox && selectedBox.getIn(['block', 'type']);
+
     return (
         <div id="DevicePallet">
             {/* side bar */}
             <div className="side">
                 <div className="side-title">챗봇 텍스트박스 구성</div>
                 <div className="side-section">
-                    <div className="side-section-title">텍스트박스 타입</div>
+                    <div className="side-section-title">텍스트박스 도구 상자</div>
                     <div className="draggable-wrap">
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={1} />
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={2} />
@@ -34,8 +44,8 @@ const DevicePallet = ({
                     <table className="pv-wrap">
                         <thead>
                             <tr>
-                                <th style={{ width: '40%' }}>Property</th>
-                                <th style={{ width: '60%' }}>Value</th>
+                                <th style={{ width: '30%' }}>Property</th>
+                                <th style={{ width: '70%' }}>Value</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,34 +55,68 @@ const DevicePallet = ({
                             </tr>
                             <tr>
                                 <td>type</td>
-                                <td>button</td>
+                                <td>{selectedBox && BUTTON_TYPE.find(x => x.type === type).name}</td>
                             </tr>
                             <tr>
-                                <td>is Linked</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linked'])}</td>
+                                <td>linked</td>
+                                <td>{selectedBox && selectedBox.getIn(['block', 'linked']).toString()}</td>
                             </tr>
                             <tr>
-                                <td>is Linking</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linking'])}</td>
+                                <td>linking</td>
+                                <td>{selectedBox && selectedBox.getIn(['block', 'linking']).toString()}</td>
                             </tr>
                             <tr>
-                                <td>parent box id</td>
+                                <td>parent box</td>
                                 <td>{selectedBox && selectedBox.getIn(['block', 'linkedId'])}</td>
                             </tr>
                             <tr>
-                                <td>child box id</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linkingId'])}</td>
+                                <td>head text</td>
+                                <td>
+                                    <textarea 
+                                    name="preorder" 
+                                    rows={3} 
+                                    cols={20}
+                                    value={selectedBox ? selectedBox.getIn(['block', 'preorder']) : ''}
+                                    onChange={(e)=>{changeTextBoxInfo(e, selectedBox.getIn(['block', 'id']), 'preorder')}}>
+                                    </textarea>
+                                </td>
                             </tr>
                             <tr>
-                                <td>preorder</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'preorder'])}</td>
-                            </tr>
-                            <tr>
-                                <td>postorder</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'postorder'])}</td>
+                                <td>foot text</td>
+                                <td>
+                                    <textarea 
+                                    name="postorder" 
+                                    rows={3} 
+                                    cols={20}
+                                    value={selectedBox ? selectedBox.getIn(['block', 'postorder']) : ''}
+                                    onChange={(e)=>{changeTextBoxInfo(e, selectedBox.getIn(['block', 'id']), 'postorder')}}>
+                                    </textarea>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                    {selectedBox && (type === 1 || type === 5) && <table className="pv-wrap">
+                        <thead>
+                            <tr>
+                                <th style={{ width: '10%' }}>No.</th>
+                                <th style={{ width: '20%' }}>code</th>
+                                <th style={{ width: '50%' }}>btn name</th>
+                                <th style={{ width: '20%' }}>child</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{index+1}</td>
+                                        <td>{button.get('code')}</td>
+                                        <td>{button.get('name')}</td>
+                                        <td>{button.get('blockId')}</td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>}
                 </div>
             </div>
 
@@ -82,6 +126,8 @@ const DevicePallet = ({
                 <div className="background">
                 </div>
                 <svg
+                    id="draggable"
+                    onClick={focusClear}
                     onDragOver={dragOver}
                     onDrop={drop}
                     style={{
@@ -96,20 +142,26 @@ const DevicePallet = ({
                         backgroundImage: 'none',
                     }}>
                     <g>
-                        {tempBox && <TextBoxShadow tempBox={tempBox} selectedBox={selectedBox} />}
-                    </g>
-                    <g>
                         {pallet.map((boxInfo, index) => {
                             return (
                                 <TextBox
                                     boxInfo={boxInfo}
-                                    dragStart={dragStartSwap}
-                                    dropSwap={dropSwap}
                                     tempBox={tempBox}
                                     key={boxInfo.get('id')}
-                                    index={index} />)
+                                    index={index}
+                                    addBtnFunc={addBtnFunc}
+                                    focus={focus} />)
                         })}
                     </g>
+                    
+                    {/* {tempBox && <TextBoxShadow tempBox={tempBox} selectedBox={selectedBox} />} */}
+                    {tempBox && 
+                    <FocusBox 
+                    tempBox={tempBox} 
+                    selectedBox={selectedBox} 
+                    dragStart={dragStartSwap}
+                    dropSwap={dropSwap}
+                    isDragging={isDragging}/>}
                 </svg>
                 {children}
             </div>
