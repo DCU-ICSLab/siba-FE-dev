@@ -37,42 +37,6 @@ export const DraggableTextBox = ({ dragStart, dragOver, type }) => {
     )
 }
 
-export const TextBoxShadow = ({ tempBox, selectedBox }) => {
-    const x = tempBox.get('left');
-    const y = tempBox.get('top');
-    const id = selectedBox.getIn(['block', 'id'])
-    const buttons = selectedBox.getIn(['block', 'info', 'buttons']);
-    //selected Box 존재하지 않는 오류 예측
-    let height = 85 + 18 * (buttons.size - 1) //base height + button counts*18
-    return (
-        <Fragment>
-            {selectedBox && <TextBoxHeader x={x} y={y} id={id} />}
-            <rect x={x} y={y} width={170} height={height} style={{
-                stroke: '#000',
-                strokeWidth: 0.3,
-                strokeDasharray: '5 5',
-                pointerEvents: 'none',
-                fill: '#fff',
-            }} />
-            {selectedBox &&
-                <Fragment>
-                    <TextBoxInner x={x} y={y} buttons={buttons} />
-                    {selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
-                        return <TextBoxButton x={x} y={y} key={`${id}${index}`} index={index} height={height}>{index + 1}</TextBoxButton>
-                    })}
-                </Fragment>}
-            {buttons.size !== 9 && <TextBoxButton
-                x={x}
-                y={y}
-                type={0}
-                index={buttons.size}
-                height={height}>
-                <MdAdd size={16} />
-            </TextBoxButton>}
-        </Fragment>
-    )
-}
-
 export const TimeTextBoxInner = ({ x, y, buttons }) => {
     return (
         <g className="inner">
@@ -178,57 +142,108 @@ export const TextBoxHeader = ({ x, y, id }) => {
     )
 }
 
-export const FocusBox = ({ tempBox, selectedBox, dragStart, dropSwap, isDragging }) => {
-    const x = tempBox.get('left');
-    const y = tempBox.get('top');
+export const FocusBox = ({ selectedBox, dragStart, dropSwap, isDragging, focusClear }) => {
+    const x = selectedBox.get('x');
+    const y = selectedBox.get('y');
     const type = selectedBox.getIn(['block', 'type'])
+    const id = selectedBox.getIn(['block', 'id'])
     const size = type === 1 || type === 5 ? selectedBox.getIn(['block', 'info', 'buttons']).size : 1;
     const height = 136 + 18 * (size - 1) //base height + button counts*18
-    const width = 176 + (size >= 5 ? (size - 5) * 32 + 22 - (size == 9 ? 32 : 0) : 0);
+    const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 22 - (size == 9 ? 32 : 0) : 0); 
+    const width = 176 + dynamicWidth;
     return (
-        <g onMouseDown={(e) => dragStart(e,x,y)} onMouseUp={dropSwap}>
-            <rect x={x + 17} y={y - 2} width={width} height={height} style={{
+        <g onMouseDown={(e) => dragStart(e, x, y)} onMouseUp={dropSwap} onMouseLeave={focusClear}>
+            <rect x={x + 17} y={y - 2} width={width} height={height} id="focus" style={{
+                // stroke: '#00a8ff',
                 stroke: '#000',
                 strokeWidth: 0.3,
-                strokeDasharray: '5 5',
+                strokeDasharray: '3 3',
                 pointerEvents: 'all',
                 fill: 'none',
                 cursor: 'move'
             }} />
             {isDragging && <Fragment>
-            <g>
-                <rect x={x + width/2 -22.5} y={y + height + 5} width={80} height="20" rx="3" ry="3" style={{
-                    stroke: '#000',
-                    strokeWidth: 0.1,
-                    fill: 'none',
-                    pointerEvents: 'none',
-                    // zIndex: tempBox ? 9999 : 3
-                }} />
-            </g>
-            <g transform={`translate(${x + width/2 -22.5}, ${y + height + 5})`}>
-                <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
-                    width={80} height={15}>
-                    <div className="text-box-mover"><span>{x}, {y}</span></div>
-                </foreignObject>
-            </g></Fragment>}
-            <g>
-                <circle cx={x+193} cy={y} r={8}
-                    style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.fill = '#000'
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.fill = '#97A9B8'
-                    }}
-                    onClick={(e)=>{e.stopPropagation()}}>
-                </circle>
-            </g>
-            <g transform={`translate(${x + 187}, ${y-8})`}>
-                <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
-                    width={15} height={15}>
-                    <div><MdClear style={{color: '#fff'}}/></div>
-                </foreignObject>
-            </g>
+                <g>
+                    <rect x={x + width / 2 - 22.5} y={y + height + 5} width={80} height="20" rx="3" ry="3" style={{
+                        stroke: '#000',
+                        strokeWidth: 0.1,
+                        fill: 'none',
+                        pointerEvents: 'none',
+                        // zIndex: tempBox ? 9999 : 3
+                    }} />
+                </g>
+                <g transform={`translate(${x + width / 2 - 22.5}, ${y + height + 5})`}>
+                    <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
+                        width={80} height={15}>
+                        <div className="text-box-mover"><span>{x}, {y}</span></div>
+                    </foreignObject>
+                </g></Fragment>}
+            {/* {!isDragging && targetedBox &&
+                <Fragment>
+                    <g>
+                        <circle id="delete-btn" cx={x + 193+ dynamicWidth} cy={y} r={8}
+                            style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.fill = '#000'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.fill = '#97A9B8'
+                            }}
+                            onClick={(e) => { deleteTextBox(e, id) }}>
+                        </circle>
+                    </g>
+                    <g transform={`translate(${x + 187 + dynamicWidth}, ${y - 8})`}>
+                        <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
+                            width={15} height={15}>
+                            <div><MdClear style={{ color: '#fff' }} /></div>
+                        </foreignObject>
+                    </g>
+                </Fragment>} */}
         </g>
     )
+}
+
+export const TargetBox = ({ dragStart, dropSwap, deleteTextBox, focusClear, targetedBox, focus }) => {
+    const x = targetedBox.get('x');
+    const y = targetedBox.get('y');
+    const index = targetedBox.get('index');
+    const type = targetedBox.getIn(['block', 'type'])
+    const id = targetedBox.getIn(['block', 'id'])
+    const size = type === 1 || type === 5 ? targetedBox.getIn(['block', 'info', 'buttons']).size : 1;
+    const height = 136 + 18 * (size - 1) //base height + button counts*18
+    const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 22 - (size == 9 ? 32 : 0) : 0); 
+    const width = 176 + dynamicWidth;
+    return (
+        <g onMouseDown={(e) => dragStart(e, x, y)} onMouseUp={dropSwap} onMouseEnter={(e)=>focus(e, x+20, y+20, index)}>
+            <rect x={x + 17} y={y - 2} width={width} height={height} id="focus" style={{
+                // stroke: '#00a8ff',
+                stroke: '#000',
+                strokeWidth: 0.3,
+                strokeDasharray: '3 3',
+                pointerEvents: 'all',
+                fill: 'none',
+                cursor: 'move'
+            }} />
+            {
+                <Fragment>
+                    <g>
+                        <circle id="delete-btn" cx={x + 193+ dynamicWidth} cy={y} r={8}
+                            style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.fill = '#000'
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.fill = '#97A9B8'
+                            }}
+                            onClick={(e) => { deleteTextBox(e, id) }}>
+                        </circle>
+                    </g>
+                    <g transform={`translate(${x + 187 + dynamicWidth}, ${y - 8})`}>
+                        <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
+                            width={15} height={15}>
+                            <div><MdClear style={{ color: '#fff' }} /></div>
+                        </foreignObject>
+                    </g>
+                </Fragment>}
+        </g>)
 }

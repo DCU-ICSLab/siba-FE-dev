@@ -3,36 +3,49 @@ import { Map, List } from 'immutable';
 
 /*--------action type--------*/
 const DEV_SELECT = 'device/DEV_SELECT';
-const DEV_BOX_SELECT = 'device/DEV_BOX_SELECT';
+const DEV_BOX_FOCUS = 'device/DEV_BOX_FOCUS';
 const DEV_BOX_UNSELECT = 'device/DEV_BOX_UNSELECT';
 const DEV_DRAG_START = 'device/DEV_DRAG_START';
 const DEV_DRAG_STATE_CHANGE = 'device/DEV_DRAG_STATE_CHANGE';
 const DEV_ADD_TEXTBOX = 'device/DEV_ADD_TEXTBOX';
+const DEV_DELETE_TEXTBOX = 'device/DEV_DELETE_TEXTBOX';
 const DEV_POSITION_CHANGE = 'device/DEV_POSITION_CHANGE';
 const DEV_TEXTBOX_LOC_CHANGE = "device/DEV_TEXTBOX_LOC_CHANGE"
 const DEV_BLOCK_ID_CNT = 'device/DEV_BLOCK_ID_CNT';
 const DEV_TYPE_SELECT = 'device/DEV_TYPE_SELECT';
 const DEV_ADD_BTN = 'device/DEV_ADD_BTN';
+const DEV_ADD_BTN_SIDE = 'device/DEV_ADD_BTN_SIDE';
 const DEV_CP_BTN = 'device/DEV_CP_BTN';
 const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
-const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE'
+const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE';
+const DEV_BTN_INFO_CHANGE = 'device/DEV_BTN_INFO_CHANGE';
+const DEV_BTN_INFO_TARGET_CHANGE = 'device/DEV_BTN_INFO_TARGET_CHANGE';
+const DEV_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TEXTBOX_HEIGHT_CHANGE';
+const DEV_TARGET_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TARGET_TEXTBOX_HEIGHT_CHANGE';
+const DEV_BOX_SELECT = 'device/DEV_BOX_SELECT';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
 export const devDragStateChange = createAction(DEV_DRAG_STATE_CHANGE);
-export const devBoxSelect = createAction(DEV_BOX_SELECT);
+export const devBoxFocus = createAction(DEV_BOX_FOCUS);
 export const devBoxUnSelect = createAction(DEV_BOX_UNSELECT);
 export const devAddTextBox = createAction(DEV_ADD_TEXTBOX);
+export const devDeleteTextBox = createAction(DEV_DELETE_TEXTBOX);
 export const devPositionChange = createAction(DEV_POSITION_CHANGE);
 export const devTextboxLocChange = createAction(DEV_TEXTBOX_LOC_CHANGE);
 export const devBlockIdCnt = createAction(DEV_BLOCK_ID_CNT);
 export const devTypeSelect = createAction(DEV_TYPE_SELECT);
 export const devAddBtn = createAction(DEV_ADD_BTN);
+export const devAddBtnSide = createAction(DEV_ADD_BTN_SIDE);
 export const devCopyBtn = createAction(DEV_CP_BTN);
 export const devInputChange = createAction(DEV_INPUT_CHANGE);
 export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
-
+export const devBtnInfoChange = createAction(DEV_BTN_INFO_CHANGE);
+export const devBtnInfoTargetChange = createAction(DEV_BTN_INFO_TARGET_CHANGE);
+export const devTextBoxHeightChange = createAction(DEV_TEXTBOX_HEIGHT_CHANGE);
+export const devTargetTextboxHeightChange = createAction(DEV_TARGET_TEXTBOX_HEIGHT_CHANGE);
+export const devBoxSelect = createAction(DEV_BOX_SELECT);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -44,11 +57,11 @@ const initialState = Map({
         pallet: List([]),
     }),
 
-    //select시 가시적으로 나타나는 focus 박스 좌표
-    tempBox: null,
-
-    //선택되어진 요소의 세부 정보를 TextBoxShadow에 표현하기 위해 사용
+    //포커싱 되어진 박스
     selectedBox: null,
+
+    //선택되어진 박스
+    targetedBox: null,
 
     //pallet div 내에서 scroll한 x,y 포지션 구하기 위함
     scrollPos: Map({
@@ -74,11 +87,35 @@ export default handleActions({
         return state.set('selectedDevice', Map(action.payload));
     },
 
+    [DEV_BOX_FOCUS]: (state, action) => {
+        if(action.payload.create){
+            return state.merge({
+                selectedBox: Map({
+                    index: action.payload.index,
+                    x: action.payload.x,
+                    y: action.payload.y,
+                    block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
+                }),
+                targetedBox: Map({
+                    index: action.payload.index,
+                    x: action.payload.x,
+                    y: action.payload.y,
+                    block: state.getIn(['selectedDevice', 'pallet', action.payload.index])
+                })
+            })
+        }
+        else{
+            return state.set('selectedBox', Map({
+                index: action.payload.index,
+                x: action.payload.x,
+                y: action.payload.y,
+                block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
+            }));
+        }
+    },
+
     [DEV_BOX_SELECT]: (state, action) => {
-        return state.set('selectedBox', Map({
-            index: action.payload.index,
-            block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
-        }));
+        return state.set('targetedBox', action.payload ? Map(action.payload) : null);
     },
 
     [DEV_TYPE_SELECT]: (state, action) => {
@@ -90,7 +127,7 @@ export default handleActions({
     },
 
     [DEV_DRAG_START]: (state, action) => {
-        return state.set('tempBox', action.payload ? Map(action.payload) : null);
+        return state.mergeIn(['selectedBox'], {x: action.payload.x, y: action.payload.y});
     },
 
     [DEV_DRAG_STATE_CHANGE]: (state, action) => {
@@ -113,6 +150,7 @@ export default handleActions({
                     preorder: action.payload.preorder,
                     postorder: action.payload.postorder,
                     linkedId: null,
+                    height: 20,
                     linkingId: null,
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
@@ -123,38 +161,71 @@ export default handleActions({
         )
     },
 
+    [DEV_DELETE_TEXTBOX]: (state, action) => {
+        return state.deleteIn(['selectedDevice', 'pallet', 
+            state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.id)
+        ])
+    },
+
     [DEV_ADD_BTN]: (state, action) => {
         return state.updateIn(['selectedDevice', 'pallet', action.payload.index, 'info', 'buttons'], buttons =>
             buttons.push(
                 Map({
-                    code: null,
-                    name: null,
-                    blockId: null
+                    code: '',
+                    name: '',
+                    blockId: ''
+                })
+            )
+        )
+    },
+
+    [DEV_ADD_BTN_SIDE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet', 
+        state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons'], 
+        buttons =>
+            buttons.push(
+                Map({
+                    code: '',
+                    name: '',
+                    blockId: ''
                 })
             )
         )
     },
 
     [DEV_CP_BTN]: (state, action) => {
-        return state.updateIn(['selectedBox', 'block', 'info','buttons'], buttons =>
+        return state.updateIn(['targetedBox', 'block', 'info','buttons'], buttons =>
             buttons.push(
                 Map({
-                    code: null,
-                    name: null,
-                    blockId: null
+                    code: '',
+                    name: '',
+                    blockId: ''
                 })
             )
         )
     },
 
+    //사본
     [DEV_INPUT_CHANGE]: (state, action) => {
-        return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.text)
+        return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.text)
     },
 
+    //원본
     [DEV_INPUT_TARGET_CHANGE]: (state, action) => {
         return state.updateIn(['selectedDevice', 'pallet'], pallet =>
             pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), action.payload.key],action.payload.text)
         )
+    },
+
+    //사본
+    [DEV_BTN_INFO_CHANGE]: (state, action) => {
+        return state.setIn(['targetedBox', 'block', 'info', 'buttons', action.payload.index, action.payload.key], action.payload.text)
+    },
+
+    //원본
+    [DEV_BTN_INFO_TARGET_CHANGE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+        pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons', action.payload.index, action.payload.key], action.payload.text)) 
     },
 
     [DEV_TEXTBOX_LOC_CHANGE]: (state, action) => {
@@ -168,6 +239,17 @@ export default handleActions({
 
     [DEV_BLOCK_ID_CNT]: (state, action) => {
         return state.set('blockIdCounter', action.payload);
+    },
+
+    //원본
+    [DEV_TARGET_TEXTBOX_HEIGHT_CHANGE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+        pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), action.payload.key], action.payload.height))
+    },
+
+    //사본
+    [DEV_TEXTBOX_HEIGHT_CHANGE]: (state, action) => {
+        return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.height)
     },
 
 }, initialState);

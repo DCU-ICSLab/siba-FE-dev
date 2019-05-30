@@ -16,16 +16,17 @@ class ButtonTextBox extends Component {
         let x = boxInfo.getIn(['pos', 'left']) + 20;
         let y = boxInfo.getIn(['pos', 'top']) + 20;
         let id = boxInfo.get('id');
+        let dynamicHeight = boxInfo.get('height');
         let isDragging = boxInfo.getIn(['pos', 'isDragging']);
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
         let preorder = boxInfo.get('preorder');
         let postorder = boxInfo.get('postorder');
-        let height = 85 + 18 * (buttonSize - 1) //base height + button counts*18
+        let height = 65 + 18 * (buttonSize - 1) + dynamicHeight//base height + button counts*18
 
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onClick={(e)=>focus(e, x, y, index)} 
+                <g onMouseEnter={(e)=>focus(e, x, y, index)} 
                 className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
@@ -64,7 +65,7 @@ class ButtonTextBox extends Component {
                         type={0}
                         index={buttonSize}
                         height={height}
-                        func={(e)=>{addBtnFunc(e,index)}}>
+                        func={(e)=>{addBtnFunc(e,x,y,index)}}>
                         <MdAdd size={16} />
                     </TextBoxButton>}
             </Fragment>

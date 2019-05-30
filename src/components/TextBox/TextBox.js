@@ -14,7 +14,7 @@ class TextBox extends Component {
 
     render() {
 
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus } = this.props;
+        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus} = this.props;
         const type = boxInfo.get('type')
         return (
             <Fragment>

@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
-import { DraggableTextBox, TextBoxShadow, FocusBox } from 'components/TextBox/TextBoxHelper';
+import { DraggableTextBox, TextBoxShadow, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
+import { MdAdd } from 'react-icons/md'
 import TextBox from 'components/TextBox/TextBox';
 import { BUTTON_TYPE } from 'constants/index';
 
@@ -13,15 +14,18 @@ const DevicePallet = ({
     scrollFunc,
     dragStartSwap,
     dropSwap,
-    tempBox,
     selectedBox,
     focus,
     isDragging,
     changeTextBoxInfo,
     focusClear,
+    deleteTextBox,
+    addBtnFuncSide,
+    devBtnInfoChange,
+    targetedBox,
     addBtnFunc }) => {
 
-    let type = selectedBox && selectedBox.getIn(['block', 'type']);
+    let type = targetedBox && targetedBox.getIn(['block', 'type']);
 
     return (
         <div id="DevicePallet">
@@ -49,35 +53,39 @@ const DevicePallet = ({
                             </tr>
                         </thead>
                         <tbody>
+                            { targetedBox && 
+                            <Fragment>
                             <tr>
                                 <td>box id</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'id'])}</td>
+                                <td>{targetedBox.getIn(['block', 'id'])}</td>
                             </tr>
                             <tr>
                                 <td>type</td>
-                                <td>{selectedBox && BUTTON_TYPE.find(x => x.type === type).name}</td>
+                                <td>{BUTTON_TYPE.find(x => x.type === type).name}</td>
                             </tr>
                             <tr>
                                 <td>linked</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linked']).toString()}</td>
+                                <td>{targetedBox.getIn(['block', 'linked']).toString()}</td>
                             </tr>
                             <tr>
                                 <td>linking</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linking']).toString()}</td>
+                                <td>{targetedBox.getIn(['block', 'linking']).toString()}</td>
                             </tr>
                             <tr>
                                 <td>parent box</td>
-                                <td>{selectedBox && selectedBox.getIn(['block', 'linkedId'])}</td>
+                                <td>{targetedBox.getIn(['block', 'linkedId'])}</td>
                             </tr>
                             <tr>
                                 <td>head text</td>
                                 <td>
                                     <textarea 
+                                    spellCheck="false"
                                     name="preorder" 
+                                    style={{height: targetedBox.getIn(['block', 'height'])}}
                                     rows={3} 
-                                    cols={20}
-                                    value={selectedBox ? selectedBox.getIn(['block', 'preorder']) : ''}
-                                    onChange={(e)=>{changeTextBoxInfo(e, selectedBox.getIn(['block', 'id']), 'preorder')}}>
+                                    // cols={20}
+                                    value={targetedBox.getIn(['block', 'preorder'])}
+                                    onChange={(e)=>{changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height')}}>
                                     </textarea>
                                 </td>
                             </tr>
@@ -85,17 +93,23 @@ const DevicePallet = ({
                                 <td>foot text</td>
                                 <td>
                                     <textarea 
+                                    spellCheck="false"
                                     name="postorder" 
+                                    style={{height: 20}}
                                     rows={3} 
-                                    cols={20}
-                                    value={selectedBox ? selectedBox.getIn(['block', 'postorder']) : ''}
-                                    onChange={(e)=>{changeTextBoxInfo(e, selectedBox.getIn(['block', 'id']), 'postorder')}}>
+                                    // cols={20}
+                                    value={targetedBox.getIn(['block', 'postorder'])}
+                                    onChange={(e)=>{changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height')}}>
                                     </textarea>
                                 </td>
                             </tr>
+                            </Fragment>
+                            }
                         </tbody>
                     </table>
-                    {selectedBox && (type === 1 || type === 5) && <table className="pv-wrap">
+                    {targetedBox && (type === 1 || type === 5) && 
+                    <Fragment>
+                    <table className="pv-wrap">
                         <thead>
                             <tr>
                                 <th style={{ width: '10%' }}>No.</th>
@@ -105,19 +119,35 @@ const DevicePallet = ({
                             </tr>
                         </thead>
                         <tbody>
-                            {selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+                            {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                                 return (
                                     <tr key={index}>
                                         <td>{index+1}</td>
                                         <td>{button.get('code')}</td>
-                                        <td>{button.get('name')}</td>
+                                        <td>
+                                            <input 
+                                            name="name"
+                                            value={button.get('name')}
+                                            onChange={(e)=>{devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index)}}/>
+                                        </td>
                                         <td>{button.get('blockId')}</td>
                                     </tr>
                                 )
                             })}
                         </tbody>
-                    </table>}
+                    </table>
+                    {targetedBox.getIn(['block', 'info', 'buttons']).size !==9 &&
+                    <div style={{width: '100%'}}>
+                        <button className="btn-add" onClick={(e)=>{addBtnFuncSide(e,targetedBox.getIn(['block','id']))}}>
+                            <MdAdd size={16}/>
+                        </button>
+                    </div>}
+                    </Fragment>}
                 </div>
+            </div>
+
+            <div className="toolbox">
+                    
             </div>
 
             {/* pallet */}
@@ -146,7 +176,6 @@ const DevicePallet = ({
                             return (
                                 <TextBox
                                     boxInfo={boxInfo}
-                                    tempBox={tempBox}
                                     key={boxInfo.get('id')}
                                     index={index}
                                     addBtnFunc={addBtnFunc}
@@ -154,14 +183,22 @@ const DevicePallet = ({
                         })}
                     </g>
                     
-                    {/* {tempBox && <TextBoxShadow tempBox={tempBox} selectedBox={selectedBox} />} */}
-                    {tempBox && 
+                    {targetedBox && 
+                    <TargetBox  
+                    dragStart={dragStartSwap}
+                    dropSwap={dropSwap}
+                    deleteTextBox={deleteTextBox}
+                    focusClear={focusClear}
+                    targetedBox={targetedBox}
+                    focus={focus}/>}
+                    
+                    {selectedBox && 
                     <FocusBox 
-                    tempBox={tempBox} 
                     selectedBox={selectedBox} 
                     dragStart={dragStartSwap}
                     dropSwap={dropSwap}
-                    isDragging={isDragging}/>}
+                    isDragging={isDragging}
+                    focusClear={focusClear}/>}
                 </svg>
                 {children}
             </div>

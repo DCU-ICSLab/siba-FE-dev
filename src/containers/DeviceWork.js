@@ -7,6 +7,7 @@ import * as deviceActions from 'store/modules/device';
 import { DeviceWorkBox, DevicePallet } from 'components';
 import { Map, List } from 'immutable';
 import { BUTTON_TYPE } from 'constants/index';
+import { devBoxSelect } from '../store/modules/device';
 
 class DeviceWork extends Component {
 
@@ -20,9 +21,9 @@ class DeviceWork extends Component {
                 additionalInfo = {
                     buttons: List([
                         Map({
-                            code: null,
-                            name: null,
-                            blockId: null
+                            code: '',
+                            name: '',
+                            blockId: ''
                         }),
                     ])
                 }
@@ -48,7 +49,7 @@ class DeviceWork extends Component {
     _drop = (e) => {
         e.preventDefault();
 
-        const { deviceActions, blockIdCounter, dragType, pallet } = this.props;
+        const { deviceActions, blockIdCounter, dragType, pallet, selectedBox } = this.props;
         const pos = this._getPosition(e);
 
         const info = BUTTON_TYPE.find(x => x.type === dragType)
@@ -65,12 +66,11 @@ class DeviceWork extends Component {
         });
 
         //새로 드래그한 박스를 select box로 지정
-        deviceActions.devBoxSelect({ index: pallet.size })
-
-        //focus 박스 생성
-        deviceActions.devDragStart({
-            top: pos.translateY,
-            left: pos.translateX
+        deviceActions.devBoxFocus({ 
+            index: pallet.size, 
+            create: true,
+            x: pos.translateX,
+            y:  pos.translateY,
         })
 
         //블록 아이디 카운터 1값 증가
@@ -80,26 +80,20 @@ class DeviceWork extends Component {
     /* SVG전용 함수*/
     //drag가 종료되서 drag를 놓는 장소에 위치한 객체에서 발생(svg 전용)
     _dropSwap = (e) => {
-        //e.preventDefault(); //현재 이벤트의 기본 동작 중단
-        //e.stopPropagation(); //이벤트 상위 DOM으로 전달 방지
-        console.log('end')
-        e.currentTarget.style.cursor = 'pointer';
-        document.removeEventListener('mousemove', this._handleMouseMove);
+        if(e.target.id !== 'delete-btn'){
+            console.log('end')
+            e.currentTarget.style.cursor = 'pointer';
+            document.removeEventListener('mousemove', this._handleMouseMove);
+        }
     }
 
     //drag 시작 시 발생, src를 새로운 위치로 이동(svg 전용)
     _dragSwap = (e,x,y) => {
-        console.log('mv')
-        // deviceActions.devBoxSelect({ index: index })
-
-        // //focus 박스 생성(tempBox 생성)
-        // deviceActions.devDragStart({
-        //     top: y - 20,
-        //     left: x - 20
-        // })
-
-        // e.currentTarget.style.cursor = 'move'; //즉각적으로 pointer에서 move로 전환
-        document.addEventListener('mousemove', this._handleMouseMove);
+        if(e.target.id !== 'delete-btn'){
+            console.log('mv')
+            // e.currentTarget.style.cursor = 'move'; //즉각적으로 pointer에서 move로 전환
+            document.addEventListener('mousemove', this._handleMouseMove);
+        }
     }
 
     //drag 하는 box의 shadow를 표현하기 위해서 사용
@@ -113,10 +107,10 @@ class DeviceWork extends Component {
         //dragging 상태로 설정
         deviceActions.devDragStateChange({state: true});
 
-        //focus 박스 이동(tempBox 값 변경)
+        //focus 박스 이동
         deviceActions.devDragStart({
-            top: pos.translateY - 20,
-            left: pos.translateX - 20
+            x: pos.translateX - 20,
+            y: pos.translateY - 20
         })
     };
 
@@ -153,11 +147,31 @@ class DeviceWork extends Component {
     }
 
     //버튼 텍스트 박스에 버튼 추가
-    _addBtnFunc = (e, index) => {
+    _addBtnFunc = (e, x,y, index) => {
         e.stopPropagation();
         const { deviceActions } = this.props;
+        deviceActions.devBoxFocus({ 
+            index: index,
+            x: x - 20,
+            y: y - 20
+        })
+
         deviceActions.devAddBtn({ index: index })
         deviceActions.devCopyBtn();
+    }
+
+    //버튼 텍스트 박스에 버튼 추가
+    _addBtnFuncSide = (e, id) => {
+        e.stopPropagation();
+        const { deviceActions } = this.props;
+
+        deviceActions.devAddBtnSide({ id: id })
+        deviceActions.devCopyBtn();
+    }
+
+    _select = (targetedBox) => {
+        const { deviceActions } = this.props;
+        deviceActions.devBoxSelect(targetedBox);
     }
 
     //텍스트 박스 선택 시 해당 정보 나오게 하기 위함
@@ -166,12 +180,10 @@ class DeviceWork extends Component {
         e.preventDefault(); //기본 동작 수행 방지
         const { deviceActions } = this.props;
         console.log('focus change')
-        deviceActions.devBoxSelect({ index: index })
-
-        //focus 박스 생성(tempBox 생성)
-        deviceActions.devDragStart({
-            top: y - 20,
-            left: x - 20
+        deviceActions.devBoxFocus({ 
+            index: index,
+            x: x - 20,
+            y: y - 20
         })
 
         e.currentTarget.style.cursor = 'move'; //즉각적으로 pointer에서 move로 전환
@@ -179,10 +191,54 @@ class DeviceWork extends Component {
 
     _focusClear = (e) => {
         console.log('focus clear')
-        const { deviceActions, selectedBox, isDragging } = this.props;
+        const { deviceActions, selectedBox, targetedBox, isDragging } = this.props;
 
         //이전에 dragging을 수행했다면
         if (isDragging) {
+            const pos = this._getPosition(e);
+
+            //isDragging 상태 해제
+            deviceActions.devDragStateChange({state: false});
+
+            //원본 텍스트 박스 새로운 위치로
+            deviceActions.devTextboxLocChange({
+                index: selectedBox.get('index'),
+                top: pos.translateY - 20,
+                left: pos.translateX - 20
+            })
+
+            //사본 텍스트 박스 새로운 위치로
+            deviceActions.devBoxFocus({ 
+                index: selectedBox.get('index'),
+                x: pos.translateX - 20,
+                y: pos.translateY - 20,
+            });
+
+            //deviceActions.devBoxUnSelect();
+
+            this._select(selectedBox);
+        }
+
+        //클릭한 대상이 draggable 이라면
+        else if(e.target.id === 'draggable'){
+            deviceActions.devBoxUnSelect(); //selectedBox 제거
+            this._select(); //targetedBox 제거
+        }
+
+        //클릭한 대상이 FocusBox라면
+        else if(e.type === 'click' && e.target.id === 'focus'){
+            console.log('clicking')
+            this._select(selectedBox);
+        }
+
+        //클릭되어져 있지 않다면
+        else if(selectedBox){
+            deviceActions.devBoxUnSelect(); //selectedBox 제거   
+        }
+
+        console.log(e.type)
+
+        /*if (isDragging) {
             const pos = this._getPosition(e);
 
             //isDragging 상태 해제
@@ -204,16 +260,26 @@ class DeviceWork extends Component {
         else if(e.target.id === 'draggable'){
             deviceActions.devBoxUnSelect(); //selectedBox 제거
             deviceActions.devDragStart(null) //tempBox 제거
-        }
+        }*/
     }
 
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
-    _changeTextBoxInfo = (e, id) => {
+    _changeTextBoxInfo = (e, id, name) => {
         if (this._validationTextBox(e.target.value)) {
             const { deviceActions } = this.props;
-            this._resize_height(e);
+            this._resize_height(e, id, name);
             deviceActions.devInputChange({ key: e.target.name, text: e.target.value });
             deviceActions.devInputTargetChange({ key: e.target.name, text: e.target.value, id: id });
+        }
+    }
+
+    //버튼 텍스트 박스의 버튼 정보들을 변경하기 위해 사용
+    _devBtnInfoChange = (e, id, index) => {
+        //14자 까지만 허용
+        if(e.target.value.length <= 13){
+            const { deviceActions } = this.props;
+            deviceActions.devBtnInfoChange({ key: e.target.name, index: index, text: e.target.value });
+            deviceActions.devBtnInfoTargetChange({ key: e.target.name, text: e.target.value, id: id , index:index });
         }
     }
 
@@ -227,8 +293,23 @@ class DeviceWork extends Component {
         return true;
     }
 
-    _resize_height = (e) => {
-        console.log(e.currentTarget.scrollHeight);
+    _resize_height = (e, id, key) => {
+        const { deviceActions } = this.props;
+        const height= e.currentTarget.scrollHeight;
+        //deviceActions.devTextBoxHeightChange({id: id, height: height, key: key})
+        deviceActions.devTargetTextboxHeightChange({key: key, height: height})
+        console.log(height);
+    }
+
+    //텍스트 박스 삭제
+    _deleteTextBox = (e, id) => {
+        e.stopPropagation();
+
+        const { deviceActions } = this.props;
+
+        deviceActions.devBoxUnSelect(); //사본 박스 제거(selectedBox 제거)
+        deviceActions.devDeleteTextBox({id: id}); //원본 박스 제거
+        this._select();
     }
 
     componentDidMount() {
@@ -241,16 +322,16 @@ class DeviceWork extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         const pallet = nextProps.pallet !== this.props.pallet;
         const selectedBox = nextProps.selectedBox !== this.props.selectedBox;
-        const tempBox = nextProps.tempBox !== this.props.tempBox;
-        return pallet || selectedBox || tempBox;
+        const targetedBox = nextProps.targetedBox !== this.props.targetedBox;
+        return pallet || selectedBox || targetedBox;
     }
 
     render() {
 
         const {
             pallet,
-            tempBox,
             selectedBox,
+            targetedBox,
             isDragging
         } = this.props;
 
@@ -265,13 +346,16 @@ class DeviceWork extends Component {
                         dropSwap={this._dropSwap}
                         pallet={pallet}
                         scrollFunc={this._listenToScroll}
-                        tempBox={tempBox}
                         selectedBox={selectedBox}
                         addBtnFunc={this._addBtnFunc}
+                        addBtnFuncSide={this._addBtnFuncSide}
                         focus={this._focus}
                         changeTextBoxInfo={this._changeTextBoxInfo}
                         focusClear = {this._focusClear}
-                        isDragging={isDragging}>
+                        isDragging={isDragging}
+                        deleteTextBox = {this._deleteTextBox}
+                        devBtnInfoChange={this._devBtnInfoChange}
+                        targetedBox={targetedBox}>
                     </DevicePallet>
                 </DeviceWorkBox>
             </Fragment>
@@ -287,8 +371,8 @@ export default withRouter(
             pallet: state.device.getIn(['selectedDevice', 'pallet']),
             blockIdCounter: state.device.get('blockIdCounter'),
             scrollPos: state.device.get('scrollPos'),
-            tempBox: state.device.get('tempBox'),
             selectedBox: state.device.get('selectedBox'),
+            targetedBox: state.device.get('targetedBox'),
             sb: state.basic.getIn(['frameState', 'sb']),
             dragType: state.device.get('dragType'),
             isDragging: state.device.get('isDragging'),
