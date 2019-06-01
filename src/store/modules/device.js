@@ -23,6 +23,10 @@ const DEV_BTN_INFO_TARGET_CHANGE = 'device/DEV_BTN_INFO_TARGET_CHANGE';
 const DEV_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TEXTBOX_HEIGHT_CHANGE';
 const DEV_TARGET_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TARGET_TEXTBOX_HEIGHT_CHANGE';
 const DEV_BOX_SELECT = 'device/DEV_BOX_SELECT';
+const DEV_ADD_LINKER = 'device/DEV_ADD_LINKER';
+const DEV_SELECT_LINKER = 'device/DEV_SELECT_LINKER';
+const DEV_SELECT_LINKER_CLEAR = 'device/DEV_SELECT_LINKER_CLEAR';
+const DEV_SELECT_LINKER_CHANGE = 'device/DEV_SELECT_LINKER_CHANGE';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -46,6 +50,10 @@ export const devBtnInfoTargetChange = createAction(DEV_BTN_INFO_TARGET_CHANGE);
 export const devTextBoxHeightChange = createAction(DEV_TEXTBOX_HEIGHT_CHANGE);
 export const devTargetTextboxHeightChange = createAction(DEV_TARGET_TEXTBOX_HEIGHT_CHANGE);
 export const devBoxSelect = createAction(DEV_BOX_SELECT);
+export const devAddLinker = createAction(DEV_ADD_LINKER);
+export const devSelectLinker = createAction(DEV_SELECT_LINKER);
+export const devSelectLinkerClear = createAction(DEV_SELECT_LINKER_CLEAR);
+export const devSelectLinkerChange = createAction(DEV_SELECT_LINKER_CHANGE);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -55,7 +63,16 @@ const initialState = Map({
 
         //텍스트 블록을 담기 위한 배열
         pallet: List([]),
+        linkers: List([]),
+
+        //블록 아이디를 발급해주기 위함
+        blockIdCounter: 0,
+
+        //코드를 발급해주기 위함
+        codeIdCounter: 0,
     }),
+
+    selectedLinker: null,
 
     //포커싱 되어진 박스
     selectedBox: null,
@@ -74,9 +91,6 @@ const initialState = Map({
 
     //사이드바에서 최초 드래그 시 타입 식별을 위해 사용
     dragType: 1,
-
-    //블록 아이디를 발급해주기 위함
-    blockIdCounter: 0,
 
     hubInfo: List()
 });
@@ -238,7 +252,7 @@ export default handleActions({
     },
 
     [DEV_BLOCK_ID_CNT]: (state, action) => {
-        return state.set('blockIdCounter', action.payload);
+        return state.setIn(['selectedDevice','blockIdCounter'], action.payload);
     },
 
     //원본
@@ -250,6 +264,36 @@ export default handleActions({
     //사본
     [DEV_TEXTBOX_HEIGHT_CHANGE]: (state, action) => {
         return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.height)
+    },
+
+    [DEV_ADD_LINKER]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'linkers'], linkers => 
+            linkers.push(
+                Map({
+                    parent: null,
+                    code: null,
+                    child: null,
+                    m: Map(action.payload.m),
+                    z: Map(action.payload.z),
+                    l: List([])
+                })
+            )
+        );
+    },
+
+    [DEV_SELECT_LINKER]: (state, action) => {
+        return state.set('selectedLinker',Map({
+            m: Map(action.payload.m),
+            z: Map(action.payload.m),
+        }))
+    },
+
+    [DEV_SELECT_LINKER_CHANGE]: (state, action) => {
+        return state.setIn(['selectedLinker','z'],Map(action.payload))
+    },
+
+    [DEV_SELECT_LINKER_CLEAR]: (state, action) => {
+        return state.set('selectedLinker',null);
     },
 
 }, initialState);

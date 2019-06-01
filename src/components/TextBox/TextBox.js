@@ -3,6 +3,7 @@ import { MdAdd } from 'react-icons/md'
 import './TextBox.css';
 import TimeTextBox from './TimeTextBox';
 import ButtonTextBox from './ButtonTextBox';
+import EndBox from './EndBox';
 
 //dumb 컴포넌트지만 rendering 최적화를 위해 class로 구성
 class TextBox extends Component {
@@ -29,6 +30,15 @@ class TextBox extends Component {
                 focus={focus}/>}
                 {type === 3 && 
                 <TimeTextBox
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}/>}
+                {type === 6 && 
+                <EndBox
                 boxInfo={boxInfo}
                 dragStart={dragStart}
                 dropSwap={dropSwap}

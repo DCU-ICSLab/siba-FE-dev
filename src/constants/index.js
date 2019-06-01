@@ -9,4 +9,10 @@ export const BUTTON_TYPE = [{
     name: 'time',
     headText: '시간을 설정해주세요.',
     footText: ''
+},
+{
+    type: 6,
+    name: 'end',
+    headText: 'none',
+    footText: 'none'
 }];

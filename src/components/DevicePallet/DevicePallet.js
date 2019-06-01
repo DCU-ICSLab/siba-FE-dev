@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
-import { DraggableTextBox, TextBoxShadow, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
+import { DraggableTextBox, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
 import { MdAdd } from 'react-icons/md'
 import TextBox from 'components/TextBox/TextBox';
+import Linker from 'components/TextBox/Linker';
+import DraggableLinker from 'components/TextBox/DraggableLinker';
 import { BUTTON_TYPE } from 'constants/index';
 
 const DevicePallet = ({
@@ -23,6 +25,11 @@ const DevicePallet = ({
     addBtnFuncSide,
     devBtnInfoChange,
     targetedBox,
+    linkers,
+    selectedLinker,
+    selectLinker,
+    draggableLinkerStart,
+    draggableLinkerEnd,
     addBtnFunc }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -171,6 +178,7 @@ const DevicePallet = ({
                         position: 'absolute',
                         backgroundImage: 'none',
                     }}>
+
                     <g>
                         {pallet.map((boxInfo, index) => {
                             return (
@@ -182,6 +190,17 @@ const DevicePallet = ({
                                     focus={focus} />)
                         })}
                     </g>
+
+                    {
+                        linkers.map((linkerInfo, index) => {
+                            return(
+                                <Linker
+                                linkerInfo={linkerInfo}
+                                key={index}
+                                />
+                            )
+                        })
+                    }
                     
                     {targetedBox && 
                     <TargetBox  
@@ -198,7 +217,14 @@ const DevicePallet = ({
                     dragStart={dragStartSwap}
                     dropSwap={dropSwap}
                     isDragging={isDragging}
-                    focusClear={focusClear}/>}
+                    focusClear={focusClear}
+                    selectLinker={selectLinker}/>}
+
+                    {selectedLinker && 
+                    <DraggableLinker 
+                    selectedLinker={selectedLinker}
+                    draggableLinkerStart={draggableLinkerStart}
+                    draggableLinkerEnd={draggableLinkerEnd}/>}
                 </svg>
                 {children}
             </div>
