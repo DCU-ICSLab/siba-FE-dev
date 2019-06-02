@@ -9,7 +9,7 @@ class TargetBox extends Component {
     }
 
     render(){
-        const {dragStart, dropSwap, deleteTextBox, targetedBox, focus } = this.props;
+        const {dragStart, dropSwap, targetedBox, focus } = this.props;
 
         const x = targetedBox.get('x');
         const y = targetedBox.get('y');
@@ -36,14 +36,7 @@ class TargetBox extends Component {
                     <Fragment>
                         <g>
                             <circle id="delete-btn" cx={x + 193 + dynamicWidth} cy={y} r={8}
-                                style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.fill = '#000'
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.fill = '#97A9B8'
-                                }}
-                                onClick={(e) => { deleteTextBox(e, id) }}>
+                                style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}>
                             </circle>
                         </g>
                         <g transform={`translate(${x + 187 + dynamicWidth}, ${y - 8})`}>

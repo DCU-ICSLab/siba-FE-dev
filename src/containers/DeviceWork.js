@@ -516,9 +516,43 @@ class DeviceWork extends Component {
 
         const { deviceActions } = this.props;
 
+        //연결되는 linker가 존재 한다면
+        this._deleteLinkerDest()
+
+        //연결하는 linker가 존재 한다면
+        this._deleteLinkerSrc()
+
         deviceActions.devBoxUnSelect(); //사본 박스 제거(selectedBox 제거)
         deviceActions.devDeleteTextBox({ id: id }); //원본 박스 제거
         this._select();
+    }
+
+    _deleteLinkerSrc = () => {
+        const { deviceActions, selectedBox } = this.props;
+        const buttons = selectedBox.getIn(['block', 'info', 'buttons'])
+        buttons.map((button, index) => {
+            if(button.get('linker')){
+                deviceActions.devLinkerSrcDelete({
+                    code: button.get('code'),
+                    id: button.getIn(['linker', 'childId'])
+                })
+
+                deviceActions.devLinkerDelete({code: button.get('code')})
+            }
+        })
+    }
+
+    _deleteLinkerDest = () => {
+        const { deviceActions, selectedBox } = this.props;
+
+        selectedBox.getIn(['block', 'parentBox']).map(box => {
+            deviceActions.devLinkerDestDelete({
+                code: box.get('code'),
+                id: box.get('parentId')
+            })
+
+            deviceActions.devLinkerDelete({code: box.get('code')})
+        })
     }
 
     componentDidMount() {
@@ -591,7 +625,6 @@ class DeviceWork extends Component {
                             <TargetBox
                                 dragStart={this._dragSwap}
                                 dropSwap={this._dropSwap}
-                                deleteTextBox={this._deleteTextBox}
                                 focusClear={this._focusClear}
                                 targetedBox={targetedBox}
                                 focus={this._focus}>
@@ -607,7 +640,8 @@ class DeviceWork extends Component {
                                 selectLinker={this._selectLinker}
                                 selectedLinker={selectedLinker}
                                 selectLinkerTarget={this._selectLinkerTarget}
-                                selectLinkerTargetClear={this._selectLinkerTargetClear} />}
+                                selectLinkerTargetClear={this._selectLinkerTargetClear} 
+                                deleteTextBox={this._deleteTextBox}/>}
 
                         {selectedLinker &&
                             <DraggableLinker

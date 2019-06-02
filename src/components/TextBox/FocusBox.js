@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import './TextBox.css';
+import { MdAdd, MdClear } from 'react-icons/md'
 
 const FocusBox = ({
     selectedBox,
@@ -7,6 +8,7 @@ const FocusBox = ({
     dropSwap,
     isDragging,
     focusClear,
+    deleteTextBox,
     selectLinker,
     selectedLinker,
     selectLinkerTarget,
@@ -22,10 +24,10 @@ const FocusBox = ({
     const width = 176 + dynamicWidth;
 
     return (
-        <g 
-        onMouseDown={(e) => dragStart(e, x, y)} 
-        onMouseUp={dropSwap} 
-        onMouseLeave={focusClear}>
+        <g
+            onMouseDown={(e) => dragStart(e, x, y)}
+            onMouseUp={dropSwap}
+            onMouseLeave={focusClear}>
             <rect x={x + 17} y={y - 2} width={width} height={height} id="focus" style={{
                 // stroke: '#00a8ff',
                 stroke: '#000',
@@ -55,50 +57,70 @@ const FocusBox = ({
                 </Fragment>}
             {/* link button */}
             {!isDragging && selectedBox.getIn(['block', 'type']) === 1 && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
-                    return (
-                        <g key={index}>
-                            <ellipse cx={x + 38 + index * 32} cy={y + height - 16} rx="14" ry="11"
-                                style={{
-                                    // fill: 'transparent',
-                                    fill: 'transparent',
-                                    stroke: '#000',
-                                    strokeWidth: 0,
-                                    cursor: 'pointer'
-                                }}
-                                //onClick={(e) => console.log('wow')}
-    
-                                onMouseEnter={(e) => {
-                                    !button.get('linker') && selectLinker(e, x + 37.5 + index * 32, y + height - 16.5, id, button.get('code'))
-                                }}
-                                >
-                            </ellipse>
-                        </g>
-                    )
-                })}
+                return (
+                    <g key={index}>
+                        <ellipse cx={x + 38 + index * 32} cy={y + height - 16} rx="14" ry="11"
+                            style={{
+                                // fill: 'transparent',
+                                fill: 'transparent',
+                                stroke: '#000',
+                                strokeWidth: 0,
+                                cursor: 'pointer'
+                            }}
+                            //onClick={(e) => console.log('wow')}
+
+                            onMouseEnter={(e) => {
+                                !button.get('linker') && selectLinker(e, x + 37.5 + index * 32, y + height - 16.5, id, button.get('code'))
+                            }}
+                        >
+                        </ellipse>
+                    </g>
+                )
+            })}
+            <g>
+                <rect x={x + 19} y={y} rx="10" ry="10" width={70} height={16}
+                    style={{
+                        fill: 'transparent',
+                        stroke: '#000',
+                        strokeWidth: 0,
+                    }}
+                    onMouseEnter={(e) => {
+                        console.log('link enter')
+                        if (selectedLinker) {
+                            selectLinkerTarget(e, x, y, id)
+                            e.currentTarget.style.fill = '#000'
+                            e.currentTarget.style.opacity = 0.5
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (!isDragging && selectedLinker) {
+                            selectLinkerTargetClear()
+                            e.currentTarget.style.fill = 'transparent'
+                        }
+                    }} />
+            </g>
+            {!isDragging && <Fragment>
                 <g>
-                    <rect x={x + 19} y={y} rx="10" ry="10" width={70} height={16}
-                        style={{
-                            fill: 'transparent',
-                            stroke: '#000',
-                            strokeWidth: 0,
-                        }} 
-                        onMouseEnter={(e)=>{
-                            console.log('link enter')
-                            if(selectedLinker){
-                                selectLinkerTarget(e, x, y, id)
-                                e.currentTarget.style.fill = '#000'
-                                e.currentTarget.style.opacity = 0.5
-                            }
+                    <circle id="delete-btn" cx={x + 193 + dynamicWidth} cy={y} r={8}
+                        style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.fill = '#000'
                         }}
-                        onMouseLeave={(e)=>{
-                            if(!isDragging && selectedLinker){
-                                selectLinkerTargetClear()
-                                e.currentTarget.style.fill = 'transparent'
-                            }
-                        }}/>
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.fill = '#97A9B8'
+                        }}
+                        onClick={(e) => { deleteTextBox(e, id) }}>
+                    </circle>
                 </g>
+                <g transform={`translate(${x + 187 + dynamicWidth}, ${y - 8})`}>
+                    <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
+                        width={15} height={15}>
+                        <div><MdClear style={{ color: '#fff' }} /></div>
+                    </foreignObject>
+                </g>
+            </Fragment>}
         </g>
     )
 }
 
-export default  FocusBox;
+export default FocusBox;

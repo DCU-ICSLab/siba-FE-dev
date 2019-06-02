@@ -38,6 +38,9 @@ const DEV_SELECT_LINKER_TARGET_CLEAR = 'device/DEV_SELECT_LINKER_TARGET_CLEAR';
 const DEV_LINKER_DOCKING_SRC = 'device/DEV_LINKER_DOCKING_SRC';
 const DEV_LINKER_DOCKING_DEST = 'device/DEV_LINKER_DOCKING_DEST';
 const DEV_LINKER_DRAG_START = 'device/DEV_LINKER_DRAG_START';
+const DEV_LINKER_DEST_DELETE = 'device/DEV_LINKER_DEST_DELETE';
+const DEV_LINKER_SRC_DELETE = 'device/DEV_LINKER_SRC_DELETE';
+const DEV_LINKER_DELETE = 'device/DEV_LINKER_DELETE';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -76,6 +79,9 @@ export const devSelectLinkerVisible = createAction(DEV_SELECT_LINKER_VISIBLE);
 export const devLinkerDockingSrc = createAction(DEV_LINKER_DOCKING_SRC);
 export const devLinkerDockingDest = createAction(DEV_LINKER_DOCKING_DEST);
 export const devLinkerDragStart = createAction(DEV_LINKER_DRAG_START)
+export const devLinkerDestDelete = createAction(DEV_LINKER_DEST_DELETE)
+export const devLinkerSrcDelete = createAction(DEV_LINKER_SRC_DELETE)
+export const devLinkerDelete = createAction(DEV_LINKER_DELETE)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -341,6 +347,26 @@ export default handleActions({
     [DEV_LINKER_SRC_CHANGE]: (state, action) => {
         return state.updateIn(['selectedDevice', 'linkers'], linkers => 
             linkers.setIn([linkers.findIndex(linker => linker.get('code') === action.payload.code), 'm'], Map(action.payload.m))
+        );
+    },
+
+    [DEV_LINKER_DEST_DELETE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+            pallet.updateIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons'], buttons => 
+            buttons.setIn([buttons.findIndex(linker => linker.get('code') === action.payload.code), 'linker'], null
+        )));
+    },
+
+    [DEV_LINKER_DELETE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'linkers'], linkers => 
+            linkers.delete(linkers.findIndex(linker => linker.get('code') === action.payload.code))
+        );
+    },
+
+    [DEV_LINKER_SRC_DELETE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+            pallet.updateIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'parentBox'], parentBox => 
+            parentBox.delete(parentBox.findIndex(box => box.get('code') === action.payload.code)))
         );
     },
 
