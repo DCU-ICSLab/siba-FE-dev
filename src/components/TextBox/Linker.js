@@ -4,9 +4,14 @@ import './TextBox.css';
 //dumb 컴포넌트지만 rendering 최적화를 위해 class로 구성
 class Linker extends Component {
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.linkerInfo !== this.props.linkerInfo;
+    }
+
     render() {
         const { linkerDragStart } = this.props;
         const linkerInfo = this.props.linkerInfo.toJS();
+        console.log('render general linker')
 
         return (
             <Fragment>

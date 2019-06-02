@@ -2,8 +2,6 @@ import React, { Fragment } from 'react';
 import './DevicePallet.css';
 import { DraggableTextBox, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
 import { MdAdd } from 'react-icons/md'
-import TextBox from 'components/TextBox/TextBox';
-import Linker from 'components/TextBox/Linker';
 import DraggableLinker from 'components/TextBox/DraggableLinker';
 import { BUTTON_TYPE } from 'constants/index';
 
@@ -12,29 +10,13 @@ const DevicePallet = ({
     dragStart,
     dragOver,
     drop,
-    pallet,
     scrollFunc,
-    dragStartSwap,
-    dropSwap,
-    selectedBox,
-    focus,
-    isDragging,
     changeTextBoxInfo,
     focusClear,
-    deleteTextBox,
     addBtnFuncSide,
     devBtnInfoChange,
     targetedBox,
-    linkers,
-    selectedLinker,
-    selectLinker,
-    selectLinkerClear,
-    draggableLinkerStart,
-    draggableLinkerEnd,
-    linkerVisible,
-    selectLinkerTarget,
-    selectLinkerTargetClear,
-    addBtnFunc }) => {
+    draggableLinkerEnd }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
 
@@ -82,10 +64,6 @@ const DevicePallet = ({
                                         <td>linking</td>
                                         <td>{targetedBox.getIn(['block', 'linking']).toString()}</td>
                                     </tr>
-                                    {/* <tr>
-                                        <td>parent box</td>
-                                        <td>{targetedBox.getIn(['block', 'linkedId'])}</td>
-                                    </tr> */}
                                     <tr>
                                         <td>head text</td>
                                         <td>
@@ -207,61 +185,8 @@ const DevicePallet = ({
                         position: 'absolute',
                         backgroundImage: 'none',
                     }}>
-
-                    <g>
-                        {pallet.map((boxInfo, index) => {
-                            return (
-                                <TextBox
-                                    boxInfo={boxInfo}
-                                    key={boxInfo.get('id')}
-                                    index={index}
-                                    addBtnFunc={addBtnFunc}
-                                    focus={focus} />)
-                        })}
-                    </g>
-
-                    {
-                        linkers.map((linkerInfo, index) => {
-                            return (
-                                <Linker
-                                    linkerInfo={linkerInfo}
-                                    key={index}
-                                />
-                            )
-                        })
-                    }
-
-                    {targetedBox &&
-                        <TargetBox
-                            dragStart={dragStartSwap}
-                            dropSwap={dropSwap}
-                            deleteTextBox={deleteTextBox}
-                            focusClear={focusClear}
-                            targetedBox={targetedBox}
-                            focus={focus}>
-                        </TargetBox>}
-
-                    {selectedBox &&
-                        <FocusBox
-                            selectedBox={selectedBox}
-                            dragStart={dragStartSwap}
-                            dropSwap={dropSwap}
-                            isDragging={isDragging}
-                            focusClear={focusClear}
-                            selectLinker={selectLinker}
-                            selectedLinker={selectedLinker}
-                            selectLinkerTarget={selectLinkerTarget}
-                            selectLinkerTargetClear={selectLinkerTargetClear} />}
-
-                    {selectedLinker &&
-                        <DraggableLinker
-                            linkerVisible={linkerVisible}
-                            selectedLinker={selectedLinker}
-                            selectLinkerClear={selectLinkerClear}
-                            draggableLinkerStart={draggableLinkerStart}
-                            draggableLinkerEnd={draggableLinkerEnd} />}
+                    {children}
                 </svg>
-                {children}
             </div>
         </div>
     )

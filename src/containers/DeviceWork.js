@@ -7,6 +7,11 @@ import * as deviceActions from 'store/modules/device';
 import { DeviceWorkBox, DevicePallet } from 'components';
 import { Map, List } from 'immutable';
 import { BUTTON_TYPE } from 'constants/index';
+import DraggableLinker from 'components/TextBox/DraggableLinker';
+import FocusBox from 'components/TextBox/FocusBox';
+import TargetBox from 'components/TextBox/TargetBox';
+import TextBox from 'components/TextBox/TextBox';
+import Linker from 'components/TextBox/Linker';
 
 class DeviceWork extends Component {
 
@@ -197,13 +202,34 @@ class DeviceWork extends Component {
     //버튼 텍스트 박스에 버튼 추가
     _addBtnFuncSide = (e, id) => {
         e.stopPropagation();
-        const { deviceActions, codeIdCounter } = this.props;
+        const { deviceActions, codeIdCounter, targetedBox, pallet } = this.props;
         deviceActions.devAddBtnSide({
             id: id,
             code: codeIdCounter
         })
+
+        /*targetedBox &&
+            deviceActions.devTargetCopyLinker({
+                parentId: selectedLinker.get('parentId'),
+                code: selectedLinker.get('code')
+            })
+
+        selectedBox &&
+            deviceActions.devSelectCopyLinker({
+                parentId: selectedLinker.get('parentId'),
+                code: selectedLinker.get('code')
+            })*/
+
         deviceActions.devCopyBtn({ code: codeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
+
+        const pos = pallet.getIn([pallet.findIndex(box => box.get('id') === id), 'pos'])
+
+        //버튼에서 연결하는 linker가 있다면
+        this._changeLinkerSrc({
+            x: pos.get('left') + 20,
+            y: pos.get('top') + 38,
+        }, targetedBox)
     }
 
     _select = (targetedBox) => {
@@ -214,14 +240,20 @@ class DeviceWork extends Component {
     _selectLinker = (e, x, y, id, code) => {
         const { deviceActions } = this.props;
         console.log('linker select')
-        console.log(id)
         deviceActions.devSelectLinkerVisible(false);
         deviceActions.devSelectLinker({
             m: { x: x, y: y },
             z: { x: x, y: y },
             parentId: id,
-            code: code
+            code: code,
+            dragging: false
         });
+    }
+
+    _selectLinkerClear = () => {
+        console.log('clear')
+        const { deviceActions, selectedLinker } = this.props;
+        selectedLinker && !selectedLinker.get('dragging') && deviceActions.devSelectLinkerClear()
     }
 
     _selectLinkerTarget = (e, x, y, id) => {
@@ -241,13 +273,10 @@ class DeviceWork extends Component {
         deviceActions.devSelectLinkerTargetClear()
     }
 
-    _draggableLinkerStart = (e, x, y) => {
+    _draggableLinkerStart = (e) => {
+        const { deviceActions } = this.props;
         console.log('linker start')
-        /*const { deviceActions } = this.props;
-        deviceActions.devSelectLinker({
-            m: { x: x, y: y },
-            z: { x: x, y: y },
-        });*/
+        deviceActions.devLinkerDragStart();
         document.addEventListener('mousemove', this._draggableLinkerMove);
     }
 
@@ -272,7 +301,7 @@ class DeviceWork extends Component {
 
     _draggableLinkerEnd = (e) => {
         console.log('linker end')
-        const { deviceActions, selectedLinker, linkerVisible, selectedLinkerTarget } = this.props;
+        const { deviceActions, selectedLinker, linkerVisible, selectedLinkerTarget, targetedBox, selectedBox } = this.props;
         if (selectedLinker && linkerVisible) {
             const linker = {
                 m: {
@@ -299,23 +328,30 @@ class DeviceWork extends Component {
                 childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
             })
 
-            selectedLinkerTarget &&
-            deviceActions.devLinkerDockingDest({
-                id: selectedLinkerTarget.get('blockId'),
-                code: selectedLinker.get('code'),
-                parentId: selectedLinker.get('parentId'),
-            })
+            if (selectedLinkerTarget) {
+                deviceActions.devLinkerDockingDest({
+                    id: selectedLinkerTarget.get('blockId'),
+                    code: selectedLinker.get('code'),
+                    parentId: selectedLinker.get('parentId'),
+                })
+
+                targetedBox &&
+                    deviceActions.devTargetCopyLinker({
+                        parentId: selectedLinker.get('parentId'),
+                        code: selectedLinker.get('code')
+                    })
+
+                selectedBox &&
+                    deviceActions.devSelectCopyLinker({
+                        parentId: selectedLinker.get('parentId'),
+                        code: selectedLinker.get('code')
+                    })
+            }
 
             deviceActions.devSelectLinkerClear()
             deviceActions.devSelectLinkerTargetClear()
         }
         document.removeEventListener('mousemove', this._draggableLinkerMove);
-    }
-
-    _selectLinkerClear = () => {
-        console.log('clear')
-        const { deviceActions } = this.props;
-        deviceActions.devSelectLinkerClear()
     }
 
     _getLinkerPosition = (e) => {
@@ -374,6 +410,18 @@ class DeviceWork extends Component {
             //deviceActions.devBoxUnSelect();
 
             this._select(selectedBox);
+
+            //버튼에서 연결하는 linker가 있다면
+            this._changeLinkerSrc({
+                x: pos.translateX,
+                y: pos.translateY,
+            }, selectedBox)
+
+            //연결되어진 linker가 있다면
+            this._changeLinkerDest({
+                x: pos.translateX,
+                y: pos.translateY,
+            })
         }
 
         //클릭한 대상이 draggable 이라면
@@ -392,6 +440,36 @@ class DeviceWork extends Component {
         else if (selectedBox && !isDragging) {
             deviceActions.devBoxUnSelect(); //selectedBox 제거   
         }
+    }
+
+    _changeLinkerSrc = (pos, box) => {
+        const { deviceActions } = this.props;
+        console.log('change src')
+        const buttons = box.getIn(['block', 'info', 'buttons'])
+        const sz = buttons.size
+        buttons.map((button, index) => {
+            button.get('linker') && deviceActions.devLinkerSrcChange({
+                code: button.get('code'),
+                m: {
+                    x: pos.x + 18 + index * 32,
+                    y: pos.y + box.getIn(['block', 'height']) + 90 + 18 * (sz - 1),
+                }
+            })
+        })
+    }
+
+    _changeLinkerDest = (pos) => {
+        const { deviceActions, selectedBox } = this.props;
+        console.log('change dest')
+        selectedBox.getIn(['block', 'parentBox']).map(box => {
+            deviceActions.devLinkerDestChange({
+                code: box.get('code'),
+                z: {
+                    x: pos.x + 35,
+                    y: pos.y - 25,
+                }
+            })
+        })
     }
 
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
@@ -479,29 +557,64 @@ class DeviceWork extends Component {
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
                         drop={this._drop}
-                        dragStartSwap={this._dragSwap}
-                        dropSwap={this._dropSwap}
-                        pallet={pallet}
                         scrollFunc={this._listenToScroll}
-                        selectedBox={selectedBox}
-                        addBtnFunc={this._addBtnFunc}
                         addBtnFuncSide={this._addBtnFuncSide}
-                        focus={this._focus}
                         changeTextBoxInfo={this._changeTextBoxInfo}
                         focusClear={this._focusClear}
-                        isDragging={isDragging}
-                        deleteTextBox={this._deleteTextBox}
                         devBtnInfoChange={this._devBtnInfoChange}
                         targetedBox={targetedBox}
-                        linkers={linkers}
-                        selectLinker={this._selectLinker}
-                        selectLinkerClear={this._selectLinkerClear}
-                        selectedLinker={selectedLinker}
-                        draggableLinkerStart={this._draggableLinkerStart}
-                        draggableLinkerEnd={this._draggableLinkerEnd}
-                        linkerVisible={linkerVisible}
-                        selectLinkerTarget={this._selectLinkerTarget}
-                        selectLinkerTargetClear={this._selectLinkerTargetClear}>
+                        draggableLinkerEnd={this._draggableLinkerEnd}>
+
+                        <g>
+                            {pallet.map((boxInfo, index) => {
+                                return (
+                                    <TextBox
+                                        boxInfo={boxInfo}
+                                        key={boxInfo.get('id')}
+                                        index={index}
+                                        addBtnFunc={this._addBtnFunc}
+                                        focus={this._focus} />)
+                            })}
+                        </g>
+
+                        {
+                            linkers.map((linkerInfo, index) => {
+                                return (
+                                    <Linker
+                                        linkerInfo={linkerInfo}
+                                        key={index}
+                                    />
+                                )
+                            })}
+
+                        {targetedBox &&
+                            <TargetBox
+                                dragStart={this._dragSwap}
+                                dropSwap={this._dropSwap}
+                                deleteTextBox={this._deleteTextBox}
+                                focusClear={this._focusClear}
+                                targetedBox={targetedBox}
+                                focus={this._focus}>
+                            </TargetBox>}
+
+                        {selectedBox &&
+                            <FocusBox
+                                selectedBox={selectedBox}
+                                dragStart={this._dragSwap}
+                                dropSwap={this._dropSwap}
+                                isDragging={isDragging}
+                                focusClear={this._focusClear}
+                                selectLinker={this._selectLinker}
+                                selectedLinker={selectedLinker}
+                                selectLinkerTarget={this._selectLinkerTarget}
+                                selectLinkerTargetClear={this._selectLinkerTargetClear} />}
+
+                        {selectedLinker &&
+                            <DraggableLinker
+                                linkerVisible={linkerVisible}
+                                selectedLinker={selectedLinker}
+                                selectLinkerClear={this._selectLinkerClear}
+                                draggableLinkerStart={this._draggableLinkerStart} />}
                     </DevicePallet>
                 </DeviceWorkBox>
             </Fragment>

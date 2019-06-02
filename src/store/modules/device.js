@@ -17,6 +17,8 @@ const DEV_TYPE_SELECT = 'device/DEV_TYPE_SELECT';
 const DEV_ADD_BTN = 'device/DEV_ADD_BTN';
 const DEV_ADD_BTN_SIDE = 'device/DEV_ADD_BTN_SIDE';
 const DEV_CP_BTN = 'device/DEV_CP_BTN';
+const DEV_TARGET_CP_LINKER = 'device/DEV_TARGET_CP_LINKER';
+const DEV_SELECT_CP_LINKER = 'device/DEV_SELECT_CP_LINKER'
 const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
 const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE';
 const DEV_BTN_INFO_CHANGE = 'device/DEV_BTN_INFO_CHANGE';
@@ -25,6 +27,8 @@ const DEV_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TEXTBOX_HEIGHT_CHANGE';
 const DEV_TARGET_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TARGET_TEXTBOX_HEIGHT_CHANGE';
 const DEV_BOX_SELECT = 'device/DEV_BOX_SELECT';
 const DEV_ADD_LINKER = 'device/DEV_ADD_LINKER';
+const DEV_LINKER_DEST_CHANGE = 'device/DEV_LINKER_DEST_CHANGE';
+const DEV_LINKER_SRC_CHANGE = 'device/DEV_LINKER_SRC_CHANGE';
 const DEV_SELECT_LINKER = 'device/DEV_SELECT_LINKER';
 const DEV_SELECT_LINKER_CLEAR = 'device/DEV_SELECT_LINKER_CLEAR';
 const DEV_SELECT_LINKER_CHANGE = 'device/DEV_SELECT_LINKER_CHANGE';
@@ -33,6 +37,7 @@ const DEV_SELECT_LINKER_TARGET = 'device/DEV_SELECT_LINKER_TARGET'
 const DEV_SELECT_LINKER_TARGET_CLEAR = 'device/DEV_SELECT_LINKER_TARGET_CLEAR';
 const DEV_LINKER_DOCKING_SRC = 'device/DEV_LINKER_DOCKING_SRC';
 const DEV_LINKER_DOCKING_DEST = 'device/DEV_LINKER_DOCKING_DEST';
+const DEV_LINKER_DRAG_START = 'device/DEV_LINKER_DRAG_START';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -50,6 +55,8 @@ export const devTypeSelect = createAction(DEV_TYPE_SELECT);
 export const devAddBtn = createAction(DEV_ADD_BTN);
 export const devAddBtnSide = createAction(DEV_ADD_BTN_SIDE);
 export const devCopyBtn = createAction(DEV_CP_BTN);
+export const devTargetCopyLinker = createAction(DEV_TARGET_CP_LINKER);
+export const devSelectCopyLinker = createAction(DEV_SELECT_CP_LINKER);
 export const devInputChange = createAction(DEV_INPUT_CHANGE);
 export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
 export const devBtnInfoChange = createAction(DEV_BTN_INFO_CHANGE);
@@ -58,6 +65,8 @@ export const devTextBoxHeightChange = createAction(DEV_TEXTBOX_HEIGHT_CHANGE);
 export const devTargetTextboxHeightChange = createAction(DEV_TARGET_TEXTBOX_HEIGHT_CHANGE);
 export const devBoxSelect = createAction(DEV_BOX_SELECT);
 export const devAddLinker = createAction(DEV_ADD_LINKER);
+export const devLinkerDestChange = createAction(DEV_LINKER_DEST_CHANGE);
+export const devLinkerSrcChange = createAction(DEV_LINKER_SRC_CHANGE);
 export const devSelectLinker = createAction(DEV_SELECT_LINKER);
 export const devSelectLinkerTarget = createAction(DEV_SELECT_LINKER_TARGET);
 export const devSelectLinkerTargetClear = createAction(DEV_SELECT_LINKER_TARGET_CLEAR);
@@ -66,6 +75,7 @@ export const devSelectLinkerChange = createAction(DEV_SELECT_LINKER_CHANGE);
 export const devSelectLinkerVisible = createAction(DEV_SELECT_LINKER_VISIBLE);
 export const devLinkerDockingSrc = createAction(DEV_LINKER_DOCKING_SRC);
 export const devLinkerDockingDest = createAction(DEV_LINKER_DOCKING_DEST);
+export const devLinkerDragStart = createAction(DEV_LINKER_DRAG_START)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -234,6 +244,24 @@ export default handleActions({
         )
     },
 
+    [DEV_TARGET_CP_LINKER]: (state, action) => {
+        return state.updateIn(['targetedBox', 'block', 'parentBox'], parentBox =>
+            parentBox.push(Map({
+                parentId: action.payload.parentId,
+                code: action.payload.code
+            }))
+        )
+    },
+
+    [DEV_SELECT_CP_LINKER]: (state, action) => {
+        return state.updateIn(['selectedBox', 'block', 'parentBox'], parentBox =>
+            parentBox.push(Map({
+                parentId: action.payload.parentId,
+                code: action.payload.code
+            }))
+        )
+    },
+
     //사본
     [DEV_INPUT_CHANGE]: (state, action) => {
         return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.text)
@@ -300,6 +328,22 @@ export default handleActions({
         );
     },
 
+    [DEV_LINKER_DRAG_START]: (state, action) => {
+        return state.setIn(['selectedLinker', 'dragging'], true);
+    },
+
+    [DEV_LINKER_DEST_CHANGE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'linkers'], linkers => 
+            linkers.setIn([linkers.findIndex(linker => linker.get('code') === action.payload.code), 'z'], Map(action.payload.z))
+        );
+    },
+
+    [DEV_LINKER_SRC_CHANGE]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'linkers'], linkers => 
+            linkers.setIn([linkers.findIndex(linker => linker.get('code') === action.payload.code), 'm'], Map(action.payload.m))
+        );
+    },
+
     [DEV_LINKER_DOCKING_DEST]: (state, action) => {
         return state.updateIn(['selectedDevice', 'pallet'], pallet => 
             pallet.updateIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'parentBox'], parentBox => 
@@ -335,6 +379,7 @@ export default handleActions({
             parentId: action.payload.parentId,
             code: action.payload.code,
             childId: null,
+            dragging: action.payload.dragging
         }))
     },
 

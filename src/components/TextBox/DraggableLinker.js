@@ -5,9 +5,8 @@ import './TextBox.css';
 class DraggableLinker extends Component {
 
     render() {
-        const { draggableLinkerStart, draggableLinkerEnd, selectLinkerClear, linkerVisible } = this.props;
+        const { draggableLinkerStart, linkerVisible, selectLinkerClear } = this.props;
         const selectedLinker = this.props.selectedLinker.toJS();
-
         return (
             <Fragment>
                 <g
@@ -53,12 +52,11 @@ class DraggableLinker extends Component {
                             opacity: 0.8,
                             cursor: 'pointer'
                         }}
-                        onMouseDown={(e) => draggableLinkerStart(e, selectedLinker.m.x, selectedLinker.m.y)}
-                    // onMouseLeave={(e) => {
-                    //     //selectLinkerClear();
-                    // //     e.currentTarget.style.fill = 'transparent'
-                    // }}
-                    // onMouseDown={(e) => draggableLinkerStart(e)}
+                        onMouseDown={(e) => draggableLinkerStart(e)}
+                        onMouseLeave={(e)=>{
+                            selectLinkerClear()
+                            e.currentTarget.style.fill = 'transparent'
+                        }}
                     />
                 </g>
             </Fragment>
