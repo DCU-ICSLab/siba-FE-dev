@@ -12,6 +12,7 @@ const DEV_DELETE_TEXTBOX = 'device/DEV_DELETE_TEXTBOX';
 const DEV_POSITION_CHANGE = 'device/DEV_POSITION_CHANGE';
 const DEV_TEXTBOX_LOC_CHANGE = "device/DEV_TEXTBOX_LOC_CHANGE"
 const DEV_BLOCK_ID_CNT = 'device/DEV_BLOCK_ID_CNT';
+const DEV_CODE_ID_CNT = 'device.DEV_CODE_ID_CNT';
 const DEV_TYPE_SELECT = 'device/DEV_TYPE_SELECT';
 const DEV_ADD_BTN = 'device/DEV_ADD_BTN';
 const DEV_ADD_BTN_SIDE = 'device/DEV_ADD_BTN_SIDE';
@@ -27,6 +28,11 @@ const DEV_ADD_LINKER = 'device/DEV_ADD_LINKER';
 const DEV_SELECT_LINKER = 'device/DEV_SELECT_LINKER';
 const DEV_SELECT_LINKER_CLEAR = 'device/DEV_SELECT_LINKER_CLEAR';
 const DEV_SELECT_LINKER_CHANGE = 'device/DEV_SELECT_LINKER_CHANGE';
+const DEV_SELECT_LINKER_VISIBLE = 'device/DEV_SELECT_LINKER_VISIBLE'
+const DEV_SELECT_LINKER_TARGET = 'device/DEV_SELECT_LINKER_TARGET'
+const DEV_SELECT_LINKER_TARGET_CLEAR = 'device/DEV_SELECT_LINKER_TARGET_CLEAR';
+const DEV_LINKER_DOCKING_SRC = 'device/DEV_LINKER_DOCKING_SRC';
+const DEV_LINKER_DOCKING_DEST = 'device/DEV_LINKER_DOCKING_DEST';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -39,6 +45,7 @@ export const devDeleteTextBox = createAction(DEV_DELETE_TEXTBOX);
 export const devPositionChange = createAction(DEV_POSITION_CHANGE);
 export const devTextboxLocChange = createAction(DEV_TEXTBOX_LOC_CHANGE);
 export const devBlockIdCnt = createAction(DEV_BLOCK_ID_CNT);
+export const devCodeIdCnt = createAction(DEV_CODE_ID_CNT);
 export const devTypeSelect = createAction(DEV_TYPE_SELECT);
 export const devAddBtn = createAction(DEV_ADD_BTN);
 export const devAddBtnSide = createAction(DEV_ADD_BTN_SIDE);
@@ -52,8 +59,13 @@ export const devTargetTextboxHeightChange = createAction(DEV_TARGET_TEXTBOX_HEIG
 export const devBoxSelect = createAction(DEV_BOX_SELECT);
 export const devAddLinker = createAction(DEV_ADD_LINKER);
 export const devSelectLinker = createAction(DEV_SELECT_LINKER);
+export const devSelectLinkerTarget = createAction(DEV_SELECT_LINKER_TARGET);
+export const devSelectLinkerTargetClear = createAction(DEV_SELECT_LINKER_TARGET_CLEAR);
 export const devSelectLinkerClear = createAction(DEV_SELECT_LINKER_CLEAR);
 export const devSelectLinkerChange = createAction(DEV_SELECT_LINKER_CHANGE);
+export const devSelectLinkerVisible = createAction(DEV_SELECT_LINKER_VISIBLE);
+export const devLinkerDockingSrc = createAction(DEV_LINKER_DOCKING_SRC);
+export const devLinkerDockingDest = createAction(DEV_LINKER_DOCKING_DEST);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -72,7 +84,10 @@ const initialState = Map({
         codeIdCounter: 0,
     }),
 
+    linkerVisible: false,
+
     selectedLinker: null,
+    selectedLinkerTarget: null,
 
     //포커싱 되어진 박스
     selectedBox: null,
@@ -165,7 +180,7 @@ export default handleActions({
                     postorder: action.payload.postorder,
                     linkedId: null,
                     height: 20,
-                    linkingId: null,
+                    parentBox: List([]),
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
                     linking: false, // 다른 텍스트를 링크 하는지
@@ -185,9 +200,9 @@ export default handleActions({
         return state.updateIn(['selectedDevice', 'pallet', action.payload.index, 'info', 'buttons'], buttons =>
             buttons.push(
                 Map({
-                    code: '',
+                    code: action.payload.code,
                     name: '',
-                    blockId: ''
+                    linker: null
                 })
             )
         )
@@ -199,9 +214,9 @@ export default handleActions({
         buttons =>
             buttons.push(
                 Map({
-                    code: '',
+                    code: action.payload.code,
                     name: '',
-                    blockId: ''
+                    linker: null
                 })
             )
         )
@@ -211,9 +226,9 @@ export default handleActions({
         return state.updateIn(['targetedBox', 'block', 'info','buttons'], buttons =>
             buttons.push(
                 Map({
-                    code: '',
+                    code: action.payload.code,
                     name: '',
-                    blockId: ''
+                    linker: null
                 })
             )
         )
@@ -255,6 +270,10 @@ export default handleActions({
         return state.setIn(['selectedDevice','blockIdCounter'], action.payload);
     },
 
+    [DEV_CODE_ID_CNT]: (state, action) => {
+        return state.setIn(['selectedDevice','codeIdCounter'], action.payload);
+    },
+
     //원본
     [DEV_TARGET_TEXTBOX_HEIGHT_CHANGE]: (state, action) => {
         return state.updateIn(['selectedDevice', 'pallet'], pallet => 
@@ -270,9 +289,9 @@ export default handleActions({
         return state.updateIn(['selectedDevice', 'linkers'], linkers => 
             linkers.push(
                 Map({
-                    parent: null,
-                    code: null,
-                    child: null,
+                    parentId: action.payload.parentId,
+                    code: action.payload.code,
+                    childId: action.payload.childId,
                     m: Map(action.payload.m),
                     z: Map(action.payload.z),
                     l: List([])
@@ -281,19 +300,65 @@ export default handleActions({
         );
     },
 
+    [DEV_LINKER_DOCKING_DEST]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+            pallet.updateIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'parentBox'], parentBox => 
+                parentBox.push(Map({
+                    parentId: action.payload.parentId,
+                    code: action.payload.code
+                })
+            ))
+        );
+    },
+
+    [DEV_LINKER_DOCKING_SRC]: (state, action) => {
+        return state.updateIn(['selectedDevice', 'pallet'], pallet => 
+            pallet.updateIn([pallet.findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons'], buttons=>
+            buttons.setIn([buttons.findIndex(button => button.get('code') === action.payload.code), 'linker'], Map({
+                childId: action.payload.childId,
+                code: action.payload.code,
+            })
+            ))
+        );
+    },
+
     [DEV_SELECT_LINKER]: (state, action) => {
         return state.set('selectedLinker',Map({
-            m: Map(action.payload.m),
-            z: Map(action.payload.m),
+            m: Map({
+                x: action.payload.m.x,
+                y: action.payload.m.y
+            }),
+            z: Map({
+                x: action.payload.m.x,
+                y: action.payload.m.y
+            }),
+            parentId: action.payload.parentId,
+            code: action.payload.code,
+            childId: null,
         }))
     },
 
     [DEV_SELECT_LINKER_CHANGE]: (state, action) => {
-        return state.setIn(['selectedLinker','z'],Map(action.payload))
+        return state.setIn(['selectedLinker','z'],Map({
+            x: action.payload.x,
+            y: action.payload.y
+        }))
     },
 
     [DEV_SELECT_LINKER_CLEAR]: (state, action) => {
         return state.set('selectedLinker',null);
+    },
+
+    [DEV_SELECT_LINKER_VISIBLE]: (state, action) => {
+        return state.set('linkerVisible',action.payload);
+    },
+
+    [DEV_SELECT_LINKER_TARGET]: (state, action) => {
+        return state.set('selectedLinkerTarget',Map(action.payload));
+    },
+
+    [DEV_SELECT_LINKER_TARGET_CLEAR]: (state, action) => {
+        return state.set('selectedLinkerTarget',null);
     },
 
 }, initialState);

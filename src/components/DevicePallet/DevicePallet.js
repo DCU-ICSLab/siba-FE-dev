@@ -28,8 +28,12 @@ const DevicePallet = ({
     linkers,
     selectedLinker,
     selectLinker,
+    selectLinkerClear,
     draggableLinkerStart,
     draggableLinkerEnd,
+    linkerVisible,
+    selectLinkerTarget,
+    selectLinkerTargetClear,
     addBtnFunc }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -60,101 +64,125 @@ const DevicePallet = ({
                             </tr>
                         </thead>
                         <tbody>
-                            { targetedBox && 
-                            <Fragment>
-                            <tr>
-                                <td>box id</td>
-                                <td>{targetedBox.getIn(['block', 'id'])}</td>
-                            </tr>
-                            <tr>
-                                <td>type</td>
-                                <td>{BUTTON_TYPE.find(x => x.type === type).name}</td>
-                            </tr>
-                            <tr>
-                                <td>linked</td>
-                                <td>{targetedBox.getIn(['block', 'linked']).toString()}</td>
-                            </tr>
-                            <tr>
-                                <td>linking</td>
-                                <td>{targetedBox.getIn(['block', 'linking']).toString()}</td>
-                            </tr>
-                            <tr>
-                                <td>parent box</td>
-                                <td>{targetedBox.getIn(['block', 'linkedId'])}</td>
-                            </tr>
-                            <tr>
-                                <td>head text</td>
-                                <td>
-                                    <textarea 
-                                    spellCheck="false"
-                                    name="preorder" 
-                                    style={{height: targetedBox.getIn(['block', 'height'])}}
-                                    rows={3} 
-                                    // cols={20}
-                                    value={targetedBox.getIn(['block', 'preorder'])}
-                                    onChange={(e)=>{changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height')}}>
-                                    </textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>foot text</td>
-                                <td>
-                                    <textarea 
-                                    spellCheck="false"
-                                    name="postorder" 
-                                    style={{height: 20}}
-                                    rows={3} 
-                                    // cols={20}
-                                    value={targetedBox.getIn(['block', 'postorder'])}
-                                    onChange={(e)=>{changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height')}}>
-                                    </textarea>
-                                </td>
-                            </tr>
-                            </Fragment>
+                            {targetedBox &&
+                                <Fragment>
+                                    <tr>
+                                        <td>box id</td>
+                                        <td>{targetedBox.getIn(['block', 'id'])}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>type</td>
+                                        <td>{BUTTON_TYPE.find(x => x.type === type).name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>linked</td>
+                                        <td>{targetedBox.getIn(['block', 'linked']).toString()}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>linking</td>
+                                        <td>{targetedBox.getIn(['block', 'linking']).toString()}</td>
+                                    </tr>
+                                    {/* <tr>
+                                        <td>parent box</td>
+                                        <td>{targetedBox.getIn(['block', 'linkedId'])}</td>
+                                    </tr> */}
+                                    <tr>
+                                        <td>head text</td>
+                                        <td>
+                                            <textarea
+                                                spellCheck="false"
+                                                name="preorder"
+                                                style={{ height: targetedBox.getIn(['block', 'height']) }}
+                                                rows={3}
+                                                // cols={20}
+                                                value={targetedBox.getIn(['block', 'preorder'])}
+                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height') }}>
+                                            </textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>foot text</td>
+                                        <td>
+                                            <textarea
+                                                spellCheck="false"
+                                                name="postorder"
+                                                style={{ height: 20 }}
+                                                rows={3}
+                                                // cols={20}
+                                                value={targetedBox.getIn(['block', 'postorder'])}
+                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height') }}>
+                                            </textarea>
+                                        </td>
+                                    </tr>
+                                </Fragment>
                             }
                         </tbody>
                     </table>
-                    {targetedBox && (type === 1 || type === 5) && 
-                    <Fragment>
+                </div>
+                <div className="side-section" style={{ marginTop: '10px' }}>
+                    <div className="side-section-title">상위박스 연결 정보</div>
                     <table className="pv-wrap">
                         <thead>
                             <tr>
-                                <th style={{ width: '10%' }}>No.</th>
-                                <th style={{ width: '20%' }}>code</th>
-                                <th style={{ width: '50%' }}>btn name</th>
-                                <th style={{ width: '20%' }}>child</th>
+                                <th style={{ width: '20%' }}>idx</th>
+                                <th style={{ width: '40%' }}>parent id</th>
+                                <th style={{ width: '40%' }}>code</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
-                                return (
+                            {targetedBox && targetedBox.getIn(['block', 'parentBox']).map((box, index)=>{
+                                return(
                                     <tr key={index}>
                                         <td>{index+1}</td>
-                                        <td>{button.get('code')}</td>
-                                        <td>
-                                            <input 
-                                            name="name"
-                                            value={button.get('name')}
-                                            onChange={(e)=>{devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index)}}/>
-                                        </td>
-                                        <td>{button.get('blockId')}</td>
+                                        <td>{box.get('parentId')}</td>
+                                        <td>{box.get('code')}</td>
                                     </tr>
                                 )
                             })}
                         </tbody>
                     </table>
-                    {targetedBox.getIn(['block', 'info', 'buttons']).size !==9 &&
-                    <div style={{width: '100%'}}>
-                        <button className="btn-add" onClick={(e)=>{addBtnFuncSide(e,targetedBox.getIn(['block','id']))}}>
-                            <MdAdd size={16}/>
-                        </button>
-                    </div>}
-                    </Fragment>}
                 </div>
+                {targetedBox && (type === 1 || type === 5) &&
+                    <div className="side-section" style={{ marginTop: '10px' }}>
+                        <div className="side-section-title">버튼 속성</div>
+                        <table className="pv-wrap">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: '10%' }}>No.</th>
+                                    <th style={{ width: '20%' }}>code</th>
+                                    <th style={{ width: '50%' }}>btn name</th>
+                                    <th style={{ width: '20%' }}>child</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{button.get('code')}</td>
+                                            <td>
+                                                <input
+                                                    name="name"
+                                                    value={button.get('name')}
+                                                    onChange={(e) => { devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index) }} />
+                                            </td>
+                                            <td>{button.getIn(['linker', 'childId'])}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                        {targetedBox.getIn(['block', 'info', 'buttons']).size !== 9 &&
+                            <div style={{ width: '100%' }}>
+                                <button className="btn-add" onClick={(e) => { addBtnFuncSide(e, targetedBox.getIn(['block', 'id'])) }}>
+                                    <MdAdd size={16} />
+                                </button>
+                            </div>}
+                    </div>}
             </div>
 
             <div className="toolbox">
-                    
+
             </div>
 
             {/* pallet */}
@@ -166,6 +194,7 @@ const DevicePallet = ({
                     id="draggable"
                     onClick={focusClear}
                     onDragOver={dragOver}
+                    onMouseUp={(e) => draggableLinkerEnd(e)}
                     onDrop={drop}
                     style={{
                         left: 0,
@@ -193,38 +222,44 @@ const DevicePallet = ({
 
                     {
                         linkers.map((linkerInfo, index) => {
-                            return(
+                            return (
                                 <Linker
-                                linkerInfo={linkerInfo}
-                                key={index}
+                                    linkerInfo={linkerInfo}
+                                    key={index}
                                 />
                             )
                         })
                     }
-                    
-                    {targetedBox && 
-                    <TargetBox  
-                    dragStart={dragStartSwap}
-                    dropSwap={dropSwap}
-                    deleteTextBox={deleteTextBox}
-                    focusClear={focusClear}
-                    targetedBox={targetedBox}
-                    focus={focus}/>}
-                    
-                    {selectedBox && 
-                    <FocusBox 
-                    selectedBox={selectedBox} 
-                    dragStart={dragStartSwap}
-                    dropSwap={dropSwap}
-                    isDragging={isDragging}
-                    focusClear={focusClear}
-                    selectLinker={selectLinker}/>}
 
-                    {selectedLinker && 
-                    <DraggableLinker 
-                    selectedLinker={selectedLinker}
-                    draggableLinkerStart={draggableLinkerStart}
-                    draggableLinkerEnd={draggableLinkerEnd}/>}
+                    {targetedBox &&
+                        <TargetBox
+                            dragStart={dragStartSwap}
+                            dropSwap={dropSwap}
+                            deleteTextBox={deleteTextBox}
+                            focusClear={focusClear}
+                            targetedBox={targetedBox}
+                            focus={focus}>
+                        </TargetBox>}
+
+                    {selectedBox &&
+                        <FocusBox
+                            selectedBox={selectedBox}
+                            dragStart={dragStartSwap}
+                            dropSwap={dropSwap}
+                            isDragging={isDragging}
+                            focusClear={focusClear}
+                            selectLinker={selectLinker}
+                            selectedLinker={selectedLinker}
+                            selectLinkerTarget={selectLinkerTarget}
+                            selectLinkerTargetClear={selectLinkerTargetClear} />}
+
+                    {selectedLinker &&
+                        <DraggableLinker
+                            linkerVisible={linkerVisible}
+                            selectedLinker={selectedLinker}
+                            selectLinkerClear={selectLinkerClear}
+                            draggableLinkerStart={draggableLinkerStart}
+                            draggableLinkerEnd={draggableLinkerEnd} />}
                 </svg>
                 {children}
             </div>

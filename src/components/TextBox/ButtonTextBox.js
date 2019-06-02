@@ -26,8 +26,8 @@ class ButtonTextBox extends Component {
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onMouseEnter={(e)=>focus(e, x, y, index)} 
-                className="noselect">
+                <g onMouseEnter={(e) => focus(e, x, y, index)}
+                    className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
                         <rect x={x} y={y} width={170} height={height} style={{
@@ -40,34 +40,34 @@ class ButtonTextBox extends Component {
                         }}></rect>
                     </g>
                     <TextBoxInner
-                    x={x}
-                    y={y}
-                    buttons={boxInfo.getIn(['info', 'buttons'])} 
-                    preorder={preorder}
-                    postorder={postorder}/>
+                        x={x}
+                        y={y}
+                        buttons={boxInfo.getIn(['info', 'buttons'])}
+                        preorder={preorder}
+                        postorder={postorder} />
+                    {boxInfo.getIn(['info', 'buttons']).map((button, index) => {
+                        return <TextBoxButton
+                            x={x}
+                            y={y}
+                            key={`${id}${index}`}
+                            index={index}
+                            height={height}
+                            button={button}
+                            type={1}>
+                            {index + 1}
+                        </TextBoxButton>
+                    })}
+                    {buttonSize !== 9 &&
+                        <TextBoxButton
+                            x={x}
+                            y={y}
+                            type={0}
+                            index={buttonSize}
+                            height={height}
+                            func={(e) => { addBtnFunc(e, x, y, index) }}>
+                            <MdAdd size={16} />
+                        </TextBoxButton>}
                 </g>
-                {boxInfo.getIn(['info', 'buttons']).map((button, index) => {
-                    return <TextBoxButton
-                        x={x}
-                        y={y}
-                        key={`${id}${index}`}
-                        index={index}
-                        height={height}
-                        button={button}
-                        type={1}>
-                        {index + 1}
-                    </TextBoxButton>
-                })}
-                {buttonSize !== 9 &&
-                    <TextBoxButton
-                        x={x}
-                        y={y}
-                        type={0}
-                        index={buttonSize}
-                        height={height}
-                        func={(e)=>{addBtnFunc(e,x,y,index)}}>
-                        <MdAdd size={16} />
-                    </TextBoxButton>}
             </Fragment>
         )
     }
