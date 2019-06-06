@@ -1,9 +1,19 @@
 import React, { Fragment } from 'react';
 import { MdAdd, MdClear } from 'react-icons/md'
 
-export const DraggableTextBox = ({ dragStart, dragOver, type }) => {
+export const DraggableTextBox = ({ dragStart, dragOver, type, option }) => {
+    const draggableClassName ='item' + (!option ? ' item-hover' : '')
     return (
-        <a className="item" onDragStart={(e) => dragStart(e, type)} onDragOver={dragOver} draggable>
+        <a 
+        className={draggableClassName}
+        onDragStart={(e) => dragStart(e, type)} 
+        onDragOver={dragOver} 
+        draggable={!option}
+        pointerEvents={(!option ? 'all' : 'none')}
+        style={{
+            opacity: !option ? 1 : 0.3,
+            cursor: !option ? 'move' : 'default'
+        }}>
             <svg style={{
                 left: '2px',
                 top: '0px',
@@ -12,7 +22,7 @@ export const DraggableTextBox = ({ dragStart, dragOver, type }) => {
                 display: 'block',
                 position: 'relative',
                 overflow: 'hidden',
-                cursor: 'move'
+                cursor: !option ? 'move' : 'default'
             }}>
                 <g transform="translate(0.5,0.5)" style={{
                     visibility: 'visible'
@@ -115,17 +125,7 @@ export const TextBoxButton = ({ x, y, children, index, height, button, type, fun
         <Fragment>
             <g>
                 <ellipse cx={translateX} cy={translateY} rx="14" ry="11"
-                    style={{ fill: '#FFEB33', stroke: '#000', strokeWidth: 0}}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.fill = '#fff'
-                    }}
-                    // onMouseLeave={(e) => {
-                    //     e.currentTarget.style.fill = '#FFEB33'
-                    // }}
-                    // onClick={(e) => {
-                    //     type === 0 && func(e)
-                    // }} 
-                    />
+                    style={{ fill: '#FFEB33', stroke: '#000', strokeWidth: 0}}/>
             </g>
             <g transform={`translate(${translateX - 4}, ${translateY - 9})`}>
                 <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}

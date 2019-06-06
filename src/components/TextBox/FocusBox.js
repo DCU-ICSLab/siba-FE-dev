@@ -23,6 +23,8 @@ const FocusBox = ({
     const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 22 - (size == 9 ? 32 : 0) : 0);
     const width = 176 + dynamicWidth;
 
+    console.log('ddd:'+ id)
+
     return (
         <g
             onMouseDown={(e) => dragStart(e, x, y)}
@@ -51,12 +53,13 @@ const FocusBox = ({
                     <g transform={`translate(${x + width / 2 - 22.5}, ${y + height + 5})`}>
                         <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
                             width={80} height={15}>
-                            <div className="text-box-mover"><span>{x}, {y}</span></div>
+                            <div className="text-box-mover"><span>{Math.round(x)}, {Math.round(y)}</span></div>
                         </foreignObject>
                     </g>
                 </Fragment>}
+
             {/* link button */}
-            {!isDragging && selectedBox.getIn(['block', 'type']) === 1 && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+            {!isDragging && (type===1 || type === 5) && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                 return (
                     <g key={index}>
                         <ellipse cx={x + 38 + index * 32} cy={y + height - 16} rx="14" ry="11"
@@ -77,7 +80,9 @@ const FocusBox = ({
                     </g>
                 )
             })}
-            <g>
+
+            {/* link head*/ }
+            {type !== 5  && !(type===3 && selectedBox.getIn(['block', 'parentBox']).size === 1) && <g>
                 <rect x={x + 19} y={y} rx="10" ry="10" width={70} height={16}
                     style={{
                         fill: 'transparent',
@@ -87,6 +92,7 @@ const FocusBox = ({
                     onMouseEnter={(e) => {
                         console.log('link enter')
                         if (selectedLinker) {
+                            console.log(id)
                             selectLinkerTarget(e, x, y, id)
                             e.currentTarget.style.fill = '#000'
                             e.currentTarget.style.opacity = 0.5
@@ -98,8 +104,10 @@ const FocusBox = ({
                             e.currentTarget.style.fill = 'transparent'
                         }
                     }} />
-            </g>
-            {!isDragging && <Fragment>
+            </g>}
+
+            {/* delete */}
+            {!isDragging && type !== 5 && <Fragment>
                 <g>
                     <circle id="delete-btn" cx={x + 193 + dynamicWidth} cy={y} r={8}
                         style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}

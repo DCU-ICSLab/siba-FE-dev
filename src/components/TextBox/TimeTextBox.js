@@ -11,7 +11,7 @@ class TimeTextBox extends Component{
     }
 
     render() {
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus } = this.props;
+        const { boxInfo, index, addBtnFunc, focus } = this.props;
         let x = boxInfo.getIn(['pos', 'left']) + 20;
         let y = boxInfo.getIn(['pos', 'top']) + 20;
         let id = boxInfo.get('id');
@@ -20,7 +20,7 @@ class TimeTextBox extends Component{
 
         return (
             <Fragment>
-                <g onClick={(e)=>focus(e, x,y, index)}
+                <g onMouseEnter={(e)=>focus(e, x,y, id)}
                 className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
@@ -30,7 +30,6 @@ class TimeTextBox extends Component{
                             strokeDasharray: isDragging ? '5 5' : 'none',
                             fill: isDragging ? 'none' : '#fff',
                             pointerEvents: 'all',
-                            zIndex: tempBox ? 9999 : 3
                         }}></rect>
                     </g>
                     <TimeTextBoxInner x={x} y={y}/>}
@@ -40,8 +39,7 @@ class TimeTextBox extends Component{
                     y={y}
                     type={0}
                     index={2}
-                    height={height}
-                    func={()=>{addBtnFunc(index)}}>
+                    height={height}>
                     <span style={{fontSize: 10}}>link</span>
                 </TextBoxButton>
             </Fragment>

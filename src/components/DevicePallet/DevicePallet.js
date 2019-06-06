@@ -16,6 +16,7 @@ const DevicePallet = ({
     addBtnFuncSide,
     devBtnInfoChange,
     targetedBox,
+    haveEntry,
     draggableLinkerEnd }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -32,7 +33,7 @@ const DevicePallet = ({
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={2} />
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={3} />
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={4} />
-                        <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={5} />
+                        <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={5} option={haveEntry}/>
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} />
                     </div>
                 </div>
@@ -58,7 +59,7 @@ const DevicePallet = ({
                                     </tr>
                                     <tr>
                                         <td>linked</td>
-                                        <td>{targetedBox.getIn(['block', 'linked']).toString()}</td>
+                                        <td>{type!==5 ? targetedBox.getIn(['block', 'linked']).toString() : 'enable'}</td>
                                     </tr>
                                     <tr>
                                         <td>linking</td>
@@ -112,7 +113,7 @@ const DevicePallet = ({
                                 return(
                                     <tr key={index}>
                                         <td>{index+1}</td>
-                                        <td>{box.get('parentId')}</td>
+                                        <td>{box.get('parentId')}{box.get('parentId')===0 && <span>{' (entry)'}</span>}</td>
                                         <td>{box.get('code')}</td>
                                     </tr>
                                 )

@@ -41,6 +41,7 @@ const DEV_LINKER_DRAG_START = 'device/DEV_LINKER_DRAG_START';
 const DEV_LINKER_DEST_DELETE = 'device/DEV_LINKER_DEST_DELETE';
 const DEV_LINKER_SRC_DELETE = 'device/DEV_LINKER_SRC_DELETE';
 const DEV_LINKER_DELETE = 'device/DEV_LINKER_DELETE';
+const SET_ENTRY = 'device/SET_ENTRY';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -82,6 +83,7 @@ export const devLinkerDragStart = createAction(DEV_LINKER_DRAG_START)
 export const devLinkerDestDelete = createAction(DEV_LINKER_DEST_DELETE)
 export const devLinkerSrcDelete = createAction(DEV_LINKER_SRC_DELETE)
 export const devLinkerDelete = createAction(DEV_LINKER_DELETE)
+export const setEntry = createAction(SET_ENTRY)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -94,10 +96,12 @@ const initialState = Map({
         linkers: List([]),
 
         //블록 아이디를 발급해주기 위함
-        blockIdCounter: 0,
+        blockIdCounter: 1,
 
         //코드를 발급해주기 위함
         codeIdCounter: 0,
+
+        haveEntry: false,
     }),
 
     linkerVisible: false,
@@ -136,25 +140,28 @@ export default handleActions({
         if(action.payload.create){
             return state.merge({
                 selectedBox: Map({
-                    index: action.payload.index,
+                    id: action.payload.id,
                     x: action.payload.x,
                     y: action.payload.y,
-                    block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
+                    block: Map(state.getIn(['selectedDevice', 'pallet', 
+                    state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id')===action.payload.id)]))
                 }),
                 targetedBox: Map({
-                    index: action.payload.index,
+                    index: action.payload.id,
                     x: action.payload.x,
                     y: action.payload.y,
-                    block: state.getIn(['selectedDevice', 'pallet', action.payload.index])
+                    block: Map(state.getIn(['selectedDevice', 'pallet', 
+                    state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id')===action.payload.id)]))
                 })
             })
         }
         else{
             return state.set('selectedBox', Map({
-                index: action.payload.index,
+                id: action.payload.id,
                 x: action.payload.x,
                 y: action.payload.y,
-                block: Map(state.getIn(['selectedDevice', 'pallet', action.payload.index]))
+                block: Map(state.getIn(['selectedDevice', 'pallet', 
+                state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id')===action.payload.id)]))
             }));
         }
     },
@@ -292,7 +299,8 @@ export default handleActions({
     },
 
     [DEV_TEXTBOX_LOC_CHANGE]: (state, action) => {
-        return state.updateIn(['selectedDevice', 'pallet', action.payload.index], item =>
+        return state.updateIn(['selectedDevice', 'pallet', state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id')===action.payload.id)], 
+        item =>
             item.set('pos', Map({
                 top: action.payload.top,
                 left: action.payload.left,
@@ -430,6 +438,10 @@ export default handleActions({
 
     [DEV_SELECT_LINKER_TARGET_CLEAR]: (state, action) => {
         return state.set('selectedLinkerTarget',null);
+    },
+
+    [SET_ENTRY]: (state, action) => {
+        return state.setIn(['selectedDevice', 'haveEntry'],true);
     },
 
 }, initialState);

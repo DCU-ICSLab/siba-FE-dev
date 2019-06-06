@@ -13,7 +13,6 @@ class TargetBox extends Component {
 
         const x = targetedBox.get('x');
         const y = targetedBox.get('y');
-        const index = targetedBox.get('index');
         const type = targetedBox.getIn(['block', 'type'])
         const id = targetedBox.getIn(['block', 'id'])
         const size = type === 1 || type === 5 ? targetedBox.getIn(['block', 'info', 'buttons']).size : 1;
@@ -22,7 +21,10 @@ class TargetBox extends Component {
         const width = 176 + dynamicWidth;
 
         return (
-            <g onMouseDown={(e) => dragStart(e, x, y)} onMouseUp={dropSwap} onMouseEnter={(e) => focus(e, x + 20, y + 20, index)}>
+            <g 
+            onMouseDown={(e) => dragStart(e, x, y)} 
+            onMouseUp={dropSwap} 
+            onMouseEnter={(e) => focus(e, x + 20, y + 20, id)}>
                 <rect x={x + 17} y={y - 2} width={width} height={height} id="focus" style={{
                     // stroke: '#00a8ff',
                     stroke: '#000',
@@ -32,7 +34,7 @@ class TargetBox extends Component {
                     fill: 'none',
                     cursor: 'move'
                 }} />
-                {
+                { type !==5 &&
                     <Fragment>
                         <g>
                             <circle id="delete-btn" cx={x + 193 + dynamicWidth} cy={y} r={8}
@@ -45,7 +47,8 @@ class TargetBox extends Component {
                                 <div><MdClear style={{ color: '#fff' }} /></div>
                             </foreignObject>
                         </g>
-                    </Fragment>}
+                    </Fragment>
+                }
             </g>
         )
     }
