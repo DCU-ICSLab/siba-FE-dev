@@ -8,7 +8,7 @@ import SibaPhone from '../SibaPhone/SibaPhone';
 const Header = () => {
     return (
         <div id="header">
-            <h1>SIBA for Developers</h1>
+            <h1>SIBA for IoT Developers</h1>
         </div>
     )
 }
@@ -31,7 +31,7 @@ const SibaFrame = ({
 }) => {
     console.log(sbCall);
     return (
-        <div id="SibaFrame">
+        <div id="SibaFrame" className="noselect">
             <Header></Header>
             <SibaSideBar 
             sbToggle={sbToggle} 
