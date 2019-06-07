@@ -1,0 +1,16 @@
+#HubPallet{
+    position: fixed;
+    top:0;
+    right: 0;
+    height: 100vh;
+    /* flex: 1; */
+    overflow: auto;
+    transition: .3s;
+    /* margin-left: 200px; */
+}
+
+#HubPallet .wrapper{
+    margin-top: 44px;
+    flex-wrap: wrap;
+    display: flex;
+}

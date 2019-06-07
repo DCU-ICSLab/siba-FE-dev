@@ -191,7 +191,7 @@ class DeviceWork extends Component {
     }
 
     _getPosition = (e) => {
-        const { sb, scrollPos } = this.props;
+        const { sb, scrollPos, sbPos } = this.props;
 
         const scrollX = scrollPos.get('left'); //x축 스크롤
         const scrollY = scrollPos.get('top'); //y축 스크롤
@@ -201,7 +201,7 @@ class DeviceWork extends Component {
         const itemYHalf = 40;
 
         //실제 놓여야 하는 위치 계산
-        const translateX = e.clientX - (sb ? 246 : 36) + scrollX - itemXHalf;
+        const translateX = e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - itemXHalf;
         const translateY = e.clientY - 103 + scrollY - itemYHalf;
 
         return {
@@ -386,14 +386,14 @@ class DeviceWork extends Component {
     }
 
     _getLinkerPosition = (e) => {
-        const { sb, scrollPos } = this.props;
+        const { sb, scrollPos, sbPos } = this.props;
 
         const scrollX = scrollPos.get('left'); //x축 스크롤
         const scrollY = scrollPos.get('top'); //y축 스크롤
 
         //실제 놓여야 하는 위치 계산
         return {
-            x: e.clientX - (sb ? 246 : 36) + scrollX - 3,
+            x: e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - 3,
             y: e.clientY - 123 + scrollY - 10
         }
     }

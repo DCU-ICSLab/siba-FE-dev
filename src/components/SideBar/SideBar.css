@@ -1,0 +1,42 @@
+#SideBar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #fff;
+    flex: 0 0 200px;
+    border-right: 1px solid #DDDDDD;
+    transition: .3s;
+}
+
+#SideBar header{
+    margin-top: 44px;
+    padding-left: 20px;
+    text-align: center;
+    font-size: 13px;
+    padding: 5px;
+    border-bottom: 1px solid #dadce0;
+}
+
+#SideBar .container{
+    overflow: auto;
+}
+
+#SideBar .btn{
+    position: absolute;
+    top: 105px;
+    right: -20px;
+    width: 0;
+    height: 80px;
+    /* background-color: #EEEEEE; */
+    padding-top:60px;
+    cursor: pointer;
+    /* border-radius: 20px 40px 60px -40px / 80px 60px 40px 0px; */
+    border-radius: 0px 17px 17px 0px / 0px 17px 17px 0px;
+    border-left: 20px solid #848E97;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    z-index: 9994;
+    /* box-shadow: 5px 5px 5px gray; */
+}

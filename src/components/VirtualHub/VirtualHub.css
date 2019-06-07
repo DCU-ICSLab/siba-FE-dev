@@ -1,0 +1,150 @@
+#VirtualHub{
+    /* width: 33%; */
+    width: 299px;
+    box-sizing: border-box;
+    vertical-align: top;
+    height: 297px;
+    padding: 10px 0 10px 25px;
+}
+
+#VirtualHub > .inner{
+    border: 1px solid #888;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    background-color: #B8C6D8;
+}
+
+#VirtualHub .inner > header{
+    font-size: 14px;
+    border-bottom: 1px solid #dadce0;
+    padding: 5px;
+    background-color: #fff;
+}
+
+#VirtualHub .title{
+    border-left: 3px solid #000;
+    font-weight: 450;
+    color: #000;
+    padding-left: 7px;
+    margin-left: 5px;
+}
+
+#VirtualHub .vcode{
+    font-size: 12px;
+    font-style: italic;
+    color: #656565;
+}
+
+#VirtualHub .info{
+    /* background-color: #fff; */
+    background-color: #A9B1C1;
+    padding-left: 19px;
+    font-size: 12px;
+    height: 20px;
+    color: #333;
+    /* border-bottom: 1px solid #888; */
+}
+
+#VirtualHub .container{
+    /* width: 100%; */
+    padding-top: 10px;
+    height: 196px;
+    overflow: auto;
+    /* background-color: #B8C6D8; */
+    /* border-bottom: 1px solid #888; */
+}
+
+#VirtualHub footer{
+    height: 20px;
+    font-size: 12px;
+    padding-left: 19px;
+    color: #333;
+    background-color: #A9B1C1;
+}
+
+#VirtualHub footer> span{
+    margin-right: 13px;
+}
+
+#VirtualHub .total::before {
+    position: relative;
+    left: -3px;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    content: '';
+    display: inline-block;
+    background-color: gray;
+}
+
+#VirtualHub .on::before {
+    position: relative;
+    left: -3px;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    content: '';
+    display: inline-block;
+    background-color: green;
+}
+
+#VirtualHub .off::before {
+    position: relative;
+    left: -3px;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    content: '';
+    display: inline-block;
+    background-color: #E43133;
+}
+
+#LogicalDevice{
+    display: inline-block;
+    height: 50px;
+    padding: 5px 0 5px 10px;
+    /* width: 78px; */
+    width: 122px;
+}
+
+#LogicalDevice > .inner{
+    border: 1px solid #888;
+    height: 100%;
+    background-color: #E7EFF5;
+    font-size: 11px;
+}
+
+#LogicalDevice .name{
+    margin-left: 10px;
+    
+}
+
+#LogicalDevice .dkey{
+    font-size: 10px;
+    margin-left: 3px;
+    font-style: italic;
+    color: #656565;
+}
+
+/* width */
+#VirtualHub .container::-webkit-scrollbar {
+    width: 6px;
+    height: 10px;
+}
+  
+/* Track */
+#VirtualHub .container::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+  
+/* Handle */
+#VirtualHub .container::-webkit-scrollbar-thumb {
+    background: #DFE0E1;
+    border-radius: 20px;
+}
+  
+  /* Handle on hover */
+#VirtualHub .container::-webkit-scrollbar-thumb:hover {
+    background: #959596; 
+}

@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import {
     Welcome,
     Main,
+    Device,
     OAuth2RedirectHandler
   } from 'containers';
 
@@ -14,6 +15,7 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/" component={Welcome} />
                     <Route exact path="/main" component={Main} />
+                    <Route exact path="/device" component={Device} />
                     <Route path="/oauth2/redirect" component={OAuth2RedirectHandler} />
                 </Switch>
             </div>

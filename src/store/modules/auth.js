@@ -9,7 +9,7 @@ import * as AuthApi from 'store/api/auth';
 const KAKAO_AUTH = 'auth/KAKAO_AUTH'; // kakao 로그인
 
 /*--------create action--------*/
-export const kakaoAuth = createAction(KAKAO_AUTH, AuthApi.redirectWithAuth);
+export const kakaoAuth = createAction(KAKAO_AUTH, AuthApi.getUserInfo);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -30,7 +30,7 @@ export default handleActions({
             return state.set('userState', Map(
                 {
                     isAuthenticated: true,
-                    user: null,
+                    user: action.payload.data.data.user,
                     token: ''
                 }
             ));

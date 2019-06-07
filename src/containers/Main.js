@@ -1,98 +1,62 @@
 import React, { Component, Fragment } from 'react';
 import {
-    SibaFrame,
+    SibaFrame, SibaHeader, HubPallet, HubNav, VirtualHub, SideBar, VirtualHubAddBtn
 } from 'components';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
 
-class Welcome extends Component {
-
-    _deviceAdd = () => {
-
-    }
-
-    _sibaTalk = (e) => {
-        const { basicActions, sbTalk, sbCall } = this.props;
-        if (!sbCall) {
-            basicActions.sbTalk(sbTalk);
-        }
-    }
-
-    _sibaCall = (e) => {
-        const { basicActions, sbCall, sbTalk } = this.props;
-        basicActions.sbCall(!sbCall);
-        basicActions.sbTalk(sbTalk);
-        // basicActions.phoneAddOnToggle(true);
-    }
+class Main extends Component {
 
     _sbToggle = () => {
         const { basicActions, sb } = this.props;
         basicActions.sbToggle(sb);
     }
 
-    _phoneAddOnToggle = () => {
-        const { basicActions, phoneAddOn } = this.props;
-        basicActions.phoneAddOnToggle(!phoneAddOn);
-    }
-
-    _phoneAddOnTabToggle = () => {
-        const { basicActions, phoneAddOnTab } = this.props;
-        basicActions.phoneAddOnTabToggle(!phoneAddOnTab);
-    }
-
-    _deviceAddBoxChange = () => {
-        const { basicActions, deviceAddBox } = this.props;
-        basicActions.deviceAddBoxChange(!deviceAddBox);
-    }
-
-    _deviceWorkBoxChange = () => {
-        const { basicActions, deviceWorkBox } = this.props;
-        basicActions.deviceWorkBoxChange(!deviceWorkBox);
-    }
-
     componentDidMount() {
+        const { authActions } = this.props;
+        authActions.kakaoAuth()
     }
 
     render() {
         const {
             sb,
-            sbTalk,
-            sbCall,
-            phoneAddOn,
-            phoneAddOnTab,
             deviceAddBox,
-            deviceWorkBox } = this.props;
+            deviceWorkBox,
+            userState } = this.props;
 
         return (
             <Fragment>
-                <SibaFrame
-                    sbToggle={this._sbToggle}
-                    sbState={sb}
-                    sbTalk={sbTalk}
-                    sbCall={sbCall}
-                    sibaTalkFunc={this._sibaTalk}
-                    sibaCallFunc={this._sibaCall}
-                    phoneAddOn={phoneAddOn}
-                    phoneAddOnFunc={this._phoneAddOnToggle}
-                    phoneAddOnTab={phoneAddOnTab}
-                    phoneAddOnTabFunc={this._phoneAddOnTabToggle}
-                    deviceAddBoxChangeFunc={this._deviceAddBoxChange}
-                    deviceAddBox={deviceAddBox}
-                    deviceWorkBox={deviceWorkBox}
-                    deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}>
+                <SibaFrame>
+                    <SibaHeader userState={userState}></SibaHeader>
+                    <SideBar
+                        sbToggle={this._sbToggle}
+                        sbState={sb}
+                        deviceAddBoxOpenFunc={this._deviceAddBoxChange}
+                        deviceAddBox={deviceAddBox}
+                        deviceWorkBox={deviceWorkBox}
+                        deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}>
+                    </SideBar>
+                    <HubPallet sbState={sb}>
+                        <VirtualHub>
+
+                        </VirtualHub>
+                        <VirtualHubAddBtn/>
+                    </HubPallet>
+                    {/* <HubNav></HubNav> */}
                 </SibaFrame>
             </Fragment>
         )
     }
 }
 
-
 export default withRouter(
     connect(
         // props 로 넣어줄 스토어 상태값
         state => ({
+            userState: state.auth.get('userState'),
             sb: state.basic.getIn(['frameState', 'sb']),
             sbTalk: state.basic.getIn(['frameState', 'sbTalk']),
             sbCall: state.basic.getIn(['frameState', 'sbCall']),
@@ -104,6 +68,7 @@ export default withRouter(
         // props 로 넣어줄 액션 생성함수
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
+            authActions: bindActionCreators(authActions, dispatch),
         })
-    )(Welcome)
+    )(Main)
 )
