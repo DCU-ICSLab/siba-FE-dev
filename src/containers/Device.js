@@ -66,8 +66,8 @@ class Device extends Component {
             userState } = this.props;
 
         const sbPos = {
-            default: 300,
-            change: 50
+            default: 283,
+            change: 33
         }
 
         return (

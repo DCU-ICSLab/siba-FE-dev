@@ -16,7 +16,7 @@ const initialState = Map({
     userState: Map({
         isAuthenticated: false,
         user: null,
-        token: ''
+        hubInfo: List([])
     }),
     
 });
@@ -30,8 +30,11 @@ export default handleActions({
             return state.set('userState', Map(
                 {
                     isAuthenticated: true,
-                    user: action.payload.data.data.user,
-                    token: ''
+                    user: Map(action.payload.data.data.user),
+                    hubInfo: List(action.payload.data.data.hubInfo.map(hub=>Map({
+                        vhubId: hub.vhubId,
+                        devices: List(hub.devices.map(device => Map(device))),
+                    }))),
                 }
             ));
         },

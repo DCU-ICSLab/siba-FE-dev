@@ -3,12 +3,12 @@
     width: 299px;
     box-sizing: border-box;
     vertical-align: top;
-    height: 297px;
+    height: 290px;
     padding: 10px 0 10px 25px;
 }
 
 #VirtualHub > .inner{
-    border: 1px solid #888;
+    border: 1px solid #BBB;
     border-radius: 2px;
     height: 100%;
     width: 100%;
@@ -16,14 +16,14 @@
 }
 
 #VirtualHub .inner > header{
-    font-size: 14px;
+    font-size: 12px;
     border-bottom: 1px solid #dadce0;
     padding: 5px;
     background-color: #fff;
 }
 
 #VirtualHub .title{
-    border-left: 3px solid #000;
+    /* border-left: 3px solid #000; */
     font-weight: 450;
     color: #000;
     padding-left: 7px;
@@ -48,7 +48,7 @@
 
 #VirtualHub .container{
     /* width: 100%; */
-    padding-top: 10px;
+    padding-top: 5px;
     height: 196px;
     overflow: auto;
     /* background-color: #B8C6D8; */
@@ -106,18 +106,22 @@
     padding: 5px 0 5px 10px;
     /* width: 78px; */
     width: 122px;
+    position: relative;
 }
 
 #LogicalDevice > .inner{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: 120px;
+    height: 50px;
     border: 1px solid #888;
-    height: 100%;
     background-color: #E7EFF5;
     font-size: 11px;
 }
 
 #LogicalDevice .name{
     margin-left: 10px;
-    
 }
 
 #LogicalDevice .dkey{
@@ -125,6 +129,39 @@
     margin-left: 3px;
     font-style: italic;
     color: #656565;
+}
+
+#LogicalDevice > .inner:hover{
+    cursor: pointer;
+    background-color: #fff;
+}
+
+#LogicalDeviceAddBtn{
+    display: inline-block;
+    height: 50px;
+    padding: 5px 0 5px 10px;
+    width: 122px;
+    position: relative;
+}
+
+#LogicalDeviceAddBtn .add{
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    border-radius: 2px;
+    height: 48px;
+    width: 118px;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px dashed #AAB0BF;
+    color: #AAB0BF;
+    text-align: center;
+}
+
+#LogicalDeviceAddBtn .add:hover{
+    background-color: transparent;
+    border: 2px dashed #fff;
+    color: #fff;
 }
 
 /* width */

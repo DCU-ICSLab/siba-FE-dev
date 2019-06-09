@@ -1,13 +1,17 @@
 import React, { Fragment } from 'react';
 import './VirtualHubAddBtn.css';
-import { MdSettings } from 'react-icons/md'
+import { MdAdd } from 'react-icons/md'
 
-const VirtualHubAddBtn = ({ }) => {
+const VirtualHubAddBtn = ({ vhubCreate }) => {
 
     return (
-        <div id="VirtualHubAddBtn">
+        <div id="VirtualHubAddBtn" onClick={vhubCreate}>
             <div className="shadow">
-                <div>새로운 IoT 허브 추가</div>
+                
+                <div>
+                    <div><MdAdd color="#fff" size={50}></MdAdd></div>
+                    <span>가상 IoT 허브 추가</span>
+                </div>
             </div>
             <div className="inner">
                 <header>

@@ -9,12 +9,18 @@ import './SideBar.css';
 
 const SideBar = ({ sbToggle, sbState, deviceAddBoxOpenFunc, deviceAddBox, deviceWorkBoxChangeFunc }) => {
     return (
-        <div id="SideBar" style={{left: sbState ? '0' : '-250px'}}>
+        <div id="SideBar" style={{left: sbState ? '10px' : '-240px'}}>
             <header>
                 <span>Device Explorer</span>
             </header>
             <div className="container">
-
+                <div className="inner">
+                    <div className="list-group">
+                    virtual hub sets
+                    </div>
+                </div>
+            </div>
+            <div className="btn-shadow">
             </div>
             <div className="btn" onClick={sbToggle}>
                 {sbState ?

@@ -7,8 +7,14 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
+import * as vhubActions from 'store/modules/vhub';
 
 class Main extends Component {
+
+    _vhubCreate = () => {
+        const { vhubActions } = this.props;
+        vhubActions.vhubCreate();
+    }
 
     _sbToggle = () => {
         const { basicActions, sb } = this.props;
@@ -40,10 +46,12 @@ class Main extends Component {
                         deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}>
                     </SideBar>
                     <HubPallet sbState={sb}>
-                        <VirtualHub>
-
-                        </VirtualHub>
-                        <VirtualHubAddBtn/>
+                        {
+                            userState.get('hubInfo').map((hub, index) => {
+                                return <VirtualHub hub={hub} key={index}/>
+                            })
+                        }
+                        <VirtualHubAddBtn vhubCreate={this._vhubCreate}/>
                     </HubPallet>
                     {/* <HubNav></HubNav> */}
                 </SibaFrame>
@@ -69,6 +77,7 @@ export default withRouter(
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
             authActions: bindActionCreators(authActions, dispatch),
+            vhubActions: bindActionCreators(vhubActions, dispatch),
         })
     )(Main)
 )
