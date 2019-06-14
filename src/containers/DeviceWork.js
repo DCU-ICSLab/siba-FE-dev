@@ -587,6 +587,8 @@ class DeviceWork extends Component {
     }
 
     componentDidMount() {
+        const { deviceActions } = this.props;
+        deviceActions.getDeviceInfo();
     }
 
     componentWillUnmount() {
@@ -613,12 +615,13 @@ class DeviceWork extends Component {
             linkers,
             selectedLinker,
             linkerVisible,
-            haveEntry
+            haveEntry,
+            location
         } = this.props;
 
         return (
             <Fragment>
-                <DeviceWorkBox>
+                <DeviceWorkBox location={location}>
                     <DevicePallet
                         dragStart={this._drag}
                         dragOver={this._dragEnter}

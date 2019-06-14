@@ -63,7 +63,8 @@ class Device extends Component {
             phoneAddOnTab,
             deviceAddBox,
             deviceWorkBox,
-            userState } = this.props;
+            userState,
+            location } = this.props;
 
         const sbPos = {
             default: 283,
@@ -90,7 +91,7 @@ class Device extends Component {
                             // left: sbState ? '240px' : '30px'
                         }}>
                         {deviceAddBox && <DeviceAddBox deviceAddBoxChangeFunc={this._deviceAddBoxChange}></DeviceAddBox>}
-                        <DeviceWork sbPos={sbPos}/>
+                        <DeviceWork location={location} sbPos={sbPos}/>
                     </SibaContent>
                     <Siba sibaTalkFunc={this._sibaTalk} sbTalk={sbTalk} sibaCallFunc={this._sibaCall} />
                     {sbCall &&

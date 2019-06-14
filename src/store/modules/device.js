@@ -1,5 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Map, List } from 'immutable';
+import { pender } from 'redux-pender';
 
 /*--------action type--------*/
 const DEV_SELECT = 'device/DEV_SELECT';
@@ -42,6 +43,7 @@ const DEV_LINKER_DEST_DELETE = 'device/DEV_LINKER_DEST_DELETE';
 const DEV_LINKER_SRC_DELETE = 'device/DEV_LINKER_SRC_DELETE';
 const DEV_LINKER_DELETE = 'device/DEV_LINKER_DELETE';
 const SET_ENTRY = 'device/SET_ENTRY';
+const GET_DEVICE_INFO = 'device/GET_DEVICE_INFO';
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -84,6 +86,7 @@ export const devLinkerDestDelete = createAction(DEV_LINKER_DEST_DELETE)
 export const devLinkerSrcDelete = createAction(DEV_LINKER_SRC_DELETE)
 export const devLinkerDelete = createAction(DEV_LINKER_DELETE)
 export const setEntry = createAction(SET_ENTRY)
+export const getDeviceInfo = createAction(GET_DEVICE_INFO)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -443,5 +446,23 @@ export default handleActions({
     [SET_ENTRY]: (state, action) => {
         return state.setIn(['selectedDevice', 'haveEntry'],true);
     },
+
+    //개발자 서버로 부터 디바이스 정보, 텍스트 박스 체인 정보를 받아옴
+    ...pender({
+        type: GET_DEVICE_INFO,
+        onSuccess: (state, action) => {
+            return state.set('selectedDevice', Map({
+                pallet: List(
+                    action.payload.data.data.pallet
+                ),
+                linkers: List(
+                    action.payload.data.data.linkers
+                ),        
+                blockIdCounter: action.payload.data.data.blockIdCounter,
+                codeIdCounter: action.payload.data.data.codeIdCounter,
+                haveEntry: action.payload.data.data.haveEntry,
+            }));
+        },
+    }),
 
 }, initialState);

@@ -19,3 +19,8 @@
     padding-left: 7px;
     margin-left: 5px;
 }
+
+#DeviceWorkBox .state{
+    font-style: italic;
+    font-size: 13px;
+}

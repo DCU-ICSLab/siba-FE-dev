@@ -1,12 +1,17 @@
 import React, { Fragment } from 'react';
 import './DeviceWorkBox.css';
 import { BoxButton } from 'components';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 
-const DeviceWorkBox = ({ children }) => {
+const DeviceWorkBox = ({ children, location }) => {
     return (
         <div id="DeviceWorkBox">
             <header>
-                <span className="title">virtual hub #1 > test2</span>
+                <span className="title">virtual hub #{location.state.dev.get('vhubId')}  >  {location.state.dev.get('devName')}</span>
+                <span className={'state'}> (deploy)</span>
+                <MdKeyboardArrowUp style={{
+                    float: 'right'
+                }} size={20}/>
             </header>
             <BoxButton enabled={true} left={5} width={80}>
                 text박스 정의

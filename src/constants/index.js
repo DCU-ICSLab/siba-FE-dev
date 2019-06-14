@@ -1,5 +1,6 @@
 
 export const API_BASE_URL = 'http://39.117.253.166:4000';
+//export const API_BASE_URL = 'http://203.250.32.29:10001';
 
 export const OAUTH2_REDIRECT_URI = `${process.env.PUBLIC_URL === '' ? window.location.href : process.env.PUBLIC_URL}/oauth2/redirect`;
 

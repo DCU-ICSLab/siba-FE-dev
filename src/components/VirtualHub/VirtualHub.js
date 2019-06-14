@@ -22,7 +22,12 @@ const LogicalDevice = ({ dev }) => {
     return (
         <div id="LogicalDevice" style={{opacity: status ? 1 : 0.5}}>
             <div className="inner">
-                <Link to="/device" style={{
+                <Link to={{
+                    pathname: `/device/${dev.get('authKey')}`,
+                    state: {
+                        dev: dev
+                    }
+                }} style={{
                     textDecoration: 'none',
                     color: '#000',
                 }}>

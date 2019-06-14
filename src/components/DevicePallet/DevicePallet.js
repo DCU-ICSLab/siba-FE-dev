@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
 import { DraggableTextBox, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
-import { MdAdd } from 'react-icons/md'
+import { MdAdd, MdBuild, MdSave, MdVerticalAlignTop, MdGetApp, MdBugReport } from 'react-icons/md'
 import DraggableLinker from 'components/TextBox/DraggableLinker';
 import { BUTTON_TYPE } from 'constants/index';
 
@@ -161,7 +161,40 @@ const DevicePallet = ({
             </div>
 
             <div className="toolbox">
-
+                <button className="toolbtn">
+                    <MdSave style={{
+                        position: 'absolute',
+                        top: 3}}/>
+                        <span style={{marginLeft: 13}}>저장</span>
+                    </button>
+                <button className="toolbtn">
+                    <MdBuild style={{
+                        position: 'absolute',
+                        top:3
+                    }}/>
+                    <span style={{marginLeft: 13}}>컴파일</span>
+                </button>
+                <button className="toolbtn">
+                    <MdVerticalAlignTop style={{
+                        position: 'absolute',
+                        top:3
+                    }}/>
+                    <span style={{marginLeft: 13}}>배포</span>
+                </button>
+                <button className="toolbtn">
+                    <MdGetApp style={{
+                        position: 'absolute',
+                        top:3
+                    }}/>
+                    <span style={{marginLeft: 13}}>코드 추출</span>
+                </button>
+                <button className="toolbtn">
+                    <MdBugReport style={{
+                        position: 'absolute',
+                        top:3
+                    }}/>
+                    <span style={{marginLeft: 13}}>테스트</span>
+                </button>
             </div>
 
             {/* pallet */}
