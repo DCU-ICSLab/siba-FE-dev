@@ -19,7 +19,7 @@ class DeviceWork extends Component {
     _getInfoData = (type) => {
 
         let additionalInfo = null;
-        const { deviceActions, codeIdCounter } = this.props;
+        const { deviceActions, codeIdCounter, eventCodeIdCounter } = this.props;
 
         switch (type) {
             case 1: //버튼 일 때
@@ -28,11 +28,14 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            linker: null,
+                            isSpread: false,
+                            eventCode: eventCodeIdCounter
                         }),
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
                 break;
             case 3: //Entry 일 때
                 additionalInfo = {
@@ -40,7 +43,9 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            linker: null,
+                            isSpread: true,
+                            eventCode: -1
                         }),
                     ])
                 }
@@ -52,11 +57,14 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            linker: null,
+                            isSpread: false,
+                            eventCode: eventCodeIdCounter
                         }),
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
                 break;
             default:
         }
@@ -95,8 +103,8 @@ class DeviceWork extends Component {
         const id = dragType !== 5 ? blockIdCounter : 0; //Entry 블록이면 ID는 0
         //pallet 리스트에 새로 놓인 텍스트 박스 정보 푸쉬
         deviceActions.devAddTextBox({
-            top: pos.translateY,
-            left: pos.translateX,
+            y: pos.translateY,
+            x: pos.translateX,
             id: id, 
             type: dragType,
             preorder: info.headText,
@@ -213,7 +221,7 @@ class DeviceWork extends Component {
     //버튼 텍스트 박스에 버튼 추가
     _addBtnFunc = (e, x, y, index) => {
         e.stopPropagation();
-        const { deviceActions, codeIdCounter } = this.props;
+        const { deviceActions, codeIdCounter, eventCodeIdCounter } = this.props;
         deviceActions.devBoxFocus({
             index: index,
             x: x - 20,
@@ -222,8 +230,12 @@ class DeviceWork extends Component {
 
         deviceActions.devAddBtn({
             index: index,
-            code: codeIdCounter
+            code: codeIdCounter,
+            eventCode: eventCodeIdCounter
         })
+
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+
         deviceActions.devCopyBtn({ code: codeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
     }
@@ -231,10 +243,12 @@ class DeviceWork extends Component {
     //버튼 텍스트 박스에 버튼 추가
     _addBtnFuncSide = (e, id) => {
         e.stopPropagation();
-        const { deviceActions, codeIdCounter, targetedBox, pallet } = this.props;
+        const { deviceActions, codeIdCounter, targetedBox, pallet, eventCodeIdCounter } = this.props;
+        console.log('eventcode:',eventCodeIdCounter)
         deviceActions.devAddBtnSide({
             id: id,
-            code: codeIdCounter
+            code: codeIdCounter,
+            eventCode: eventCodeIdCounter
         })
 
         /*targetedBox &&
@@ -249,15 +263,16 @@ class DeviceWork extends Component {
                 code: selectedLinker.get('code')
             })*/
 
-        deviceActions.devCopyBtn({ code: codeIdCounter });
+        deviceActions.devCopyBtn({ code: codeIdCounter, eventCode: eventCodeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
 
         const pos = pallet.getIn([pallet.findIndex(box => box.get('id') === id), 'pos'])
 
         //버튼에서 연결하는 linker가 있다면
         this._changeLinkerSrc({
-            x: pos.get('left') + 20,
-            y: pos.get('top') + 38,
+            x: pos.get('x') + 20,
+            y: pos.get('y') + 38,
         }, targetedBox)
     }
 
@@ -427,8 +442,8 @@ class DeviceWork extends Component {
             //원본 텍스트 박스 새로운 위치로
             deviceActions.devTextboxLocChange({
                 id: selectedBox.get('id'),
-                top: pos.translateY - 20,
-                left: pos.translateX - 20
+                y: pos.translateY - 20,
+                x: pos.translateX - 20
             })
 
             //사본 텍스트 박스 새로운 위치로
@@ -586,9 +601,14 @@ class DeviceWork extends Component {
         })
     }
 
+    _saveDeviceTextBoxGraph = () => {
+        const { deviceActions, selectedDevice, devAuthKey } = this.props;
+        deviceActions.saveDeviceTextBoxGraph(devAuthKey, selectedDevice)
+    }
+
     componentDidMount() {
-        const { deviceActions } = this.props;
-        deviceActions.getDeviceInfo();
+        const { deviceActions, location } = this.props;
+        deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
     }
 
     componentWillUnmount() {
@@ -616,12 +636,13 @@ class DeviceWork extends Component {
             selectedLinker,
             linkerVisible,
             haveEntry,
-            location
+            vHubId,
+            devName
         } = this.props;
 
         return (
             <Fragment>
-                <DeviceWorkBox location={location}>
+                <DeviceWorkBox vHubId={vHubId} devName={devName}>
                     <DevicePallet
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
@@ -633,7 +654,8 @@ class DeviceWork extends Component {
                         devBtnInfoChange={this._devBtnInfoChange}
                         targetedBox={targetedBox}
                         draggableLinkerEnd={this._draggableLinkerEnd}
-                        haveEntry={haveEntry}>
+                        haveEntry={haveEntry}
+                        saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}>
 
                         <g>
                             {pallet.map((boxInfo, index) => {
@@ -697,10 +719,15 @@ export default withRouter(
     connect(
         // props 로 넣어줄 스토어 상태값
         state => ({
+            selectedDevice: state.device.get('selectedDevice'),
+            devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
+            vHubId: state.device.getIn(['selectedDevice', 'vHubId']),
+            devName: state.device.getIn(['selectedDevice', 'devName']),
             pallet: state.device.getIn(['selectedDevice', 'pallet']),
             linkers: state.device.getIn(['selectedDevice', 'linkers']),
             blockIdCounter: state.device.getIn(['selectedDevice', 'blockIdCounter']),
             codeIdCounter: state.device.getIn(['selectedDevice', 'codeIdCounter']),
+            eventCodeIdCounter: state.device.getIn(['selectedDevice', 'eventCodeIdCounter']),
             scrollPos: state.device.get('scrollPos'),
             selectedBox: state.device.get('selectedBox'),
             selectedLinker: state.device.get('selectedLinker'),

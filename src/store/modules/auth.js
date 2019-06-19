@@ -3,13 +3,13 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Map, List } from 'immutable';
 import { pender } from 'redux-pender';
-import * as AuthApi from 'store/api/auth';
+import * as AuthAPI from 'store/api/auth';
 
 /*--------action type--------*/
 const KAKAO_AUTH = 'auth/KAKAO_AUTH'; // kakao 로그인
 
 /*--------create action--------*/
-export const kakaoAuth = createAction(KAKAO_AUTH, AuthApi.getUserInfo);
+export const kakaoAuth = createAction(KAKAO_AUTH, AuthAPI.getUserInfo);
 
 /*--------state definition--------*/
 const initialState = Map({

@@ -13,8 +13,8 @@ class ButtonTextBox extends Component {
 
     render() {
         const { boxInfo, tempBox, index, addBtnFunc, focus } = this.props;
-        let x = boxInfo.getIn(['pos', 'left']) + 20;
-        let y = boxInfo.getIn(['pos', 'top']) + 20;
+        let x = boxInfo.getIn(['pos', 'x']) + 20;
+        let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
         let dynamicHeight = boxInfo.get('height');
         let isDragging = boxInfo.getIn(['pos', 'isDragging']);

@@ -12,8 +12,8 @@ class EndBox extends Component {
 
     render() {
         const { boxInfo, dragStart, dropSwap, tempBox, index, focus } = this.props;
-        let x = boxInfo.getIn(['pos', 'left']) + 20;
-        let y = boxInfo.getIn(['pos', 'top']) + 20;
+        let x = boxInfo.getIn(['pos', 'x']) + 20;
+        let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
         let isDragging = boxInfo.getIn(['pos', 'isDragging']);
         let height = 70;

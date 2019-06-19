@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_BASE_URL } from 'constants/index';
 
 //skill 서버로 데이터 전송
-export const getUserInfo = (authCode) =>{
+export const getUserInfo = () =>{
 
     const baseURL = `${API_BASE_URL}/user`
 

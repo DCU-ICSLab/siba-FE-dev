@@ -17,6 +17,7 @@ const DevicePallet = ({
     devBtnInfoChange,
     targetedBox,
     haveEntry,
+    saveDeviceTextBoxGraph,
     draggableLinkerEnd }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -136,9 +137,10 @@ const DevicePallet = ({
                             <tbody>
                                 {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                                     return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
+                                        <tr key={button.get('code')}>
+                                            {/* <td>{index + 1}</td> */}
                                             <td>{button.get('code')}</td>
+                                            <td>{button.get('eventCode')}</td>
                                             <td>
                                                 <input
                                                     name="name"
@@ -161,7 +163,7 @@ const DevicePallet = ({
             </div>
 
             <div className="toolbox">
-                <button className="toolbtn">
+                <button className="toolbtn" onClick={saveDeviceTextBoxGraph}>
                     <MdSave style={{
                         position: 'absolute',
                         top: 3}}/>
