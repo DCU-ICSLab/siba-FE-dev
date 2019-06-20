@@ -7,6 +7,7 @@
     padding: 10px 0 10px 25px;
     color: transparent;
     text-shadow: 0 0 5px rgba(0,0,0,0.6);
+    cursor: pointer;
 }
 
 #VirtualHubAddBtn .shadow{

@@ -76,17 +76,17 @@ export const DraggableTextBox = ({ dragStart, dragOver, type, option }) => {
     )
 }
 
-export const TimeTextBoxInner = ({ x, y, buttons }) => {
+export const TimeTextBoxInner = ({ x, y, buttons, preorder, postorder }) => {
     return (
         <g className="inner">
             <g transform={`translate(${x}, ${y})`}>
                 <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
-                    width={170} height={12}>
+                    width={175} height={12}>
                     <div xmlns="http://www.w3.org/1999/xhtml">
                         <div className="text-box-inner">
-                            <span>시간을 설정해주세요.</span>
+                            <span className="textarea">{preorder}</span>
                             <div className="time-box">시간 설정</div>
-                            <span></span>
+                            <span className="textarea">{postorder}</span>
                         </div>
                     </div>
                 </foreignObject>
@@ -100,16 +100,16 @@ export const TextBoxInner = ({ x, y, buttons, preorder, postorder }) => {
         <g className="inner">
             <g transform={`translate(${x}, ${y})`}>
                 <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
-                    width={170} height={12}>
+                    width={175} height={12}>
                     <div xmlns="http://www.w3.org/1999/xhtml">
                         <div className="text-box-inner">
-                            <span>{preorder}</span>
+                            <span className="textarea">{preorder}</span>
                             <ol>
                                 {buttons.map((button, index) => {
                                     return <li key={index}>{button.get('name')}</li>
                                 })}
                             </ol>
-                            <span>{postorder}</span>
+                            <span className="textarea">{postorder}</span>
                         </div>
                     </div>
                 </foreignObject>

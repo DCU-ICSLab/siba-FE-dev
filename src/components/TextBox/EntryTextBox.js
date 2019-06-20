@@ -17,12 +17,12 @@ class EntryTextBox extends Component {
         let x = boxInfo.getIn(['pos', 'x']) + 20;
         let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
-        let dynamicHeight = boxInfo.get('height');
+        let dynamicHeight = boxInfo.get('headRow')*20 + boxInfo.get('footRow')*20;
         let isDragging = boxInfo.getIn(['pos', 'isDragging']);
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
         let preorder = boxInfo.get('preorder');
         let postorder = boxInfo.get('postorder');
-        let height = 65 + 18 * (buttonSize - 1) + dynamicHeight//base height + button counts*18
+        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight//base height + button counts*18
 
         return (
             <Fragment>
@@ -39,7 +39,7 @@ class EntryTextBox extends Component {
                     </g>
 
                     <g className="text-box">
-                        <rect x={x} y={y} width={170} height={height} style={{
+                        <rect x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',
                             strokeWidth: 0.3,
                             strokeDasharray: isDragging ? '5 5' : 'none',

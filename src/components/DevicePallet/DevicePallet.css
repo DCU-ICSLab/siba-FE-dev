@@ -134,18 +134,18 @@
 }
 
 #DevicePallet textarea{
+    box-sizing: border-box;
+    width: 100%;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 11px;
+    line-height: 20px;
+    resize: none;
     font-weight: 400;
-    /* border: 1px solid #dadce0; */
     border: none;
     background-color: transparent;
-    /* outline: none; */
-    resize: none;
-    overflow-y: hidden;
-    /* height: 40px; */
-    /* line-height: 1.6; */
-    width: 147px;
+    overflow: hidden;
+    height: auto;
+    /* width: 147px; */
 }
 
 #DevicePallet input{

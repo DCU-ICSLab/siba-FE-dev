@@ -22,8 +22,12 @@ const DEV_ADD_BTN_SIDE = 'device/DEV_ADD_BTN_SIDE';
 const DEV_CP_BTN = 'device/DEV_CP_BTN';
 const DEV_TARGET_CP_LINKER = 'device/DEV_TARGET_CP_LINKER';
 const DEV_SELECT_CP_LINKER = 'device/DEV_SELECT_CP_LINKER'
+
 const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
+const DEV_INPUT_ROW_CHANGE = 'device/DEV_INPUT_ROW_CHANGE';
+
 const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE';
+
 const DEV_BTN_INFO_CHANGE = 'device/DEV_BTN_INFO_CHANGE';
 const DEV_BTN_INFO_TARGET_CHANGE = 'device/DEV_BTN_INFO_TARGET_CHANGE';
 const DEV_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TEXTBOX_HEIGHT_CHANGE';
@@ -68,6 +72,7 @@ export const devCopyBtn = createAction(DEV_CP_BTN);
 export const devTargetCopyLinker = createAction(DEV_TARGET_CP_LINKER);
 export const devSelectCopyLinker = createAction(DEV_SELECT_CP_LINKER);
 export const devInputChange = createAction(DEV_INPUT_CHANGE);
+export const devInputRowChange = createAction(DEV_INPUT_ROW_CHANGE);
 export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
 export const devBtnInfoChange = createAction(DEV_BTN_INFO_CHANGE);
 export const devBtnInfoTargetChange = createAction(DEV_BTN_INFO_TARGET_CHANGE);
@@ -216,11 +221,13 @@ export default handleActions({
                         x: action.payload.x,
                         y: action.payload.y,
                     }),
+                    headRow:1,
+                    footRow:1,
                     type: action.payload.type, //1이면 button, 2이면 dynamic, 3이면 time
                     preorder: action.payload.preorder,
                     postorder: action.payload.postorder,
                     linkedId: null,
-                    height: 20,
+                    //height: 20,
                     parentBox: List([]),
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
@@ -305,10 +312,17 @@ export default handleActions({
         return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.text)
     },
 
+    //사본 Row 변경
+    [DEV_INPUT_ROW_CHANGE]: (state, action) => {
+        return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.row)
+    },
+
     //원본
     [DEV_INPUT_TARGET_CHANGE]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','pallet']).findIndex(box => box.get('id') === action.payload.id)
         return state.updateIn(['selectedDevice', 'pallet'], pallet =>
-            pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), action.payload.key],action.payload.text)
+            pallet.setIn([idx, action.payload.key],action.payload.text)
+                .setIn([idx, action.payload.rowName],action.payload.row)
         )
     },
 
@@ -488,12 +502,14 @@ export default handleActions({
                     action.payload.data.data.pallet.map(box=>{
                         return Map({
                             id: box.id,
-                            height: box.height,
+                            //height: box.height,
                             linked: box.linked,
                             linking: box.linking,
                             pos: Map(box.pos),
                             postorder: box.postorder,
                             preorder: box.preorder,
+                            headRow: box.headRow,
+                            footRow: box.footRow,
                             type: box.type,
                             parentBox: List(box.parentBox.map(pbox=>Map(pbox))),
                             info: Map({

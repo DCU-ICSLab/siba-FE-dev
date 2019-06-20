@@ -45,7 +45,7 @@ class DeviceWork extends Component {
                             name: '',
                             linker: null,
                             isSpread: true,
-                            eventCode: -1
+                            eventCode: null
                         }),
                     ])
                 }
@@ -319,7 +319,6 @@ class DeviceWork extends Component {
 
     _draggableLinkerStart = (e) => {
         const { deviceActions } = this.props;
-        console.log('linker start')
         deviceActions.devLinkerDragStart();
         document.addEventListener('mousemove', this._draggableLinkerMove);
     }
@@ -327,7 +326,6 @@ class DeviceWork extends Component {
     _draggableLinkerMove = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        console.log('ld')
         const { deviceActions, selectedLinker } = this.props;
         const x = selectedLinker.getIn(['m', 'x'])
         const y = selectedLinker.getIn(['m', 'y'])
@@ -337,42 +335,47 @@ class DeviceWork extends Component {
         else
             deviceActions.devSelectLinkerVisible(true)
 
+        //링크의 좌우 대각선이 길어지면 놓여지는 지점에 path랑 마우스가 오버랩됨
+        //이를 방지하기 위해 가감하여 계산
         deviceActions.devSelectLinkerChange({
-            x: pos.x,
+            x: x < pos.x ? pos.x-5 : pos.x+5,
             y: y < pos.y ? pos.y - 5 : pos.y + 5
         });
     }
 
+    //링킹 종료 시 호출
     _draggableLinkerEnd = (e) => {
         console.log('linker end')
         const { deviceActions, selectedLinker, linkerVisible, selectedLinkerTarget, targetedBox, selectedBox } = this.props;
         if (selectedLinker && linkerVisible) {
-            const linker = {
-                m: {
-                    x: selectedLinker.getIn(['m', 'x']),
-                    y: selectedLinker.getIn(['m', 'y']) + 11
-                },
-                z: selectedLinkerTarget ? {
-                    x: selectedLinkerTarget.get('x'),
-                    y: selectedLinkerTarget.get('y'),
-                } : {
-                        x: selectedLinker.getIn(['z', 'x']),
-                        y: selectedLinker.getIn(['z', 'y'])
-                    },
-                parentId: selectedLinker.get('parentId'),
-                code: selectedLinker.get('code'),
-                childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
-            }
 
-            deviceActions.devAddLinker(linker)
-
-            deviceActions.devLinkerDockingSrc({
-                id: selectedLinker.get('parentId'),
-                code: selectedLinker.get('code'),
-                childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
-            })
-
+            //링커 추가 작업은 하위 박스가 선택되어졌을 때만 가능하다.
             if (selectedLinkerTarget) {
+                const linker = {
+                    m: {
+                        x: selectedLinker.getIn(['m', 'x']),
+                        y: selectedLinker.getIn(['m', 'y']) + 11
+                    },
+                    z: selectedLinkerTarget ? {
+                        x: selectedLinkerTarget.get('x'),
+                        y: selectedLinkerTarget.get('y'),
+                    } : {
+                            x: selectedLinker.getIn(['z', 'x']),
+                            y: selectedLinker.getIn(['z', 'y'])
+                        },
+                    parentId: selectedLinker.get('parentId'),
+                    code: selectedLinker.get('code'),
+                    childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
+                }
+    
+                deviceActions.devAddLinker(linker)
+    
+                deviceActions.devLinkerDockingSrc({
+                    id: selectedLinker.get('parentId'),
+                    code: selectedLinker.get('code'),
+                    childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
+                })
+
                 console.log(selectedLinkerTarget.get('blockId'))
                 console.log(selectedLinker.get('parentId'))
                 deviceActions.devLinkerDockingDest({
@@ -492,16 +495,31 @@ class DeviceWork extends Component {
         const { deviceActions } = this.props;
         console.log('change src')
         const buttons = box.getIn(['block', 'info', 'buttons'])
+        const type = box.getIn(['block', 'type']);
         const sz = buttons.size
-        buttons.map((button, index) => {
+        const dynamicHeight = box.getIn(['block', 'footRow'])*20 + box.getIn(['block', 'headRow'])*20
+        //버튼 박스, 엔트리 박스인 경우
+        if(type==1 || type ==5){
+            buttons.map((button, index) => {
+                button.get('linker') && deviceActions.devLinkerSrcChange({
+                    code: button.get('code'),
+                    m: {
+                        x: pos.x + 18 + index * 32,
+                        y: pos.y + dynamicHeight + 70 + 18 * (sz - 1),
+                    }
+                })
+            })
+        }
+        else{
+            const button = box.getIn(['block', 'info', 'buttons',0])
             button.get('linker') && deviceActions.devLinkerSrcChange({
                 code: button.get('code'),
                 m: {
-                    x: pos.x + 18 + index * 32,
-                    y: pos.y + box.getIn(['block', 'height']) + 90 + 18 * (sz - 1),
+                    x: pos.x + 18 + 2 * 32,
+                    y: pos.y + dynamicHeight + 55,
                 }
             })
-        })
+        }
     }
 
     _changeLinkerDest = (pos) => {
@@ -519,18 +537,63 @@ class DeviceWork extends Component {
     }
 
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
-    _changeTextBoxInfo = (e, id, name) => {
-        if (this._validationTextBox(e.target.value)) {
-            const { deviceActions } = this.props;
-            this._resize_height(e, id, name);
-            deviceActions.devInputChange({ key: e.target.name, text: e.target.value });
-            deviceActions.devInputTargetChange({ key: e.target.name, text: e.target.value, id: id });
+    _changeTextBoxInfo = (e, id, name, location, row) => {
+        //if (this._validationTextBox(e.target.value)) {
+            this._resize_height(e, id, name, location, row);
+        //}
+    }
+
+    _resize_height = (event, id, key, location, row) => {
+        const { deviceActions, targetedBox } = this.props;
+        const textareaLineHeight = 20;
+        const minRows=1
+        const maxRows=4
+        
+        const previousRows = event.target.rows;
+        event.target.rows = minRows; // reset number of rows in textarea 
+          
+        const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+      
+        if (currentRows === previousRows) {
+          event.target.rows = currentRows;
+        }
+          
+        if (currentRows > maxRows) {
+            event.target.rows = maxRows;
+            event.target.scrollTop = event.target.scrollHeight;
+            return;
+        }
+
+        const changeRow = currentRows < maxRows ? currentRows : maxRows
+
+        //deviceActions.devTargetTextboxHeightChange({ key: key, height: height })
+
+        //사본 변경
+        deviceActions.devInputChange({ key: event.target.name, text: event.target.value });
+        deviceActions.devInputRowChange({ key: location, row:  changeRow});
+
+        //원본 변경
+        deviceActions.devInputTargetChange({ 
+            key: event.target.name, 
+            text: event.target.value, 
+            id: id,
+            rowName: location,
+            row: changeRow
+        });
+
+        //row값이 변경되었다면 linker m position 변경
+        if(row!=currentRows){
+            //버튼에서 연결하는 linker가 있다면
+            this._changeLinkerSrc({
+                x: targetedBox.get('x')+20,
+                y: targetedBox.get('y')+(row< currentRows ? 40 : 0)
+            }, targetedBox)
         }
     }
 
     //버튼 텍스트 박스의 버튼 정보들을 변경하기 위해 사용
     _devBtnInfoChange = (e, id, index) => {
-        //14자 까지만 허용
+        //13자 까지만 허용
         if (e.target.value.length <= 13) {
             const { deviceActions } = this.props;
             deviceActions.devBtnInfoChange({ key: e.target.name, index: index, text: e.target.value });
@@ -546,14 +609,6 @@ class DeviceWork extends Component {
         if (length > MAX) return false;
         else if (rows > MAX_ROW) return false;
         return true;
-    }
-
-    _resize_height = (e, id, key) => {
-        const { deviceActions } = this.props;
-        const height = e.currentTarget.scrollHeight;
-        //deviceActions.devTextBoxHeightChange({id: id, height: height, key: key})
-        deviceActions.devTargetTextboxHeightChange({ key: key, height: height })
-        console.log(height);
     }
 
     //텍스트 박스 삭제

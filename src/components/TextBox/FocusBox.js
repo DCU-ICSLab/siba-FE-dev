@@ -17,13 +17,14 @@ const FocusBox = ({
     const x = selectedBox.get('x');
     const y = selectedBox.get('y');
     const type = selectedBox.getIn(['block', 'type'])
+
+    const baseHeight = (type===1 || type ===5) ? 96 : 83;
     const id = selectedBox.getIn(['block', 'id'])
     const size = type === 1 || type === 5 ? selectedBox.getIn(['block', 'info', 'buttons']).size : 1;
-    const height = 136 + 18 * (size - 1) //base height + button counts*18
-    const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 22 - (size == 9 ? 32 : 0) : 0);
-    const width = 176 + dynamicWidth;
-
-    console.log('ddd:'+ id)
+    const dynamicHeight=selectedBox.getIn(['block', 'headRow'])*20 + selectedBox.getIn(['block', 'footRow'])*20;
+    const height = baseHeight + 18 * (size - 1) +dynamicHeight //base height + button counts*18
+    const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 17 - (size == 9 ? 32 : 0) : 0);
+    const width = 181 + dynamicWidth;
 
     return (
         <g
@@ -62,7 +63,7 @@ const FocusBox = ({
             {!isDragging && (type===1 || type === 5) && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                 return (
                     <g key={index}>
-                        <ellipse cx={x + 38 + index * 32} cy={y + height - 16} rx="14" ry="11"
+                        <ellipse cx={x + 38 + index * 32} cy={y + height - 16.5} rx="14" ry="11"
                             style={{
                                 // fill: 'transparent',
                                 fill: 'transparent',
@@ -79,6 +80,28 @@ const FocusBox = ({
                         </ellipse>
                     </g>
                 )
+            })}
+
+            {/* link button */}
+            {!isDragging && (type===2 || type === 3) &&
+                <g>
+                    <ellipse cx={x + 38 + 2 * 32} cy={y + height -18.5} rx="14" ry="11"
+                        style={{
+                            // fill: 'transparent',
+                            fill: 'transparent',
+                            stroke: '#000',
+                            strokeWidth: 0,
+                            cursor: 'pointer'
+                        }}
+                        //onClick={(e) => console.log('wow')}
+
+                        onMouseEnter={(e) => {
+                            const button = selectedBox.getIn(['block', 'info', 'buttons', 0]);
+                            !button.get('linker') && selectLinker(e, x + 37.5 + 2 * 32, y + height - 18.5, id, button.get('code'))
+                        }}
+                    >
+                    </ellipse>
+                </g>
             })}
 
             {/* link head*/ }
@@ -109,7 +132,7 @@ const FocusBox = ({
             {/* delete */}
             {!isDragging && type !== 5 && <Fragment>
                 <g>
-                    <circle id="delete-btn" cx={x + 193 + dynamicWidth} cy={y} r={8}
+                    <circle id="delete-btn" cx={x + 198 + dynamicWidth} cy={y} r={8}
                         style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.fill = '#000'
@@ -120,7 +143,7 @@ const FocusBox = ({
                         onClick={(e) => { deleteTextBox(e, id) }}>
                     </circle>
                 </g>
-                <g transform={`translate(${x + 187 + dynamicWidth}, ${y - 8})`}>
+                <g transform={`translate(${x + 192 + dynamicWidth}, ${y - 8})`}>
                     <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
                         width={15} height={15}>
                         <div><MdClear style={{ color: '#fff' }} /></div>

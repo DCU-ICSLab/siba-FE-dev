@@ -22,3 +22,14 @@ export const saveDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
         return res;
     });
 }
+
+export const deployDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
+
+    const baseURL = `${API_BASE_URL}/device/${authKey}/deploy`
+
+    return axios.post(baseURL, textBoxGraph)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

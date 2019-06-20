@@ -21,6 +21,7 @@ const DevicePallet = ({
     draggableLinkerEnd }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
+    targetedBox &&console.log(targetedBox.getIn(['block', 'headRow']))
 
     return (
         <div id="DevicePallet">
@@ -33,9 +34,9 @@ const DevicePallet = ({
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={1} />
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={2} />
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={3} />
-                        <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={4} />
+                        {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={4} /> */}
                         <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={5} option={haveEntry}/>
-                        <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} />
+                        {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} /> */}
                     </div>
                 </div>
                 <div className="side-section">
@@ -48,23 +49,32 @@ const DevicePallet = ({
                             </tr>
                         </thead>
                         <tbody>
+                            {!targetedBox &&
+                            <tr>
+                                <td style={{textAlign: 'center'}}>-</td>
+                                <td style={{textAlign: 'center'}}>-</td>
+                            </tr>}
                             {targetedBox &&
                                 <Fragment>
                                     <tr>
-                                        <td>box id</td>
-                                        <td>{targetedBox.getIn(['block', 'id'])}</td>
+                                        <td style={{
+                                            color: '#005CC5'
+                                        }}>box id</td>
+                                        <td style={{
+                                            color: '#005CC5'
+                                        }}>{targetedBox.getIn(['block', 'id'])}</td>
                                     </tr>
                                     <tr>
                                         <td>type</td>
                                         <td>{BUTTON_TYPE.find(x => x.type === type).name}</td>
                                     </tr>
                                     <tr>
-                                        <td>linked</td>
-                                        <td>{type!==5 ? targetedBox.getIn(['block', 'linked']).toString() : 'enable'}</td>
+                                        <td>isLinked</td>
+                                        <td>{(targetedBox.getIn(['block', 'parentBox']).size!==0).toString()}</td>
                                     </tr>
                                     <tr>
-                                        <td>linking</td>
-                                        <td>{targetedBox.getIn(['block', 'linking']).toString()}</td>
+                                        <td>isSpread</td>
+                                        <td>{(type===3 || type===2).toString()}</td>
                                     </tr>
                                     <tr>
                                         <td>head text</td>
@@ -72,11 +82,12 @@ const DevicePallet = ({
                                             <textarea
                                                 spellCheck="false"
                                                 name="preorder"
-                                                style={{ height: targetedBox.getIn(['block', 'height']) }}
-                                                rows={3}
-                                                // cols={20}
+                                                style={{
+                                                    imeMode: 'active' //default는 한글
+                                                }}
+                                                rows={targetedBox.getIn(['block', 'headRow'])}
                                                 value={targetedBox.getIn(['block', 'preorder'])}
-                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height') }}>
+                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height','headRow', targetedBox.getIn(['block', 'headRow'])) }}>
                                             </textarea>
                                         </td>
                                     </tr>
@@ -86,68 +97,170 @@ const DevicePallet = ({
                                             <textarea
                                                 spellCheck="false"
                                                 name="postorder"
-                                                style={{ height: 20 }}
-                                                rows={3}
-                                                // cols={20}
+                                                style={{
+                                                    imeMode: 'active' //default는 한글
+                                                }}
+                                                rows={targetedBox.getIn(['block','footRow'])}
                                                 value={targetedBox.getIn(['block', 'postorder'])}
-                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height') }}>
+                                                onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height', 'footRow', targetedBox.getIn(['block', 'footRow'])) }}>
                                             </textarea>
                                         </td>
                                     </tr>
+                                    {(type===2 || type ===3)  &&
+                                    <Fragment>
+                                        <tr>
+                                            <td>parent id</td>
+                                            <td>{targetedBox.getIn(['block', 'parentBox',0, 'parentId'])}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>child id</td>
+                                            <td>{targetedBox.getIn(['block', 'info', 'buttons', 0, 'linker', 'childId'])}</td>
+                                        </tr>
+                                    </Fragment>}
                                 </Fragment>
                             }
                         </tbody>
                     </table>
                 </div>
+
+                {targetedBox && (type === 1 ) && 
                 <div className="side-section" style={{ marginTop: '10px' }}>
-                    <div className="side-section-title">상위박스 연결 정보</div>
+                    <div className="side-section-title">
+                        <div>상위박스 연결 정보</div>
+                        <span style={{
+                            fontStyle: 'italic',
+                            fontSize: 11
+                        }}>
+                            ( total linked count: <span style={{
+                                fontWeight: 'bold',
+                                color: '#005CC5'
+                            }}>{targetedBox.getIn(['block', 'parentBox']).size}</span> )
+                        </span>
+                    </div>
                     <table className="pv-wrap">
                         <thead>
                             <tr>
-                                <th style={{ width: '20%' }}>idx</th>
-                                <th style={{ width: '40%' }}>parent id</th>
-                                <th style={{ width: '40%' }}>code</th>
+                                <th style={{ width: '10%' }}>No.</th>
+                                <th style={{ width: '90%' }}>detail information</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {targetedBox && targetedBox.getIn(['block', 'parentBox']).map((box, index)=>{
+                            {targetedBox.getIn(['block', 'parentBox']).size === 0 &&
+                            <tr>
+                                <td style={{textAlign: 'center'}}>-</td>
+                                <td style={{textAlign: 'center'}}>-</td>
+                            </tr>}
+
+                            {targetedBox.getIn(['block', 'parentBox']).map((box, index)=>{
+                                console.log(targetedBox.getIn(['block','id']))
                                 return(
                                     <tr key={index}>
                                         <td>{index+1}</td>
-                                        <td>{box.get('parentId')}{box.get('parentId')===0 && <span>{' (entry)'}</span>}</td>
-                                        <td>{box.get('code')}</td>
+                                        <td style={{
+                                            // borderTop: index!==0 ? '1px solid #dadce0' : 'none',
+                                            padding: 0
+                                        }}>
+                                            <table style={{ width: '100%' }}>
+                                                {/* <thead>
+                                                    <tr>
+                                                        <th style={{ width: '50%' }}>property</th>
+                                                        <th style={{ width: '50%' }}>value</th>
+                                                    </tr>
+                                                </thead> */}
+                                                <tbody>
+                                                    <tr>
+                                                        <td>parent id</td>
+                                                        <td>{box.get('parentId')}{box.get('parentId')===0 && <span>{' (entry)'}</span>}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>button idx</td>
+                                                        <td>{box.get('parentId')}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>button event code</td>
+                                                        <td>{box.get('parentId')}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        {/* <td>{box.get('parentId')}</span>}</td>
+                                        <td>{box.get('code')}</td> */}
                                     </tr>
                                 )
                             })}
                         </tbody>
                     </table>
-                </div>
+                </div>}
+
                 {targetedBox && (type === 1 || type === 5) &&
                     <div className="side-section" style={{ marginTop: '10px' }}>
-                        <div className="side-section-title">버튼 속성</div>
+                        <div className="side-section-title">
+                            <div>버튼 속성</div>
+                            <span style={{
+                                fontStyle: 'italic',
+                                fontSize: 11
+                            }}>
+                                ( total button count: <span style={{
+                                    fontWeight: 'bold',
+                                    color: '#005CC5'
+                                }}>{targetedBox.getIn(['block', 'info', 'buttons']).size}</span> )
+                            </span>
+                        </div>
                         <table className="pv-wrap">
                             <thead>
                                 <tr>
                                     <th style={{ width: '10%' }}>No.</th>
-                                    <th style={{ width: '20%' }}>code</th>
-                                    <th style={{ width: '50%' }}>btn name</th>
-                                    <th style={{ width: '20%' }}>child</th>
+                                    <th style={{ width: '90%' }}>detail information</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                                     return (
                                         <tr key={button.get('code')}>
-                                            {/* <td>{index + 1}</td> */}
-                                            <td>{button.get('code')}</td>
-                                            <td>{button.get('eventCode')}</td>
-                                            <td>
-                                                <input
-                                                    name="name"
-                                                    value={button.get('name')}
-                                                    onChange={(e) => { devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index) }} />
+                                            <td>{index+1}</td>
+                                            <td style={{
+                                                padding: 0
+                                            }}>
+                                                <table style={{ width: '100%' }}>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style={{
+                                                                color: '#005CC5'
+                                                            }}>event code</td>
+                                                            <td style={{
+                                                                color: '#005CC5'
+                                                            }}>{button.get('eventCode')}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>child id</td>
+                                                            <td>{button.getIn(['linker', 'childId'])}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>text</td>
+                                                            <td>
+                                                                <input
+                                                                style={{
+                                                                    imeMode: 'active' //default는 한글
+                                                                }}
+                                                                name="name"
+                                                                value={button.get('name')}
+                                                                onChange={(e) => { 
+                                                                    devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index) }
+                                                                } />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style={{
+                                                                // textDecoration: button.get('linker') ? 'line-through' : 'none'
+                                                            }}>sensing</td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </td>
-                                            <td>{button.getIn(['linker', 'childId'])}</td>
+                                            {/* <td>{index + 1}</td> */}
+                                            {/* <td>{button.get('code')}</td> */}
                                         </tr>
                                     )
                                 })}
