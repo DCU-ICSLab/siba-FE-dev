@@ -1,10 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import { SideBar, SibaContent, Siba, DeviceAddBox, SibaFrame, SibaHeader, SibaPhone } from 'components';
+import { 
+    SideBar, 
+    SibaContent, 
+    Siba, 
+    DeviceAddBox, 
+    SibaFrame, 
+    SibaHeader, 
+    SibaPhone,
+    ModalWrapper } from 'components';
 import { DeviceWork } from 'containers';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
+
+var copyTimeout = null;
 
 class Device extends Component {
 
@@ -51,7 +61,25 @@ class Device extends Component {
         basicActions.deviceWorkBoxChange(!deviceWorkBox);
     }
 
+    _modalChange = () => {
+        const { basicActions, codeModal } = this.props;
+        basicActions.changeCodeModal(!codeModal);
+    }
+
+    _copyChange = () => {
+        const { basicActions } = this.props;
+        if(copyTimeout) clearInterval(copyTimeout);
+        basicActions.changeCopy(true);
+        copyTimeout = setTimeout(()=>{
+            basicActions.changeCopy(false);
+        }, 4000);
+    }
+
     componentDidMount() {
+    }
+
+    componentWillUnmount() {
+        if(copyTimeout) clearInterval(copyTimeout);
     }
 
     render() {
@@ -64,6 +92,9 @@ class Device extends Component {
             deviceAddBox,
             deviceWorkBox,
             userState,
+            codeModal,
+            selectedDevice,
+            copy,
             location } = this.props;
 
         const sbPos = {
@@ -100,6 +131,14 @@ class Device extends Component {
                             phoneAddOnFunc={this._phoneAddOnToggle}
                             phoneAddOnTab={phoneAddOnTab}
                             phoneAddOnTabFunc={this._phoneAddOnTabToggle} />}
+
+                    <ModalWrapper
+                    copy={copy}
+                    copyChange={this._copyChange}
+                    codeModal={codeModal} 
+                    closeModal={this._modalChange} 
+                    selectedDevice={selectedDevice}>
+                    </ModalWrapper>
                 </SibaFrame>
             </Fragment>
         )
@@ -114,10 +153,13 @@ export default withRouter(
             sb: state.basic.getIn(['frameState', 'sb']),
             sbTalk: state.basic.getIn(['frameState', 'sbTalk']),
             sbCall: state.basic.getIn(['frameState', 'sbCall']),
+            codeModal: state.basic.getIn(['frameState', 'codeModal']),
+            copy: state.basic.getIn(['frameState', 'copy']),
             phoneAddOn: state.basic.getIn(['frameState', 'phoneAddOn']),
             phoneAddOnTab: state.basic.getIn(['frameState', 'phoneAddOnTab']),
             deviceAddBox: state.basic.getIn(['frameState', 'deviceAddBox']),
             deviceWorkBox: state.basic.getIn(['frameState', 'deviceWorkBox']),
+            selectedDevice: state.device.get('selectedDevice'),
             userState: state.auth.get('userState'),
         }),
         // props 로 넣어줄 액션 생성함수

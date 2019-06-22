@@ -30,6 +30,7 @@ class DeviceWork extends Component {
                             name: '',
                             linker: null,
                             isSpread: false,
+                            idx: 0,
                             eventCode: eventCodeIdCounter
                         }),
                     ])
@@ -37,12 +38,28 @@ class DeviceWork extends Component {
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
                 deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
                 break;
-            case 3: //Entry 일 때
+            case 2: //dynamic
                 additionalInfo = {
                     buttons: List([
                         Map({
                             code: codeIdCounter,
                             name: '',
+                            idx: 0,
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                    ])
+                }
+                deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                break;
+            case 3: //time
+                additionalInfo = {
+                    buttons: List([
+                        Map({
+                            code: codeIdCounter,
+                            name: '',
+                            idx: 0,
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -57,6 +74,7 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
+                            idx: 0,
                             linker: null,
                             isSpread: false,
                             eventCode: eventCodeIdCounter
@@ -544,7 +562,7 @@ class DeviceWork extends Component {
     }
 
     _resize_height = (event, id, key, location, row) => {
-        const { deviceActions, targetedBox } = this.props;
+        const { deviceActions, targetedBox, selectedBox } = this.props;
         const textareaLineHeight = 20;
         const minRows=1
         const maxRows=4
@@ -583,6 +601,14 @@ class DeviceWork extends Component {
 
         //row값이 변경되었다면 linker m position 변경
         if(row!=currentRows){
+
+            //focus 박스가 존재한다면
+            if(selectedBox){
+                deviceActions.devInputSelectedRowChange({
+                    key: location, 
+                    row: changeRow
+                })
+            }
             //버튼에서 연결하는 linker가 있다면
             this._changeLinkerSrc({
                 x: targetedBox.get('x')+20,
@@ -658,12 +684,24 @@ class DeviceWork extends Component {
 
     _saveDeviceTextBoxGraph = () => {
         const { deviceActions, selectedDevice, devAuthKey } = this.props;
+        console.log(devAuthKey)
         deviceActions.saveDeviceTextBoxGraph(devAuthKey, selectedDevice)
+    }
+
+    _deployDeviceTextBoxGraph = () => {
+        //저장이 안됬으면 수행불가능하게 만들어야
+        const { deviceActions, devAuthKey } = this.props;
+        deviceActions.deployDeviceTextBoxGraph(devAuthKey);
+    }
+
+    _modalChange = () => {
+        const { basicActions, codeModal } = this.props;
+        basicActions.changeCodeModal(!codeModal);
     }
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
+        //deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
     }
 
     componentWillUnmount() {
@@ -710,7 +748,9 @@ class DeviceWork extends Component {
                         targetedBox={targetedBox}
                         draggableLinkerEnd={this._draggableLinkerEnd}
                         haveEntry={haveEntry}
-                        saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}>
+                        saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}
+                        deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
+                        modalChange={this._modalChange}>
 
                         <g>
                             {pallet.map((boxInfo, index) => {
@@ -788,6 +828,7 @@ export default withRouter(
             selectedLinker: state.device.get('selectedLinker'),
             targetedBox: state.device.get('targetedBox'),
             sb: state.basic.getIn(['frameState', 'sb']),
+            codeModal: state.basic.getIn(['frameState', 'codeModal']),
             dragType: state.device.get('dragType'),
             isDragging: state.device.get('isDragging'),
             linkerVisible: state.device.get('linkerVisible'),

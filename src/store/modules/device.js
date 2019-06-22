@@ -25,6 +25,7 @@ const DEV_SELECT_CP_LINKER = 'device/DEV_SELECT_CP_LINKER'
 
 const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
 const DEV_INPUT_ROW_CHANGE = 'device/DEV_INPUT_ROW_CHANGE';
+const DEV_INPUT_SELECTED_ROW_CHANGE = 'device/DEV_INPUT_SELECTED_ROW_CHANGE'
 
 const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE';
 
@@ -51,6 +52,7 @@ const DEV_LINKER_DELETE = 'device/DEV_LINKER_DELETE';
 const SET_ENTRY = 'device/SET_ENTRY';
 const GET_DEVICE_INFO = 'device/GET_DEVICE_INFO';
 const SAVE_DEVICE_TEXT_BOX_GRAPH = 'device/SAVE_DEVICE_TEXT_BOX_GRAPH'
+const DEPLOY_DEVICE_TEXT_BOX_GRAPH = 'device/DEPLOY_DEVICE_TEXT_BOX_GRAPH'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -73,6 +75,7 @@ export const devTargetCopyLinker = createAction(DEV_TARGET_CP_LINKER);
 export const devSelectCopyLinker = createAction(DEV_SELECT_CP_LINKER);
 export const devInputChange = createAction(DEV_INPUT_CHANGE);
 export const devInputRowChange = createAction(DEV_INPUT_ROW_CHANGE);
+export const devInputSelectedRowChange = createAction(DEV_INPUT_SELECTED_ROW_CHANGE)
 export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
 export const devBtnInfoChange = createAction(DEV_BTN_INFO_CHANGE);
 export const devBtnInfoTargetChange = createAction(DEV_BTN_INFO_TARGET_CHANGE);
@@ -96,7 +99,8 @@ export const devLinkerSrcDelete = createAction(DEV_LINKER_SRC_DELETE)
 export const devLinkerDelete = createAction(DEV_LINKER_DELETE)
 export const setEntry = createAction(SET_ENTRY)
 export const getDeviceInfo = createAction(GET_DEVICE_INFO, DeviceAPI.getDeviceDetail)
-export const saveDeviceTextBoxGraph = createAction(GET_DEVICE_INFO, DeviceAPI.saveDeviceTextBoxGraph)
+export const saveDeviceTextBoxGraph = createAction(SAVE_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.saveDeviceTextBoxGraph)
+export const deployDeviceTextBoxGraph = createAction(DEPLOY_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.deployDeviceTextBoxGraph)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -315,6 +319,11 @@ export default handleActions({
     //사본 Row 변경
     [DEV_INPUT_ROW_CHANGE]: (state, action) => {
         return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.row)
+    },
+
+    //사본 Row 변경
+    [DEV_INPUT_SELECTED_ROW_CHANGE]: (state, action) => {
+        return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.row)
     },
 
     //원본
@@ -546,6 +555,15 @@ export default handleActions({
 
     ...pender({
         type: SAVE_DEVICE_TEXT_BOX_GRAPH,
+        onSuccess: (state, action) => {
+            return state.set('serverResponse', Map({
+                msg: action.payload.data.msg
+            }));
+        },
+    }),
+
+    ...pender({
+        type: DEPLOY_DEVICE_TEXT_BOX_GRAPH,
         onSuccess: (state, action) => {
             return state.set('serverResponse', Map({
                 msg: action.payload.data.msg

@@ -13,6 +13,7 @@ import HubNav from './HubNav/HubNav';
 import BoxButton from './BoxButton/BoxButton';
 import VirtualHub from './VirtualHub/VirtualHub';
 import VirtualHubAddBtn from './VirtualHubAddBtn/VirtualHubAddBtn';
+import ModalWrapper from './ModalWrapper/ModalWrapper';
 
 export {
     SibaFrame,
@@ -29,5 +30,6 @@ export {
     HubNav,
     VirtualHub,
     SideBar,
-    VirtualHubAddBtn
+    VirtualHubAddBtn,
+    ModalWrapper
 }

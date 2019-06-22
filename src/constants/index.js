@@ -15,6 +15,12 @@ export const BUTTON_TYPE = [{
     footText: '수행할 명령을 클릭 해주세요.'
 },
 {
+    type: 2,
+    name: 'dynamic',
+    headText: '값을 입력 해주세요.',
+    footText: ''
+},
+{
     type: 3,
     name: 'time',
     headText: '시간을 설정해주세요.',

@@ -76,6 +76,30 @@ export const DraggableTextBox = ({ dragStart, dragOver, type, option }) => {
     )
 }
 
+export const DynamicTextBoxInner = ({ x, y, buttons, preorder, postorder }) => {
+    return (
+        <g className="inner">
+            <g transform={`translate(${x}, ${y})`}>
+                <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
+                    width={175} height={12}>
+                    <div xmlns="http://www.w3.org/1999/xhtml">
+                        <div className="text-box-inner">
+                            <div style={{
+                                marginBottom: 20
+                            }}>
+                                <span className="textarea">{preorder}</span>
+                            </div>
+                            <div>
+                                <span className="textarea">{postorder}</span>
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+            </g>
+        </g>
+    )
+}
+
 export const TimeTextBoxInner = ({ x, y, buttons, preorder, postorder }) => {
     return (
         <g className="inner">

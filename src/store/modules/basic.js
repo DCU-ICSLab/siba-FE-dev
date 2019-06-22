@@ -9,6 +9,8 @@ const SB_TALK = 'basic/SB_TALK';
 const SB_CALL = 'basic/SB_CALL';
 const DEVICE_ADD_BOX_CHANGE = 'basic/DEVICE_ADD_BOX_CHANGE';
 const DEVICE_WORK_BOX_CHANGE = 'basic/DEVICE_WORK_BOX_CHANGE';
+const CHANGE_CODE_MODAL = 'basic/CHANGE_CODE_MODAL';
+const CHANGE_COPY = 'basic/CHANGE_COPY'
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -18,6 +20,8 @@ export const sbTalk = createAction(SB_TALK);
 export const sbCall = createAction(SB_CALL);
 export const deviceAddBoxChange = createAction(DEVICE_ADD_BOX_CHANGE);
 export const deviceWorkBoxChange = createAction(DEVICE_WORK_BOX_CHANGE);
+export const changeCodeModal = createAction(CHANGE_CODE_MODAL);
+export const changeCopy = createAction(CHANGE_COPY);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -29,6 +33,8 @@ const initialState = Map({
         phoneAddOnTab: true,
         deviceAddBox: false,
         deviceWorkBox: false,
+        codeModal: false,
+        copy: false,
     }),
     
 });
@@ -61,6 +67,14 @@ export default handleActions({
 
     [DEVICE_WORK_BOX_CHANGE]: (state, action) => {
         return state.setIn(['frameState', 'deviceWorkBox'], action.payload);
+    },
+
+    [CHANGE_CODE_MODAL]: (state, action) => {
+        return state.setIn(['frameState', 'codeModal'], action.payload);
+    },
+
+    [CHANGE_COPY]: (state, action) => {
+        return state.setIn(['frameState', 'copy'], action.payload);
     },
 
 }, initialState);

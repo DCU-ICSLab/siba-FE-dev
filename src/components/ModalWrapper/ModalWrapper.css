@@ -1,0 +1,172 @@
+#ModalWrapper{
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: default;
+}
+
+#ModalWrapper header{
+    background-color: #fff;
+    padding: 5px;
+    border-bottom: 1px solid #dadce0;
+    font-size: 14px;
+}
+
+#ModalWrapper header .title{
+    border-left: 3px solid #000;
+    padding-left: 7px;
+    margin-left: 5px;
+    font-weight: 500;
+}
+
+#ModalWrapper .close-btn{
+    position: absolute;
+    background-color: transparent;
+    top:0;
+    right: 0;
+    border: 0;
+    outline: none;
+    height: 31px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#ModalWrapper .close-btn:hover{
+    background-color: #dadce0;
+    color: #fff
+}
+
+#ModalWrapper .code-box{
+    position: absolute;
+    top:31px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+}
+
+#ModalWrapper .code-box-head{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 25px;
+    /* background-color: #17A1A5 */
+    background-color: #F1F1F1;
+}
+
+#ModalWrapper .category-btn{
+    background-color: #fff;
+    border: 0;
+    height: 22px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    outline: 0;
+    cursor: default;
+}
+
+#ModalWrapper .disabled{
+    background-color: #E4E4E4;
+    color: #555;
+    cursor: pointer;
+}
+
+#ModalWrapper .disabled:hover{
+    background-color: #fff;
+    color: #000;
+}
+
+#ModalWrapper .tool-bar{
+    position: absolute;
+    top: 25px;
+    height: 29px;
+    width: 100%;
+    background-color: #fff;
+    
+}
+
+#ModalWrapper .code-box-body{
+    border: 1px solid #dadce0;
+    font-size: 14px;
+    font-family: 'DotumChe'; 
+    position: absolute;
+    /* padding: 5px 15px; */
+    /* width: 100%; */
+    left: 5px;
+    right: 5px;
+    top: 54px;
+    bottom: 15px;
+    background-color: #F8F8F8;
+    overflow: auto;
+}
+
+#ModalWrapper .code-box-foot{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 25px;
+    padding-top: 5px;
+    font-size: 11px;
+    /* background-color: #006468 */
+    background-color: #F1F1F1;
+}
+
+#ModalWrapper .toolbtn{
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #dadce0;
+    background-color: #fff;
+    color: #555;
+    font-size: 11px;
+    border-radius: 2px;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+#ModalWrapper .toolbtn:hover{
+    background-color: #E4E4E4;
+}
+
+#ModalWrapper .copy-st{
+    font-family: 'Noto Sans KR', sans-serif;
+    font-style: italic;
+    padding-top: 5px;
+    padding-left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #DBFFDB;
+    height: 25px;
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

@@ -4,7 +4,8 @@ import './TextBox.css';
 import TimeTextBox from './TimeTextBox';
 import ButtonTextBox from './ButtonTextBox';
 import EntryTextBox from './EntryTextBox';
-import EndBox from './EndBox';
+import DynamicTextBox from './DynamicTextBox';
+//import EndBox from './EndBox';
 
 //dumb 컴포넌트지만 rendering 최적화를 위해 class로 구성
 class TextBox extends Component {
@@ -22,6 +23,15 @@ class TextBox extends Component {
             <Fragment>
                 {type === 1 && 
                 <ButtonTextBox 
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}/>}
+                {type === 2 && 
+                <DynamicTextBox
                 boxInfo={boxInfo}
                 dragStart={dragStart}
                 dropSwap={dropSwap}
@@ -47,7 +57,7 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}/>}
-                {type === 6 && 
+                {/* {type === 6 && 
                 <EndBox
                 boxInfo={boxInfo}
                 dragStart={dragStart}
@@ -55,7 +65,7 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}/>} */}
             </Fragment>
         )
     }

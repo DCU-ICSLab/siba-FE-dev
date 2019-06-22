@@ -95,7 +95,7 @@ const FocusBox = ({
                         }}
                         //onClick={(e) => console.log('wow')}
 
-                        onMouseEnter={(e) => {
+                        onMouseOver={(e) => {
                             const button = selectedBox.getIn(['block', 'info', 'buttons', 0]);
                             !button.get('linker') && selectLinker(e, x + 37.5 + 2 * 32, y + height - 18.5, id, button.get('code'))
                         }}
