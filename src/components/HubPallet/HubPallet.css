@@ -27,7 +27,12 @@
 }
 
 #HubPallet .wrapper{
-    margin-top: 14px;
+    margin-top: 6px;
     flex-wrap: wrap;
     display: flex;
+}
+
+#HubPallet .hub-list-info{
+    padding-top: 10px;
+    padding-left: 27px;
 }

@@ -3,7 +3,6 @@ import {
     SideBar, 
     SibaContent, 
     Siba, 
-    DeviceAddBox, 
     SibaFrame, 
     SibaHeader, 
     SibaPhone,
@@ -51,10 +50,10 @@ class Device extends Component {
         basicActions.phoneAddOnTabToggle(!phoneAddOnTab);
     }
 
-    _deviceAddBoxChange = () => {
-        const { basicActions, deviceAddBox } = this.props;
-        basicActions.deviceAddBoxChange(!deviceAddBox);
-    }
+    // _deviceAddBoxChange = () => {
+    //     const { basicActions, deviceAddBox } = this.props;
+    //     basicActions.deviceAddBoxChange(!deviceAddBox);
+    // }
 
     _deviceWorkBoxChange = () => {
         const { basicActions, deviceWorkBox } = this.props;
@@ -112,7 +111,8 @@ class Device extends Component {
                         deviceAddBoxOpenFunc={this._deviceAddBoxChange}
                         deviceAddBox={deviceAddBox}
                         deviceWorkBox={deviceWorkBox}
-                        deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}>
+                        deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
+                        hubList={userState.get('hubInfo')}>
                     </SideBar>
                     <SibaContent
                         style={{
@@ -121,7 +121,6 @@ class Device extends Component {
                             marginRight: '15px'
                             // left: sbState ? '240px' : '30px'
                         }}>
-                        {deviceAddBox && <DeviceAddBox deviceAddBoxChangeFunc={this._deviceAddBoxChange}></DeviceAddBox>}
                         <DeviceWork location={location} sbPos={sbPos}/>
                     </SibaContent>
                     <Siba sibaTalkFunc={this._sibaTalk} sbTalk={sbTalk} sibaCallFunc={this._sibaCall} />

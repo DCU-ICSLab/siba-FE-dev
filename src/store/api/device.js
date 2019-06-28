@@ -33,3 +33,14 @@ export const deployDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
         return res;
     });
 }
+
+export const getDeviceAuthKey = () =>{
+
+    const baseURL = `${API_BASE_URL}/device/authkey`
+
+    return axios.post(baseURL)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

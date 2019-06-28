@@ -5,15 +5,16 @@ import SibaContent from './SibaContent/SibaContent';
 import Siba from './Siba/Siba';
 import SibaHeader from './SibaHeader/SibaHeader';
 import SibaPhone from './SibaPhone/SibaPhone';
-import DeviceAddBox from './DeviceAddBox/DeviceAddBox';
 import DeviceWorkBox from './DeviceWorkBox/DeviceWorkBox';
 import DevicePallet from './DevicePallet/DevicePallet';
+import SensingPallet from './SensingPallet/SensingPallet';
 import HubPallet from './HubPallet/HubPallet';
 import HubNav from './HubNav/HubNav';
 import BoxButton from './BoxButton/BoxButton';
 import VirtualHub from './VirtualHub/VirtualHub';
 import VirtualHubAddBtn from './VirtualHubAddBtn/VirtualHubAddBtn';
 import ModalWrapper from './ModalWrapper/ModalWrapper';
+import DeviceAddModalWrapper from './DeviceAddModalWrapper/DeviceAddModalWrapper';
 
 export {
     SibaFrame,
@@ -21,9 +22,9 @@ export {
     SibaContent,
     Siba,
     SibaPhone,
-    DeviceAddBox,
     BoxButton,
     DevicePallet,
+    SensingPallet,
     DeviceWorkBox,
     SibaHeader,
     HubPallet,
@@ -31,5 +32,6 @@ export {
     VirtualHub,
     SideBar,
     VirtualHubAddBtn,
-    ModalWrapper
+    ModalWrapper,
+    DeviceAddModalWrapper
 }

@@ -54,6 +54,11 @@ const GET_DEVICE_INFO = 'device/GET_DEVICE_INFO';
 const SAVE_DEVICE_TEXT_BOX_GRAPH = 'device/SAVE_DEVICE_TEXT_BOX_GRAPH'
 const DEPLOY_DEVICE_TEXT_BOX_GRAPH = 'device/DEPLOY_DEVICE_TEXT_BOX_GRAPH'
 
+const DEV_BTN_SIDE_TYPE_CHANGE = 'device/DEV_BTN_SIDE_TYPE_CHANGE'
+const DEV_CP_BTN_TYPE = 'device/DEV_CP_BTN_TYPE'
+
+const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
+
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
@@ -101,6 +106,10 @@ export const setEntry = createAction(SET_ENTRY)
 export const getDeviceInfo = createAction(GET_DEVICE_INFO, DeviceAPI.getDeviceDetail)
 export const saveDeviceTextBoxGraph = createAction(SAVE_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.saveDeviceTextBoxGraph)
 export const deployDeviceTextBoxGraph = createAction(DEPLOY_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.deployDeviceTextBoxGraph)
+export const devBtnSideTypeChange = createAction(DEV_BTN_SIDE_TYPE_CHANGE)
+export const devCopyBtnType = createAction(DEV_CP_BTN_TYPE)
+
+export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -149,7 +158,8 @@ const initialState = Map({
     //사이드바에서 최초 드래그 시 타입 식별을 위해 사용
     dragType: 1,
 
-    //hubInfo: List(),
+    //페이지 정보
+    page: 1,
 
     serverResponse:Map({
         msg: null,
@@ -257,7 +267,8 @@ export default handleActions({
                     linker: null,
                     idx: buttons.size,
                     isSpread: false,
-                    eventCode: action.payload.eventCode
+                    eventCode: action.payload.eventCode,
+                    type: '1'
                 })
             )
         )
@@ -274,9 +285,23 @@ export default handleActions({
                     isSpread: false,
                     idx: buttons.size,
                     name: '',
-                    linker: null
+                    linker: null,
+                    type: '1'
                 })
             )
+        )
+    },
+
+    [DEV_BTN_SIDE_TYPE_CHANGE]: (state, action) => {
+        return state.setIn(['selectedDevice', 'pallet', 
+        state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons',action.payload.idx, 'type'], 
+            action.payload.type
+        )
+    },
+
+    [DEV_CP_BTN_TYPE]: (state, action) => {
+        return state.setIn(['targetedBox', 'block', 'info','buttons', action.payload.idx, 'type'], 
+            action.payload.type
         )
     },
 
@@ -287,7 +312,8 @@ export default handleActions({
                     code: action.payload.code,
                     eventCode: action.payload.eventCode,
                     name: '',
-                    linker: null
+                    linker: null,
+                    type: '1'
                 })
             )
         )
@@ -496,6 +522,10 @@ export default handleActions({
         return state.setIn(['selectedDevice', 'haveEntry'],true);
     },
 
+    [DEV_PAGE_SWITCHING]: (state, action) => {
+        return state.set('page',action.payload.page);
+    },
+    
     //개발자 서버로 부터 디바이스 정보, 텍스트 박스 체인 정보를 받아옴
     ...pender({
         type: GET_DEVICE_INFO,
@@ -528,6 +558,7 @@ export default handleActions({
                                     name:btn.name,
                                     idx: btn.idx,
                                     isSpread: btn.isSpread,
+                                    type: btn.type,
                                     linker: btn.linker ? Map({
                                         childId: btn.linker.childId,
                                         code: btn.linker.code,

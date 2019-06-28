@@ -3,12 +3,14 @@ import './VirtualHub.css';
 import { MdSettings, MdAdd } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-const LogicalDeviceAddBtn = ({}) => {
+const LogicalDeviceAddBtn = ({deviceAddModalChange}) => {
 
     return (
         <div id="LogicalDeviceAddBtn">
             <div className="add">
-                <span><MdAdd size={36} style={{marginTop: 6}}/></span>
+                <button onClick={deviceAddModalChange}>
+                    <MdAdd size={36} style={{marginTop: 4}}/>
+                </button>
             </div>
         </div>
     )
@@ -41,7 +43,7 @@ const LogicalDevice = ({ dev }) => {
     )
 }
 
-const VirtualHub = ({ hub }) => {
+const VirtualHub = ({ hub, deviceAddModalChange }) => {
 
     const size = hub.get('devices').size;
 
@@ -62,7 +64,7 @@ const VirtualHub = ({ hub }) => {
                             return <LogicalDevice dev={dev} key={index}/>
                         })
                     }
-                    {size !== 9 && <LogicalDeviceAddBtn/>}
+                    {size !== 9 && <LogicalDeviceAddBtn deviceAddModalChange={()=>deviceAddModalChange(hub.get('vhubId'))}/>}
                 </div>
                 <footer>
                     <span className="total">Total <strong>{`(${size}/9)`}</strong></span>

@@ -152,7 +152,7 @@
     /* width: 147px; */
 }
 
-#DevicePallet input{
+#DevicePallet .btn-name-in{
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 11px;
     font-weight: 400;
@@ -179,3 +179,38 @@
     background-color: #959596;
     color: #fff;
 }
+
+#DevicePallet .btn-option{
+    display: block;
+    /* width: 100px; */
+    text-align: left;
+}
+
+#DevicePallet .btn-option > label{
+    position: relative;
+    display: block;
+}
+
+#DevicePallet .btn-option > label > span{
+    position: absolute;
+}
+
+#DevicePallet .sensing-def{
+    outline: none;
+    float: right;
+    font-size: 11px;
+    padding: 2px 5px;
+    border-radius: 2px;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    background-color: #4994DB;
+}
+
+#DevicePallet .sensing-def:hover{
+    background-color: #7DB2E5;
+}
+
+/* #DevicePallet .btn-option > label > input{
+    background-color: transparent;
+} */

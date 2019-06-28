@@ -148,17 +148,26 @@
     position: absolute;
     top: 5px;
     left: 10px;
-    border-radius: 2px;
+    
     height: 48px;
     width: 118px;
-    cursor: pointer;
     background-color: transparent;
-    border: 2px dashed #AAB0BF;
-    color: #AAB0BF;
-    text-align: center;
+    
+    
 }
 
-#LogicalDeviceAddBtn .add:hover{
+#LogicalDeviceAddBtn .add > button{
+    text-align: center;
+    border: 2px dashed #AAB0BF;
+    border-radius: 2px;
+    color: #AAB0BF;
+    outline: none;
+    background-color: transparent;
+    width: 100%;
+    cursor: pointer;
+}
+
+#LogicalDeviceAddBtn .add > button:hover{
     background-color: transparent;
     border: 2px dashed #fff;
     color: #fff;

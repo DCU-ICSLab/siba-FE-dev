@@ -7,9 +7,11 @@ import * as AuthAPI from 'store/api/auth';
 
 /*--------action type--------*/
 const KAKAO_AUTH = 'auth/KAKAO_AUTH'; // kakao 로그인
+const CREATE_DEVICE = 'auth/CREATE_DEVICE'; // kakao 로그인
 
 /*--------create action--------*/
 export const kakaoAuth = createAction(KAKAO_AUTH, AuthAPI.getUserInfo);
+export const createDevice = createAction(CREATE_DEVICE, AuthAPI.createDevice);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -40,4 +42,13 @@ export default handleActions({
         },
     }),
 
+    ...pender({
+        type: CREATE_DEVICE,
+        onSuccess: (state, action) => {
+            const idx = state.getIn(['userState', 'hubInfo']).findIndex(hub => hub.get('vhubId') === action.payload.data.data.vHubId)
+            
+            return state.updateIn(['userState', 'hubInfo', idx, 'devices'], devices => 
+                devices.push(Map(action.payload.data.data)));
+        },
+    })
 }, initialState);

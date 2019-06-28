@@ -20,6 +20,7 @@ const DevicePallet = ({
     saveDeviceTextBoxGraph,
     deployDeviceTextBoxGraph,
     modalChange,
+    buttonTypeChange,
     draggableLinkerEnd }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -249,6 +250,7 @@ const DevicePallet = ({
                                                                 <td>text</td>
                                                                 <td>
                                                                     <input
+                                                                        className="btn-name-in"
                                                                         style={{
                                                                             imeMode: 'active' //default는 한글
                                                                         }}
@@ -263,8 +265,45 @@ const DevicePallet = ({
                                                             <tr>
                                                                 <td style={{
                                                                     // textDecoration: button.get('linker') ? 'line-through' : 'none'
-                                                                }}>sensing</td>
+                                                                }}>type</td>
                                                                 <td>
+                                                                    <form className="btn-option">
+                                                                        <label htmlFor="ctrl">
+                                                                            <input
+                                                                            id="ctrl"
+                                                                            type="radio" 
+                                                                            name="option"
+                                                                            value="1"
+                                                                            checked={button.get('type')==='1'}
+                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
+                                                                            ></input><span>제어</span>
+                                                                        </label>
+                                                                        <label htmlFor="sensing">
+                                                                            <input
+                                                                            id="sensing"
+                                                                            type="radio" 
+                                                                            name="option"
+                                                                            value="2"
+                                                                            checked={button.get('type')==='2'}
+                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
+                                                                            ></input>
+                                                                            <span>센싱</span>
+                                                                            {
+                                                                                button.get('type')==='2' &&
+                                                                                <button className="sensing-def">센싱 정의</button>
+                                                                            }
+                                                                        </label>
+                                                                        <label htmlFor="reservation">
+                                                                            <input 
+                                                                            id="reservation"
+                                                                            type="radio" 
+                                                                            name="option"
+                                                                            value="3"
+                                                                            checked={button.get('type')==='3'}
+                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
+                                                                            ></input><span>예약</span>
+                                                                        </label>
+                                                                    </form>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -327,7 +366,7 @@ const DevicePallet = ({
 
             {/* pallet */}
             <div className="overflow-trick"></div>
-            <div className="pallet" onScroll={scrollFunc} id="tt">
+            <div className="pallet" onScroll={scrollFunc}>
                 <div className="background">
                 </div>
                 <svg

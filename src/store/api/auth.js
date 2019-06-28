@@ -12,3 +12,17 @@ export const getUserInfo = () =>{
         return res;
     });
 }
+
+// 새 디바이스 생성
+export const createDevice = (deviceInfo) =>{
+
+    const baseURL = `${API_BASE_URL}/device`
+
+    console.log(deviceInfo)
+
+    return axios.post(baseURL, deviceInfo)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

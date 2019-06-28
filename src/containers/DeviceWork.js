@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
 import * as deviceActions from 'store/modules/device';
-import { DeviceWorkBox, DevicePallet } from 'components';
+import { DeviceWorkBox, DevicePallet, SensingPallet } from 'components';
 import { Map, List } from 'immutable';
 import { BUTTON_TYPE } from 'constants/index';
 import DraggableLinker from 'components/TextBox/DraggableLinker';
@@ -31,6 +31,7 @@ class DeviceWork extends Component {
                             linker: null,
                             isSpread: false,
                             idx: 0,
+                            type: 1,
                             eventCode: eventCodeIdCounter
                         }),
                     ])
@@ -45,6 +46,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
+                            type: 0,
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -60,6 +62,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
+                            type: 0,
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -75,6 +78,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
+                            type: 1,
                             linker: null,
                             isSpread: false,
                             eventCode: eventCodeIdCounter
@@ -274,7 +278,6 @@ class DeviceWork extends Component {
                 parentId: selectedLinker.get('parentId'),
                 code: selectedLinker.get('code')
             })
-
         selectedBox &&
             deviceActions.devSelectCopyLinker({
                 parentId: selectedLinker.get('parentId'),
@@ -699,16 +702,35 @@ class DeviceWork extends Component {
         basicActions.changeCodeModal(!codeModal);
     }
 
+    _pageSwitching = (page) => {
+        const { deviceActions } = this.props;
+        deviceActions.pageSwitching({page: page})
+    }
+
+    _buttonTypeChange = (e, idx) => {
+        const { deviceActions, targetedBox } = this.props;
+        deviceActions.devBtnSideTypeChange({
+            idx: idx,
+            id: targetedBox.getIn(['block', 'id']),
+            type: e.target.value
+        });
+        deviceActions.devCopyBtnType({
+            idx: idx,
+            type: e.target.value
+        })
+    }
+
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        //deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
+        deviceActions.pageSwitching({page: 1})
+        deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
     }
 
     componentWillUnmount() {
 
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    /*shouldComponentUpdate(nextProps, nextState) {
         const pallet = nextProps.pallet !== this.props.pallet;
         const linkers = nextProps.linkers !== this.props.linkers;
         const selectedBox = nextProps.selectedBox !== this.props.selectedBox;
@@ -716,7 +738,7 @@ class DeviceWork extends Component {
         const linkerVisible = nextProps.linkerVisible !== this.props.linkerVisible;
         const selectedLinker = nextProps.selectedLinker !== this.props.selectedLinker;
         return pallet || selectedBox || targetedBox || linkers || selectedLinker || linkerVisible;
-    }
+    }*/
 
     render() {
 
@@ -730,13 +752,14 @@ class DeviceWork extends Component {
             linkerVisible,
             haveEntry,
             vHubId,
-            devName
+            devName,
+            page
         } = this.props;
 
         return (
             <Fragment>
-                <DeviceWorkBox vHubId={vHubId} devName={devName}>
-                    <DevicePallet
+                <DeviceWorkBox vHubId={vHubId} devName={devName} pageSwitching={this._pageSwitching} page={page}>
+                    {page === 1 && <DevicePallet
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
                         drop={this._drop}
@@ -750,7 +773,8 @@ class DeviceWork extends Component {
                         haveEntry={haveEntry}
                         saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}
                         deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
-                        modalChange={this._modalChange}>
+                        modalChange={this._modalChange}
+                        buttonTypeChange={this._buttonTypeChange}>
 
                         <g>
                             {pallet.map((boxInfo, index) => {
@@ -802,7 +826,13 @@ class DeviceWork extends Component {
                                 selectedLinker={selectedLinker}
                                 selectLinkerClear={this._selectLinkerClear}
                                 draggableLinkerStart={this._draggableLinkerStart} />}
-                    </DevicePallet>
+                    </DevicePallet>}
+
+                    {page === 2 && 
+                    <SensingPallet></SensingPallet>
+                    }
+
+                    {page ===3 && <div></div>}
                 </DeviceWorkBox>
             </Fragment>
         )
@@ -814,6 +844,7 @@ export default withRouter(
     connect(
         // props 로 넣어줄 스토어 상태값
         state => ({
+            page: state.device.get('page'),
             selectedDevice: state.device.get('selectedDevice'),
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
             vHubId: state.device.getIn(['selectedDevice', 'vHubId']),
