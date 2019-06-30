@@ -1,0 +1,16 @@
+#TestBox{
+    border-left: 1px solid #dadce0;
+    height: 100%;
+    margin-left: 375px;
+    background-color: #fff;
+}
+
+#TestBox .test-area{
+    border-bottom: 1px solid #dadce0;
+    height: 250px;
+}
+
+#TestBox .test-title{
+    padding: 3px 5px;
+    border-bottom: 1px solid #dadce0;
+}

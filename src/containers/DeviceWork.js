@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
 import * as deviceActions from 'store/modules/device';
 import { DeviceWorkBox, DevicePallet, SensingPallet } from 'components';
+import { TestWork } from 'containers';
 import { Map, List } from 'immutable';
 import { BUTTON_TYPE } from 'constants/index';
 import DraggableLinker from 'components/TextBox/DraggableLinker';
@@ -722,7 +723,7 @@ class DeviceWork extends Component {
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        deviceActions.pageSwitching({page: 1})
+        deviceActions.pageSwitching({page: 3})
         deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
     }
 
@@ -832,7 +833,7 @@ class DeviceWork extends Component {
                     <SensingPallet></SensingPallet>
                     }
 
-                    {page ===3 && <div></div>}
+                    {page ===3 && <TestWork></TestWork>}
                 </DeviceWorkBox>
             </Fragment>
         )

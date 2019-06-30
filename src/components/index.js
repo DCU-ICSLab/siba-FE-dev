@@ -15,6 +15,11 @@ import VirtualHub from './VirtualHub/VirtualHub';
 import VirtualHubAddBtn from './VirtualHubAddBtn/VirtualHubAddBtn';
 import ModalWrapper from './ModalWrapper/ModalWrapper';
 import DeviceAddModalWrapper from './DeviceAddModalWrapper/DeviceAddModalWrapper';
+import TestPallet from './TestPallet/TestPallet';
+import TestWindow from './TestWindow/TestWindow';
+import TestBox from './TestBox/TestBox';
+import TestTextBox from './TestTextBox/TestTextBox';
+import TestUserTextBox from './TestUserTextBox/TestUserTextBox';
 
 export {
     SibaFrame,
@@ -33,5 +38,10 @@ export {
     SideBar,
     VirtualHubAddBtn,
     ModalWrapper,
-    DeviceAddModalWrapper
+    DeviceAddModalWrapper,
+    TestPallet,
+    TestWindow,
+    TestBox,
+    TestTextBox,
+    TestUserTextBox
 }
