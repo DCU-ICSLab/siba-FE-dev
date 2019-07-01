@@ -2,9 +2,9 @@ import axios from 'axios';
 import { API_BASE_URL } from 'constants/index';
 
 //테스트 시작
-export const startTest = (authKey, boxId) =>{
+export const startTest = (devId, boxId) =>{
 
-    const baseURL = `${API_BASE_URL}/test/${authKey}/box/${boxId}`
+    const baseURL = `${API_BASE_URL}/test/${devId}/box/${boxId}`
 
     return axios.get(baseURL)
     .then(res=> {

@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { API_BASE_URL } from 'constants/index';
 
-export const getDeviceDetail = (authKey) =>{
+export const getDeviceDetail = (devId) =>{
 
-    const baseURL = `${API_BASE_URL}/device/${authKey}`
+    console.log(devId)
+
+    const baseURL = `${API_BASE_URL}/device/${devId}`
 
     return axios.get(baseURL)
     .then(res=> {
@@ -12,9 +14,9 @@ export const getDeviceDetail = (authKey) =>{
     });
 }
 
-export const saveDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
+export const saveDeviceTextBoxGraph = (devId, textBoxGraph) =>{
 
-    const baseURL = `${API_BASE_URL}/device/${authKey}`
+    const baseURL = `${API_BASE_URL}/device/${devId}`
 
     return axios.post(baseURL, textBoxGraph)
     .then(res=> {
@@ -23,9 +25,9 @@ export const saveDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
     });
 }
 
-export const deployDeviceTextBoxGraph = (authKey, textBoxGraph) =>{
+export const deployDeviceTextBoxGraph = (devId, textBoxGraph) =>{
 
-    const baseURL = `${API_BASE_URL}/device/${authKey}/deploy`
+    const baseURL = `${API_BASE_URL}/device/${devId}/deploy`
 
     return axios.post(baseURL, textBoxGraph)
     .then(res=> {

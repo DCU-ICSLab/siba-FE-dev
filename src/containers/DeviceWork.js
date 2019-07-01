@@ -687,15 +687,14 @@ class DeviceWork extends Component {
     }
 
     _saveDeviceTextBoxGraph = () => {
-        const { deviceActions, selectedDevice, devAuthKey } = this.props;
-        console.log(devAuthKey)
-        deviceActions.saveDeviceTextBoxGraph(devAuthKey, selectedDevice)
+        const { deviceActions, selectedDevice, devId } = this.props;
+        deviceActions.saveDeviceTextBoxGraph(devId, selectedDevice)
     }
 
     _deployDeviceTextBoxGraph = () => {
         //저장이 안됬으면 수행불가능하게 만들어야
-        const { deviceActions, devAuthKey } = this.props;
-        deviceActions.deployDeviceTextBoxGraph(devAuthKey);
+        const { deviceActions, devId } = this.props;
+        deviceActions.deployDeviceTextBoxGraph(devId);
     }
 
     _modalChange = () => {
@@ -724,7 +723,7 @@ class DeviceWork extends Component {
     componentDidMount() {
         const { deviceActions, location } = this.props;
         deviceActions.pageSwitching({page: 3})
-        deviceActions.getDeviceInfo(location.state.dev.get('authKey'));
+        deviceActions.getDeviceInfo(location.state.dev.get('devId'));
     }
 
     componentWillUnmount() {
@@ -848,6 +847,7 @@ export default withRouter(
             page: state.device.get('page'),
             selectedDevice: state.device.get('selectedDevice'),
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
+            devId: state.device.getIn(['selectedDevice', 'devId']),
             vHubId: state.device.getIn(['selectedDevice', 'vHubId']),
             devName: state.device.getIn(['selectedDevice', 'devName']),
             pallet: state.device.getIn(['selectedDevice', 'pallet']),

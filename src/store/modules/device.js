@@ -114,6 +114,7 @@ export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
 /*--------state definition--------*/
 const initialState = Map({
     selectedDevice: Map({
+        devId: null,
         devAuthKey: null,
         devName: null,
 
@@ -531,6 +532,7 @@ export default handleActions({
         type: GET_DEVICE_INFO,
         onSuccess: (state, action) => {
             return state.set('selectedDevice', Map({
+                devId: action.payload.data.data.devId,
                 devAuthKey: action.payload.data.data.devAuthKey,
                 blockIdCounter: action.payload.data.data.blockIdCounter,
                 devName: action.payload.data.data.devName,

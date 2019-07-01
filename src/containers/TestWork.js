@@ -2,16 +2,18 @@ import React, { Component, Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { List, Map } from 'immutable';
 import * as testActions from 'store/modules/test';
 import * as deviceActions from 'store/modules/device';
 import { TestPallet, TestBox, TestTextBox, TestUserTextBox, TestWindow } from 'components';
+import {ReplaceTimeChanger} from 'utils';
 
 class TestWork extends Component {
 
     _startTest = () => {
-        const { testActions, devAuthKey } = this.props;
-        testActions.startTest(devAuthKey, 0);
+        const { testActions, devId } = this.props;
+        testActions.startTest(devId, 0);
     }
 
     _cancelTest = () => {
@@ -19,10 +21,72 @@ class TestWork extends Component {
     }
 
     _sendCommand = (arg, boxId) => {
-        const { testActions, devAuthKey } = this.props;
+        const { testActions, devId } = this.props;
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({text: arg})
-        testActions.sendCommand(devAuthKey,boxId)
+        testActions.sendCommand(devId,boxId)
+    }
+
+    _sendCommandWithTime = () => {
+        const { testActions, devId, timeFormat, testBoxList } = this.props;
+        const timeString = timeFormat.get('date').format('YYYY년 M월 D일 A HH:mm')
+
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({text: timeString})
+        testActions.sendCommand(devId,testBoxList.getIn([testBoxList.size-1, 'buttons', 0, 'cboxId']))
+        testActions.changeTimeSetter();
+    }
+
+    _changeTimeSetter = () => {
+        const { testActions, timeSetter } = this.props;
+        if(!timeSetter){
+            const date = moment();
+            const day = date.format('dddd');
+            const hour = date.format('H');
+            const min = date.format('m');
+            const dateString = date.format("M월 D일 dddd").replace(day, ReplaceTimeChanger(day));
+
+            testActions.changeTimeFormatAll({
+                date: date,
+                md: dateString,
+                h: hour,
+                t: min
+            })
+        }
+        testActions.changeTimeSetter();
+    }
+
+    _changeTimeValue = (name, isUp) => {
+        const { testActions, timeFormat } = this.props;
+        const date = timeFormat.get('date');
+        let convertDate;
+        let value;
+
+        switch(name){
+            case 'md':
+                convertDate = isUp? date.add(1, 'days') : date.subtract(1, 'days')
+                const day =date.format('dddd');
+                value = convertDate.format("M월 D일 dddd").replace(day, ReplaceTimeChanger(day))
+                break;
+            case 'h':
+                convertDate = isUp? date.add(1, 'hours') : date.subtract(1, 'hours')
+                value = convertDate.format('H')
+                break;
+            default: // 't'
+                convertDate = isUp? date.add(1, 'minutes') : date.subtract(1, 'minutes')
+                value = convertDate.format('m')
+                break;
+        }
+
+        testActions.changeTimeFormat({
+            name: 'time',
+            value: convertDate,
+        })
+
+        testActions.changeTimeFormat({
+            name: name,
+            value: value,
+        })
     }
 
     componentDidMount() {
@@ -36,7 +100,9 @@ class TestWork extends Component {
 
         const {
             testBoxList,
-            userBoxList
+            userBoxList,
+            timeSetter,
+            timeFormat
         } = this.props;
 
         return (
@@ -44,7 +110,12 @@ class TestWork extends Component {
                 <TestPallet>
                     <TestWindow 
                     startTest={this._startTest}
-                    cancelTest={this._cancelTest}>
+                    cancelTest={this._cancelTest}
+                    changeTimeSetter={this._changeTimeSetter}
+                    timeSetter={timeSetter}
+                    timeFormat={timeFormat}
+                    changeTimeValue={this._changeTimeValue}
+                    sendCommand={this._sendCommandWithTime}>
                         {
                             testBoxList.map((box,index) => {
                                 return(
@@ -55,7 +126,9 @@ class TestWork extends Component {
                                         time={box.get('time')}
                                         enable={box.get('enable')}
                                         buttons={box.get('buttons')}
-                                        sendCommand={this._sendCommand}>
+                                        boxType={box.get('boxType')}
+                                        sendCommand={this._sendCommand}
+                                        changeTimeSetter={this._changeTimeSetter}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox 
@@ -160,8 +233,11 @@ export default withRouter(
         // props 로 넣어줄 스토어 상태값
         state => ({
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
+            devId: state.device.getIn(['selectedDevice', 'devId']),
             testBoxList: state.test.get('testBoxList'),
             userBoxList: state.test.get('userBoxList'),
+            timeSetter: state.test.get('timeSetter'),
+            timeFormat: state.test.get('timeFormat'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

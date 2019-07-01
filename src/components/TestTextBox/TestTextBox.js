@@ -10,7 +10,9 @@ const TestTextBox = ({
     buttons,
     time,
     enable,
-    sendCommand
+    boxType,
+    sendCommand,
+    changeTimeSetter,
 }) => {
 
     return (
@@ -22,7 +24,7 @@ const TestTextBox = ({
                 <span className="sender">SIBA 테스트봇</span>
                 <div className="text-area">
                     <div className="pretext">{preText}</div>
-                    <div>
+                    {(boxType===1 || boxType===5) && <div>
                     {
                         buttons.map((btn, index)=>{
                             return(
@@ -30,16 +32,22 @@ const TestTextBox = ({
                             )
                         })
                     }
-                    </div>
-                    <div className="posttext">{postText}</div>
+                    </div>}
+                    {boxType===3 && 
+                    <button 
+                    className="time-set-btn"
+                    onClick={changeTimeSetter}
+                    disabled={!enable}>시간 설정</button>}
+                    {postText!=='' && <div className="posttext">{postText}</div>}
                     <div className="msg-time">
                         <Moment date={time} format="A HH:mm"></Moment>
                     </div>
                 </div>
                 {enable &&
                 <div className="btn-list">
-                {
+                {(boxType===1 || boxType===5) && 
                     buttons.map((btn, index)=>{
+                        console.log(btn.get('cboxId'))
                         return(
                             <button 
                             key={index} 
