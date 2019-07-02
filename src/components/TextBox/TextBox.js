@@ -17,7 +17,7 @@ class TextBox extends Component {
 
     render() {
 
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus} = this.props;
+        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus, isEvent} = this.props;
         const type = boxInfo.get('type')
         return (
             <Fragment>
@@ -29,7 +29,8 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {type === 2 && 
                 <DynamicTextBox
                 boxInfo={boxInfo}
@@ -38,7 +39,8 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {type === 3 && 
                 <TimeTextBox
                 boxInfo={boxInfo}
@@ -47,7 +49,8 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {type === 5 && 
                 <EntryTextBox 
                 boxInfo={boxInfo}
@@ -56,7 +59,8 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {/* {type === 6 && 
                 <EndBox
                 boxInfo={boxInfo}

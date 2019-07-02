@@ -1,8 +1,8 @@
 #SideBar{
     position: fixed;
     left: 0px;
-    top: 50px;
-    bottom: 10px;
+    top: 47px;
+    bottom: 6px;
     width: 240px;
     /* height: 100vh; */
     flex: 0 0 200px;

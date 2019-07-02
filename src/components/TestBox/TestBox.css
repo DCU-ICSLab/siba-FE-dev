@@ -1,49 +1,13 @@
 #TestBox{
-    border-left: 1px solid #dadce0;
-    height: 100%;
-    margin-left: 375px;
-    background-color: #fff;
-}
-
-#TestBox .test-area{
-    border-bottom: 1px solid #dadce0;
-    height: 250px;
-    position: relative;
-}
-
-#TestBox .test-title{
-    padding: 3px 5px;
-    border-bottom: 1px solid #dadce0;
-}
-
-#TestBox .test-area-body{
-    margin-top: 10px;
-    margin-left: 10px;
-    position: relative;
-}
-
-#TestBox .set{
-    margin-bottom: 5px;
-}
-
-#TestBox .key{
-    display: inline-block;
-    width: 70px;
-}
-
-#TestBox .value{
-    margin-left: 10px;
-}
-
-#TestBox .json-text{
-    /* background-color: #171820; */
+    /* border-left: 1px solid #dadce0; */
+    background-color: transparent;
     position: absolute;
-    /* height: 100px; */
-    top: 25px;
-    bottom: 3px;
-    right: 3px;
-    left: 3px;
-    padding: 5px;
-    color: #fff;
-    overflow: auto;
+    top: 0;
+    bottom: -1px;
+    left: 375px;
+    right: -2px;
+}
+
+#TestBox .testbox-wrapper{
+    height: 100%;
 }

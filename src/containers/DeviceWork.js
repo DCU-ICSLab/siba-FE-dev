@@ -784,7 +784,8 @@ class DeviceWork extends Component {
                                         key={boxInfo.get('id')}
                                         index={index}
                                         addBtnFunc={this._addBtnFunc}
-                                        focus={this._focus} />)
+                                        focus={this._focus} 
+                                        isEvent={true}/>)
                             })}
                         </g>
 

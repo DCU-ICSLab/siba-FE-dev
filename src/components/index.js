@@ -20,6 +20,8 @@ import TestWindow from './TestWindow/TestWindow';
 import TestBox from './TestBox/TestBox';
 import TestTextBox from './TestTextBox/TestTextBox';
 import TestUserTextBox from './TestUserTextBox/TestUserTextBox';
+import SendReceiveBox from './SendReceiveBox/SendReceiveBox';
+import TestToolBox from './TestToolBox/TestToolBox';
 
 export {
     SibaFrame,
@@ -43,5 +45,7 @@ export {
     TestWindow,
     TestBox,
     TestTextBox,
-    TestUserTextBox
+    TestUserTextBox,
+    SendReceiveBox,
+    TestToolBox
 }

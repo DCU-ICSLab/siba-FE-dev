@@ -13,7 +13,7 @@ class EntryTextBox extends Component {
     }
 
     render() {
-        const { boxInfo, index, addBtnFunc, focus } = this.props;
+        const { boxInfo, index, addBtnFunc, focus, isEvent } = this.props;
         let x = boxInfo.getIn(['pos', 'x']) + 20;
         let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
@@ -26,7 +26,7 @@ class EntryTextBox extends Component {
 
         return (
             <Fragment>
-                <g onMouseEnter={(e) => focus(e, x, y, id)}
+                <g onMouseEnter={isEvent ? (e) => focus(e, x, y, id) : undefined}
                     className="noselect">
                     <g transform={`translate(${x}, ${y-33})`}>
                         <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
@@ -65,7 +65,7 @@ class EntryTextBox extends Component {
                             {index + 1}
                         </TextBoxButton>
                     })}
-                    {buttonSize !== 9 &&
+                    {isEvent && buttonSize !== 9 &&
                         <TextBoxButton
                             x={x}
                             y={y}

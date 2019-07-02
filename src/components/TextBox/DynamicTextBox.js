@@ -11,7 +11,7 @@ class DynamicTextBox extends Component{
     }
 
     render() {
-        const { boxInfo, index, addBtnFunc, focus } = this.props;
+        const { boxInfo, index, addBtnFunc, focus, isEvent } = this.props;
         let x = boxInfo.getIn(['pos', 'x']) + 20;
         let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
@@ -20,10 +20,9 @@ class DynamicTextBox extends Component{
         let height = 30 + dynamicHeight;
         let preorder = boxInfo.get('preorder');
         let postorder = boxInfo.get('postorder');
-
         return (
             <Fragment>
-                <g onMouseEnter={(e)=>focus(e, x,y, id)}
+                <g onMouseEnter={isEvent ? (e)=>focus(e, x,y, id) : undefined}
                 className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
@@ -37,7 +36,7 @@ class DynamicTextBox extends Component{
                     </g>
                     <DynamicTextBoxInner x={x} y={y} preorder={preorder} postorder={postorder}/>}
                 </g>
-                <TextBoxButton
+                {(isEvent || boxInfo.getIn(['info', 'buttons', 0, 'linker'])) && <TextBoxButton
                     x={x}
                     y={y}
                     type={0}
@@ -49,7 +48,7 @@ class DynamicTextBox extends Component{
                         top:3.5,
                         left: 4.5
                     }}>링크</span>
-                </TextBoxButton>
+                </TextBoxButton>}
             </Fragment>
         )
     }

@@ -11,7 +11,8 @@ const TestWindow = ({
     timeSetter,
     timeFormat,
     changeTimeValue,
-    sendCommand
+    sendCommand,
+    setRef,
 }) => {
 
     return (
@@ -25,7 +26,7 @@ const TestWindow = ({
                 <div></div>
                 </div>
             </header>
-            <article>
+            <article ref={setRef}>
                 {children}
             </article>
             { timeSetter && 

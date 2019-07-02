@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 const SideBar = ({ sbToggle, sbState, hubList }) => {
     return (
-        <div id="SideBar" style={{ left: sbState ? '10px' : '-240px' }}>
+        <div id="SideBar" style={{ left: sbState ? '5px' : '-240px' }}>
             <header>
                 <span>device explorer</span>
             </header>

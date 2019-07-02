@@ -12,7 +12,7 @@ class ButtonTextBox extends Component {
     }
 
     render() {
-        const { boxInfo, tempBox, index, addBtnFunc, focus } = this.props;
+        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent } = this.props;
         let x = boxInfo.getIn(['pos', 'x']) + 20;
         let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
@@ -27,7 +27,7 @@ class ButtonTextBox extends Component {
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onMouseEnter={(e) => focus(e, x, y, id)}
+                <g onMouseEnter={isEvent ? (e) => focus(e, x, y, id) : undefined}
                     className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
@@ -58,7 +58,7 @@ class ButtonTextBox extends Component {
                             {index + 1}
                         </TextBoxButton>
                     })}
-                    {buttonSize !== 9 &&
+                    {isEvent && buttonSize !== 9 &&
                         <TextBoxButton
                             x={x}
                             y={y}

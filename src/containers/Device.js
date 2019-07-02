@@ -97,8 +97,8 @@ class Device extends Component {
             location } = this.props;
 
         const sbPos = {
-            default: 283,
-            change: 33
+            default: 273,
+            change: 28
         }
 
         return (
@@ -118,18 +118,18 @@ class Device extends Component {
                         style={{
                             //marginLeft: sb ? '245px' : '35px',
                             marginLeft: sb ? sbPos.default : sbPos.change,
-                            marginRight: '15px'
+                            marginRight: '8px'
                             // left: sbState ? '240px' : '30px'
                         }}>
                         <DeviceWork location={location} sbPos={sbPos}/>
                     </SibaContent>
-                    <Siba sibaTalkFunc={this._sibaTalk} sbTalk={sbTalk} sibaCallFunc={this._sibaCall} />
+                    {/* <Siba sibaTalkFunc={this._sibaTalk} sbTalk={sbTalk} sibaCallFunc={this._sibaCall} />
                     {sbCall &&
                         <SibaPhone
                             phoneAddOn={phoneAddOn}
                             phoneAddOnFunc={this._phoneAddOnToggle}
                             phoneAddOnTab={phoneAddOnTab}
-                            phoneAddOnTabFunc={this._phoneAddOnTabToggle} />}
+                            phoneAddOnTabFunc={this._phoneAddOnTabToggle} />} */}
 
                     <ModalWrapper
                     copy={copy}

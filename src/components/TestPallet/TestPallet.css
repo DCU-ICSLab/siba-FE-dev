@@ -8,7 +8,7 @@
 #TestPallet .toolbox{
     width: 100%;
     height: 29px;
-    background-color: white;
+    /* background-color: white; */
     position: absolute;
     top: 55px;
     z-index: 2;
@@ -21,8 +21,8 @@
     top: 86px;
     z-index: 1;
     left: 1px;
-    right: 1px;
-    bottom: 0px;
+    right: 0;
+    bottom: 0;
     background-color: #F5F5F5;
     /* right: 240px; */
 }

@@ -4,7 +4,7 @@ import './HubPallet.css';
 const HubPallet = ({ children, sbState,size }) => {
 
     return (
-        <div id="HubPallet" style={{left: sbState ? '283px' : '33px'}}>
+        <div id="HubPallet" style={{left: sbState ? '273px' : '28px'}}>
             <header>
                 <span className="title">virtual hub sets</span>
             </header>

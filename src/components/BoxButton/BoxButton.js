@@ -15,7 +15,7 @@ const BoxButton = ({ children, enabled, left, width, onClick }) => {
             style={{
                 width: `${width}px`,
                 left: `${left}px`,
-                borderBottom: enabled ? '18px solid #fff' : '18px solid #7697B2',
+                borderBottom: enabled ? '18px solid #fff' : '18px solid #EFEFEF',
                 zIndex: enabled ? 2 : 1,
                 cursor: enabled ? 'default' : 'pointer',
                 color: enabled ? '#000' : '#444'
