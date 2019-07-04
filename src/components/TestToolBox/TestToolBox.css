@@ -1,0 +1,111 @@
+#TestToolBox{
+    /* background-color: #fff; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 300px;
+    width: auto;
+    height: auto;
+}
+
+#TestToolBox .tool-upper{
+
+}
+
+#TestToolBox .graph{
+    left: 0;
+    top: 0;
+    bottom: 7px;
+    /* width: 100%;
+    height: 100%; */
+    /* display: inline-table; */
+    /* min-width: 1718px;
+    min-height: 1151px; */
+    /* min-width: 1718px;
+    min-height: 1151px; */
+    /* width: 100%;
+    height: 100%; */
+    position: absolute;
+    /* background-image: 'none'; */
+}
+
+#TestToolBox .graph-inner{
+    /* background-color: #555; */
+    
+}
+
+#TestToolBox .graph-area{
+    border: 1px solid #dadce0;
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 27px;
+    bottom: 7px;
+    overflow: auto;
+
+    background: linear-gradient(0deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px repeat padding-box border-box, linear-gradient(90deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px, linear-gradient(0deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, linear-gradient(90deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, #fff;
+    background-repeat: repeat;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+/* #TestToolBox .shadow{
+    background-color: #555;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+} 
+
+#TestToolBox .focus-area{
+    position: absolute;
+    top: 100px;
+    left: 160px;
+    width: 200px;
+    height: 170px;
+    background-color: #fff;
+    z-index: 9999;
+    border: 2px solid green;
+} */
+
+#TestToolBox .tool-main{
+
+}
+
+#TestToolBox .tool-side{
+    
+}
+
+#TestToolBox .text-box-inner{
+    padding: 3px 4px;
+}
+
+#TestToolBox .text-box-inner ol{
+    padding-left: 14px;
+}
+
+#TestToolBox .time-box{
+    width: 153px;
+    height: auto;
+    padding: 4px;
+    margin-top: 12px;
+    font-size: 11px;
+    /* border: 1px solid #CACACA; */
+    font-weight: 500;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #F3F4F8;
+    /* color: #2B84D9; */
+    border-radius: 4px;
+}
+
+#TestToolBox .text-box-header{
+    text-align: left;
+    padding-left: 10px;
+    font-size: 11px;
+    color: #000;
+    background-color: #EFEFEF;
+    border-radius: 12%;
+    font-weight: 400;
+}

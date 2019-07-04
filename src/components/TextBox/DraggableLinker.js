@@ -53,7 +53,7 @@ class DraggableLinker extends Component {
                             cursor: 'pointer'
                         }}
                         onMouseDown={(e) => draggableLinkerStart(e)}
-                        onMouseLeave={(e)=>{
+                        onMouseOut={(e)=>{
                             selectLinkerClear()
                             e.currentTarget.style.fill = 'transparent'
                         }}

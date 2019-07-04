@@ -1,0 +1,269 @@
+#TestWindow{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: 350px;
+    /* border: 1px solid #dadce0; */
+    border: 1px solid #555;
+    border-radius: 8px;
+    background-color: #b2c7d9;
+    box-shadow: 0px 0px 2px 2px #E1E1E1;
+    /* -moz-box-shadow: 3px 3px 3px 3px #999;
+    -webkit-box-shadow: 3px 3px 3px 3px #999; */
+}
+
+#TestWindow > header {
+    background-color: #A9BDCE;
+    height: 70px;
+    border-radius: 8px 8px 0 0;
+    width: 100%;
+    /* position: absolute;
+    top: 0;
+    left: 0;
+    right: 0; */
+    /* border-bottom: 1px solid #dadce0; */
+}
+
+#TestWindow .header-wrapper{
+    width: 100%;
+}
+
+#TestWindow > article {
+    position: absolute;
+    top: 70px;
+    bottom: 155px;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+    overflow: auto;
+    padding: 0 15px;
+}
+
+#TestWindow > footer {
+    position: absolute;
+    /* border-top: 1px solid #dadce0; */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    height: 80px;
+    border-radius: 0px 0px 8px 8px;
+    padding: 6px 6px;
+}
+
+#TestWindow .footer-shadow {
+    position: absolute;
+    /* border-top: 1px solid #dadce0; */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    height: 80px;
+    border-radius: 0px 0px 8px 8px;
+    padding: 6px 6px;
+    background-color: #555;
+    opacity: 0.5;
+    z-index: 9998;
+}
+
+#TestWindow textarea{
+    box-sizing: border-box;
+    width: 85%;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    line-height: 20px;
+    resize: none;
+    font-weight: 400;
+    border: none;
+    background-color: transparent;
+    overflow: hidden;
+    height: 100%;
+    outline: none;
+}
+
+#TestWindow .text-send-btn{
+    float: right;
+    border: 1px solid #A0A0A0;
+    border-radius: 3px;
+    background-color: #F7E941;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#TestWindow .text-send-btn:hover{
+    background-color: #F5E340;
+}
+
+#TestWindow .siba-img {
+    display: inline;
+    margin: 10px 14px;
+    border-radius: 120px 120px 120px 120px /150px 150px 150px 150px;
+}
+
+#TestWindow .siba-title{
+    /* display: inline-block; */
+    position: absolute;
+    top: 13px;
+    left: 75px;
+    color: #333;
+    font-weight: 500;
+}
+
+#TestWindow .test-helper{
+    position: absolute;
+    border-radius: 8px 8px 0 0;
+    bottom: 90px;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #F5F5F5;
+    padding: 5px 0 0 0;
+}
+
+#TestWindow .test-helper .item{
+    padding: 5px 0;
+    display: block;
+    background-color: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+#TestWindow .test-helper .item:hover{
+    background-color: #dadce0;
+}
+
+#TestWindow .test-helper .item > span{
+    margin-left: 13px;
+    
+}
+
+#TestWindow .test-helper .helper-btn{
+    display: block;
+    width: 20px;
+    height: 10px;
+    outline: 0;
+    border: none;
+    margin: 0 auto;
+    cursor: pointer;
+    padding: 3px 0;
+}
+
+#TestWindow .test-helper .helper-btn > span {
+    width: 20px;
+    height: 3px;
+    background-color: #A0A0A0;
+}
+
+#TestWindow .time-setter{
+    height: 100px;
+    width: 100%;
+    z-index: 9999;
+    background-color: #fff;
+    position: absolute;
+    bottom: 93px;
+}
+
+#TestWindow .time-setter > header {
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #dadce0;
+}
+
+#TestWindow .time-setter > button{
+    border: none;
+    outline: none;
+    background-color: #F7E941;
+    width: 100%;
+    padding: 5px 0;
+    font-weight: 900;
+    position: absolute;
+    bottom: 0;
+    cursor: pointer;
+}
+
+#TestWindow .time-setter > button:hover{
+    background-color: #F5E340;
+    color: #555;
+}
+
+#TestWindow .close-time-setter{
+    position: absolute;
+    right: 0;
+    top:0;
+    padding-top: 3px;
+    height: 29px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#TestWindow .close-time-setter:hover{
+    background-color: #dadce0;
+}
+
+#TestWindow .time-setter-shadow{
+    background-color: #555;
+    opacity: 0.5;
+    border-radius: 8px;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9998;
+}
+
+#TestWindow .time-setter-body{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#TestWindow .time-setter-body > span{
+    margin-top: 8px;
+    font-size: 14px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #dadce0;
+    margin-left: 15px;
+    min-width: 40px;
+    text-align: center;
+}
+
+#TestWindow .ch-btn{
+    margin-top: 5px;
+    display: inline-block;
+}
+
+#TestWindow .ch-btn > button{
+    display: block;
+    height: 14px;
+    width: 20px;
+    padding: 0;
+    text-align: center;
+    background-color: #dadce0;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 1.5px;
+    outline: none;
+    cursor: pointer;
+}
+
+#TestWindow .ch-btn > button:hover{
+    background-color: #555;
+    color: #fff;
+}
+
+#TestWindow .ch-btn > button:disabled{
+    background-color: #fff;
+    color: #fff;
+    cursor: default;
+}

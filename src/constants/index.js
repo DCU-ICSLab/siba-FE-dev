@@ -1,5 +1,6 @@
 
 export const API_BASE_URL = 'http://39.117.253.166:4000';
+//export const API_BASE_URL = 'http://203.250.32.29:10001';
 
 export const OAUTH2_REDIRECT_URI = `${process.env.PUBLIC_URL === '' ? window.location.href : process.env.PUBLIC_URL}/oauth2/redirect`;
 
@@ -12,6 +13,12 @@ export const BUTTON_TYPE = [{
     name: 'button',
     headText: '사용할 수 있는 명령 목록 입니다.',
     footText: '수행할 명령을 클릭 해주세요.'
+},
+{
+    type: 2,
+    name: 'dynamic',
+    headText: '값을 입력 해주세요.',
+    footText: ''
 },
 {
     type: 3,

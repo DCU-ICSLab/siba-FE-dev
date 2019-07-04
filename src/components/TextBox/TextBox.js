@@ -4,7 +4,8 @@ import './TextBox.css';
 import TimeTextBox from './TimeTextBox';
 import ButtonTextBox from './ButtonTextBox';
 import EntryTextBox from './EntryTextBox';
-import EndBox from './EndBox';
+import DynamicTextBox from './DynamicTextBox';
+//import EndBox from './EndBox';
 
 //dumb 컴포넌트지만 rendering 최적화를 위해 class로 구성
 class TextBox extends Component {
@@ -16,7 +17,7 @@ class TextBox extends Component {
 
     render() {
 
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus} = this.props;
+        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus, isEvent} = this.props;
         const type = boxInfo.get('type')
         return (
             <Fragment>
@@ -28,7 +29,18 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
+                {type === 2 && 
+                <DynamicTextBox
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {type === 3 && 
                 <TimeTextBox
                 boxInfo={boxInfo}
@@ -37,7 +49,8 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {type === 5 && 
                 <EntryTextBox 
                 boxInfo={boxInfo}
@@ -46,8 +59,9 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
-                {type === 6 && 
+                focus={focus}
+                isEvent={isEvent}/>}
+                {/* {type === 6 && 
                 <EndBox
                 boxInfo={boxInfo}
                 dragStart={dragStart}
@@ -55,7 +69,7 @@ class TextBox extends Component {
                 tempBox={tempBox}
                 index={index}
                 addBtnFunc={addBtnFunc}
-                focus={focus}/>}
+                focus={focus}/>} */}
             </Fragment>
         )
     }

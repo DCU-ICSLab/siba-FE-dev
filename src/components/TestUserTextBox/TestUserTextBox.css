@@ -1,0 +1,23 @@
+#TestUserTextBox{
+    margin-top: 16px;
+    min-height: 18px;
+    position: relative;
+}
+
+#TestUserTextBox .text-body{
+    background-color: #F7E941;
+    position: absolute;
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 3px;
+    right: 0;
+}
+
+#TestUserTextBox .msg-time{
+    position: absolute;
+    left: -47px;
+    font-size: 10px;
+    color: #222;
+    position: absolute;
+    bottom: 1px;
+}

@@ -12,27 +12,26 @@ class ButtonTextBox extends Component {
     }
 
     render() {
-        const { boxInfo, tempBox, index, addBtnFunc, focus } = this.props;
-        let x = boxInfo.getIn(['pos', 'left']) + 20;
-        let y = boxInfo.getIn(['pos', 'top']) + 20;
+        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent } = this.props;
+        let x = boxInfo.getIn(['pos', 'x']) + 20;
+        let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
-        let dynamicHeight = boxInfo.get('height');
+        //let dynamicHeight = boxInfo.get('height')
+        let dynamicHeight = boxInfo.get('headRow')*20 + boxInfo.get('footRow')*20;
         let isDragging = boxInfo.getIn(['pos', 'isDragging']);
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
         let preorder = boxInfo.get('preorder');
         let postorder = boxInfo.get('postorder');
-        let height = 65 + 18 * (buttonSize - 1) + dynamicHeight//base height + button counts*18
-
-        console.log('fff:'+id)
+        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight//base height + button counts*18
 
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onMouseEnter={(e) => focus(e, x, y, id)}
+                <g onMouseEnter={isEvent ? (e) => focus(e, x, y, id) : undefined}
                     className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
-                        <rect x={x} y={y} width={170} height={height} style={{
+                        <rect x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',
                             strokeWidth: 0.3,
                             strokeDasharray: isDragging ? '5 5' : 'none',
@@ -59,7 +58,7 @@ class ButtonTextBox extends Component {
                             {index + 1}
                         </TextBoxButton>
                     })}
-                    {buttonSize !== 9 &&
+                    {isEvent && buttonSize !== 9 &&
                         <TextBoxButton
                             x={x}
                             y={y}

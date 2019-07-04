@@ -3,9 +3,10 @@
     -webkit-flex : 1;
     flex : 1;
     /* margin-left: 50px; */
-    top: 48px;
+    top: 47px;
+    /* bottom: 10px; */
     /* background-color: white; */
-    height: calc(100vh - 80px);
+    height: calc(100vh - 57px);
     /* height: calc(100%-50px); */
     transition: .3s;
 }

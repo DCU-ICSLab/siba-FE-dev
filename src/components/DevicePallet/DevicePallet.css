@@ -29,6 +29,23 @@
     border-bottom: 1px solid #dadce0;
 }
 
+#DevicePallet .toolbox .toolbtn{
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #dadce0;
+    background-color: #fff;
+    color: #555;
+    font-size: 11px;
+    border-radius: 2px;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+#DevicePallet .toolbox .toolbtn:hover{
+    background-color: #E4E4E4;
+}
+
 #DevicePallet .pallet{
     position: absolute;
     top: 86px;
@@ -52,8 +69,6 @@
 #DevicePallet .side{
     border-top: 1px solid #dadce0;
     border-left: 1px solid #dadce0;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
     position: absolute;
     width: 240px;
     z-index: 3;
@@ -66,6 +81,12 @@
     text-align: center;
     font-size: 13px;
     padding: 5px;
+}
+
+#DevicePallet .side-wrapper{
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: 100%;
 }
 
 #DevicePallet .side-section{
@@ -117,21 +138,21 @@
 }
 
 #DevicePallet textarea{
+    box-sizing: border-box;
+    width: 100%;
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 11px;
+    line-height: 20px;
+    resize: none;
     font-weight: 400;
-    /* border: 1px solid #dadce0; */
     border: none;
     background-color: transparent;
-    /* outline: none; */
-    resize: none;
-    overflow-y: hidden;
-    /* height: 40px; */
-    /* line-height: 1.6; */
-    width: 147px;
+    overflow: hidden;
+    height: auto;
+    /* width: 147px; */
 }
 
-#DevicePallet input{
+#DevicePallet .btn-name-in{
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 11px;
     font-weight: 400;
@@ -158,3 +179,38 @@
     background-color: #959596;
     color: #fff;
 }
+
+#DevicePallet .btn-option{
+    display: block;
+    /* width: 100px; */
+    text-align: left;
+}
+
+#DevicePallet .btn-option > label{
+    position: relative;
+    display: block;
+}
+
+#DevicePallet .btn-option > label > span{
+    position: absolute;
+}
+
+#DevicePallet .sensing-def{
+    outline: none;
+    float: right;
+    font-size: 11px;
+    padding: 2px 5px;
+    border-radius: 2px;
+    border: 0;
+    color: #fff;
+    cursor: pointer;
+    background-color: #4994DB;
+}
+
+#DevicePallet .sensing-def:hover{
+    background-color: #7DB2E5;
+}
+
+/* #DevicePallet .btn-option > label > input{
+    background-color: transparent;
+} */

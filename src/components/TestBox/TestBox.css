@@ -1,0 +1,13 @@
+#TestBox{
+    /* border-left: 1px solid #dadce0; */
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: 375px;
+    right: -2px;
+}
+
+#TestBox .testbox-wrapper{
+    height: 100%;
+}

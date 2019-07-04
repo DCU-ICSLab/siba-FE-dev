@@ -1,0 +1,84 @@
+#VirtualHubAddBtn{
+    /* width: 33%; */
+    width: 299px;
+    box-sizing: border-box;
+    vertical-align: top;
+    height: 290px;
+    padding: 10px 0 10px 25px;
+    color: transparent;
+    text-shadow: 0 0 5px rgba(0,0,0,0.6);
+    cursor: pointer;
+}
+
+#VirtualHubAddBtn .shadow{
+    position: absolute;
+    /* top:0;
+    left:0; */
+    width: 276px;
+    height: 274px;
+    border-radius: 2px;
+    background-color: rgba(0,0,0,0.2);
+    text-align: center;
+    /* filter: blur(4px); */
+}
+
+#VirtualHubAddBtn .shadow >div{
+    color: white;
+    margin-top: 106px;
+    text-shadow: none;
+    font-family: 'Noto Sans Medium', 'Malgun gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+    font-weight: 500;
+}
+
+#VirtualHubAddBtn > .inner{
+    /* border: 1px solid #888; */
+    border: 1px solid #dadce0;
+    border-radius: 2px;
+    height: 100%;
+    width: 100%;
+    background-color: #B8C6D8;
+}
+
+#VirtualHubAddBtn .inner > header{
+    font-size: 14px;
+    border-bottom: 1px solid #dadce0;
+    padding: 5px;
+    background-color: #fff;
+}
+
+#VirtualHubAddBtn .title{
+    border-left: 3px solid transparent;
+    font-weight: 500;
+    /* color: #000; */
+    padding-left: 7px;
+    margin-left: 5px;
+}
+
+#VirtualHubAddBtn .info{
+    /* background-color: #fff; */
+    background-color: #A9B1C1;
+    padding-left: 19px;
+    font-size: 12px;
+    height: 20px;
+    /* border-bottom: 1px solid #888; */
+}
+
+#VirtualHubAddBtn .container{
+    /* width: 100%; */
+    padding-top: 10px;
+    height: 191px;
+    overflow: auto;
+    /* background-color: #B8C6D8; */
+    /* border-bottom: 1px solid #888; */
+}
+
+#VirtualHubAddBtn footer{
+    height: 20px;
+    font-size: 12px;
+    padding-left: 19px;
+    background-color: #A9B1C1;
+}
+
+#VirtualHubAddBtn footer> span{
+    margin-right: 13px;
+}

@@ -1,5 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import { Map, List } from 'immutable';
+import { pender } from 'redux-pender';
+import * as DeviceAPI from 'store/api/device';
 
 /*--------action type--------*/
 const DEV_SELECT = 'device/DEV_SELECT';
@@ -13,14 +15,20 @@ const DEV_POSITION_CHANGE = 'device/DEV_POSITION_CHANGE';
 const DEV_TEXTBOX_LOC_CHANGE = "device/DEV_TEXTBOX_LOC_CHANGE"
 const DEV_BLOCK_ID_CNT = 'device/DEV_BLOCK_ID_CNT';
 const DEV_CODE_ID_CNT = 'device.DEV_CODE_ID_CNT';
+const DEV_EVENT_CODE_ID_CNT = 'device.DEV_EVENT_CODE_ID_CNT';
 const DEV_TYPE_SELECT = 'device/DEV_TYPE_SELECT';
 const DEV_ADD_BTN = 'device/DEV_ADD_BTN';
 const DEV_ADD_BTN_SIDE = 'device/DEV_ADD_BTN_SIDE';
 const DEV_CP_BTN = 'device/DEV_CP_BTN';
 const DEV_TARGET_CP_LINKER = 'device/DEV_TARGET_CP_LINKER';
 const DEV_SELECT_CP_LINKER = 'device/DEV_SELECT_CP_LINKER'
+
 const DEV_INPUT_CHANGE = 'device/DEV_INPUT_CHANGE';
+const DEV_INPUT_ROW_CHANGE = 'device/DEV_INPUT_ROW_CHANGE';
+const DEV_INPUT_SELECTED_ROW_CHANGE = 'device/DEV_INPUT_SELECTED_ROW_CHANGE'
+
 const DEV_INPUT_TARGET_CHANGE = 'device/DEV_INPUT_TARGET_CHANGE';
+
 const DEV_BTN_INFO_CHANGE = 'device/DEV_BTN_INFO_CHANGE';
 const DEV_BTN_INFO_TARGET_CHANGE = 'device/DEV_BTN_INFO_TARGET_CHANGE';
 const DEV_TEXTBOX_HEIGHT_CHANGE = 'device/DEV_TEXTBOX_HEIGHT_CHANGE';
@@ -42,6 +50,15 @@ const DEV_LINKER_DEST_DELETE = 'device/DEV_LINKER_DEST_DELETE';
 const DEV_LINKER_SRC_DELETE = 'device/DEV_LINKER_SRC_DELETE';
 const DEV_LINKER_DELETE = 'device/DEV_LINKER_DELETE';
 const SET_ENTRY = 'device/SET_ENTRY';
+const GET_DEVICE_INFO = 'device/GET_DEVICE_INFO';
+const SAVE_DEVICE_TEXT_BOX_GRAPH = 'device/SAVE_DEVICE_TEXT_BOX_GRAPH'
+const DEPLOY_DEVICE_TEXT_BOX_GRAPH = 'device/DEPLOY_DEVICE_TEXT_BOX_GRAPH'
+
+const DEV_BTN_SIDE_TYPE_CHANGE = 'device/DEV_BTN_SIDE_TYPE_CHANGE'
+const DEV_CP_BTN_TYPE = 'device/DEV_CP_BTN_TYPE'
+
+const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
+const SET_SAVE_GRAPH = 'device/SET_SAVE_GRAPH'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -55,6 +72,7 @@ export const devPositionChange = createAction(DEV_POSITION_CHANGE);
 export const devTextboxLocChange = createAction(DEV_TEXTBOX_LOC_CHANGE);
 export const devBlockIdCnt = createAction(DEV_BLOCK_ID_CNT);
 export const devCodeIdCnt = createAction(DEV_CODE_ID_CNT);
+export const devEventCodeIdCnt = createAction(DEV_EVENT_CODE_ID_CNT);
 export const devTypeSelect = createAction(DEV_TYPE_SELECT);
 export const devAddBtn = createAction(DEV_ADD_BTN);
 export const devAddBtnSide = createAction(DEV_ADD_BTN_SIDE);
@@ -62,6 +80,8 @@ export const devCopyBtn = createAction(DEV_CP_BTN);
 export const devTargetCopyLinker = createAction(DEV_TARGET_CP_LINKER);
 export const devSelectCopyLinker = createAction(DEV_SELECT_CP_LINKER);
 export const devInputChange = createAction(DEV_INPUT_CHANGE);
+export const devInputRowChange = createAction(DEV_INPUT_ROW_CHANGE);
+export const devInputSelectedRowChange = createAction(DEV_INPUT_SELECTED_ROW_CHANGE)
 export const devInputTargetChange = createAction(DEV_INPUT_TARGET_CHANGE);
 export const devBtnInfoChange = createAction(DEV_BTN_INFO_CHANGE);
 export const devBtnInfoTargetChange = createAction(DEV_BTN_INFO_TARGET_CHANGE);
@@ -84,12 +104,23 @@ export const devLinkerDestDelete = createAction(DEV_LINKER_DEST_DELETE)
 export const devLinkerSrcDelete = createAction(DEV_LINKER_SRC_DELETE)
 export const devLinkerDelete = createAction(DEV_LINKER_DELETE)
 export const setEntry = createAction(SET_ENTRY)
+export const getDeviceInfo = createAction(GET_DEVICE_INFO, DeviceAPI.getDeviceDetail)
+export const saveDeviceTextBoxGraph = createAction(SAVE_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.saveDeviceTextBoxGraph)
+export const deployDeviceTextBoxGraph = createAction(DEPLOY_DEVICE_TEXT_BOX_GRAPH, DeviceAPI.deployDeviceTextBoxGraph)
+export const devBtnSideTypeChange = createAction(DEV_BTN_SIDE_TYPE_CHANGE)
+export const devCopyBtnType = createAction(DEV_CP_BTN_TYPE)
+
+export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
+export const setSaveGraph = createAction(SET_SAVE_GRAPH)
 
 /*--------state definition--------*/
 const initialState = Map({
     selectedDevice: Map({
+        devId: null,
         devAuthKey: null,
         devName: null,
+
+        vHubId: null,
 
         //텍스트 블록을 담기 위한 배열
         pallet: List([]),
@@ -100,6 +131,9 @@ const initialState = Map({
 
         //코드를 발급해주기 위함
         codeIdCounter: 0,
+
+        //이벤트 코드를 발급해주기 위함
+        eventCodeIdCounter: 0,
 
         haveEntry: false,
     }),
@@ -127,7 +161,13 @@ const initialState = Map({
     //사이드바에서 최초 드래그 시 타입 식별을 위해 사용
     dragType: 1,
 
-    hubInfo: List()
+    //페이지 정보
+    page: 1,
+
+    serverResponse:Map({
+        msg: null,
+        status: null
+    })
 });
 
 /*--------reducer--------*/
@@ -195,14 +235,16 @@ export default handleActions({
             pallet.push(
                 Map({
                     pos: Map({
-                        top: action.payload.top,
-                        left: action.payload.left,
+                        x: action.payload.x,
+                        y: action.payload.y,
                     }),
+                    headRow:1,
+                    footRow:1,
                     type: action.payload.type, //1이면 button, 2이면 dynamic, 3이면 time
                     preorder: action.payload.preorder,
                     postorder: action.payload.postorder,
                     linkedId: null,
-                    height: 20,
+                    //height: 20,
                     parentBox: List([]),
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
@@ -225,7 +267,11 @@ export default handleActions({
                 Map({
                     code: action.payload.code,
                     name: '',
-                    linker: null
+                    linker: null,
+                    idx: buttons.size,
+                    isSpread: false,
+                    eventCode: action.payload.eventCode,
+                    type: '1'
                 })
             )
         )
@@ -238,10 +284,27 @@ export default handleActions({
             buttons.push(
                 Map({
                     code: action.payload.code,
+                    eventCode: action.payload.eventCode,
+                    isSpread: false,
+                    idx: buttons.size,
                     name: '',
-                    linker: null
+                    linker: null,
+                    type: '1'
                 })
             )
+        )
+    },
+
+    [DEV_BTN_SIDE_TYPE_CHANGE]: (state, action) => {
+        return state.setIn(['selectedDevice', 'pallet', 
+        state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.id), 'info', 'buttons',action.payload.idx, 'type'], 
+            action.payload.type
+        )
+    },
+
+    [DEV_CP_BTN_TYPE]: (state, action) => {
+        return state.setIn(['targetedBox', 'block', 'info','buttons', action.payload.idx, 'type'], 
+            action.payload.type
         )
     },
 
@@ -250,8 +313,10 @@ export default handleActions({
             buttons.push(
                 Map({
                     code: action.payload.code,
+                    eventCode: action.payload.eventCode,
                     name: '',
-                    linker: null
+                    linker: null,
+                    type: '1'
                 })
             )
         )
@@ -280,10 +345,22 @@ export default handleActions({
         return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.text)
     },
 
+    //사본 Row 변경
+    [DEV_INPUT_ROW_CHANGE]: (state, action) => {
+        return state.setIn(['targetedBox', 'block', action.payload.key], action.payload.row)
+    },
+
+    //사본 Row 변경
+    [DEV_INPUT_SELECTED_ROW_CHANGE]: (state, action) => {
+        return state.setIn(['selectedBox', 'block', action.payload.key], action.payload.row)
+    },
+
     //원본
     [DEV_INPUT_TARGET_CHANGE]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','pallet']).findIndex(box => box.get('id') === action.payload.id)
         return state.updateIn(['selectedDevice', 'pallet'], pallet =>
-            pallet.setIn([pallet.findIndex(box => box.get('id') === action.payload.id), action.payload.key],action.payload.text)
+            pallet.setIn([idx, action.payload.key],action.payload.text)
+                .setIn([idx, action.payload.rowName],action.payload.row)
         )
     },
 
@@ -302,8 +379,8 @@ export default handleActions({
         return state.updateIn(['selectedDevice', 'pallet', state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id')===action.payload.id)], 
         item =>
             item.set('pos', Map({
-                top: action.payload.top,
-                left: action.payload.left,
+                y: action.payload.y,
+                x: action.payload.x,
             }))
         )
     },
@@ -314,6 +391,10 @@ export default handleActions({
 
     [DEV_CODE_ID_CNT]: (state, action) => {
         return state.setIn(['selectedDevice','codeIdCounter'], action.payload);
+    },
+
+    [DEV_EVENT_CODE_ID_CNT]: (state, action) => {
+        return state.setIn(['selectedDevice','eventCodeIdCounter'], action.payload);
     },
 
     //원본
@@ -443,5 +524,90 @@ export default handleActions({
     [SET_ENTRY]: (state, action) => {
         return state.setIn(['selectedDevice', 'haveEntry'],true);
     },
+
+    [DEV_PAGE_SWITCHING]: (state, action) => {
+        return state.set('page',action.payload.page);
+    },
+
+    [SET_SAVE_GRAPH]: (state, action) => {
+        return state.set('page',action.payload.page);
+    },
+    
+    //개발자 서버로 부터 디바이스 정보, 텍스트 박스 체인 정보를 받아옴
+    ...pender({
+        type: GET_DEVICE_INFO,
+        onSuccess: (state, action) => {
+            return state.set('selectedDevice', Map({
+                devId: action.payload.data.data.devId,
+                devAuthKey: action.payload.data.data.devAuthKey,
+                blockIdCounter: action.payload.data.data.blockIdCounter,
+                devName: action.payload.data.data.devName,
+                codeIdCounter: action.payload.data.data.codeIdCounter,
+                haveEntry: action.payload.data.data.haveEntry,
+                eventCodeIdCounter: action.payload.data.data.eventCodeIdCounter,
+                pallet: List(
+                    action.payload.data.data.pallet.map(box=>{
+                        return Map({
+                            id: box.id,
+                            //height: box.height,
+                            linked: box.linked,
+                            linking: box.linking,
+                            pos: Map(box.pos),
+                            postorder: box.postorder,
+                            preorder: box.preorder,
+                            headRow: box.headRow,
+                            footRow: box.footRow,
+                            type: box.type,
+                            parentBox: List(box.parentBox.map(pbox=>Map(pbox))),
+                            info: Map({
+                                buttons: List(box.info.buttons.map(btn=>Map({
+                                    code: btn.code,
+                                    eventCode: btn.eventCode,
+                                    name:btn.name,
+                                    idx: btn.idx,
+                                    isSpread: btn.isSpread,
+                                    type: btn.type,
+                                    linker: btn.linker ? Map({
+                                        childId: btn.linker.childId,
+                                        code: btn.linker.code,
+                                        parentId: btn.linker.parentId,
+                                        m: Map(btn.linker.m),
+                                        z: Map(btn.linker.z)
+                                    }) : null
+                                })))
+                            })
+                        })
+                    })
+                ),
+                linkers: List(
+                    action.payload.data.data.linkers.map(linker=>Map({
+                        childId: linker.childId,
+                        code: linker.code,
+                        parentId: linker.parentId,
+                        m: Map(linker.m),
+                        z: Map(linker.z)
+                    }))
+                ),        
+            }));
+        },
+    }),
+
+    ...pender({
+        type: SAVE_DEVICE_TEXT_BOX_GRAPH,
+        onSuccess: (state, action) => {
+            return state.set('serverResponse', Map({
+                msg: action.payload.data.msg
+            }));
+        },
+    }),
+
+    ...pender({
+        type: DEPLOY_DEVICE_TEXT_BOX_GRAPH,
+        onSuccess: (state, action) => {
+            return state.set('serverResponse', Map({
+                msg: action.payload.data.msg
+            }));
+        },
+    }),
 
 }, initialState);

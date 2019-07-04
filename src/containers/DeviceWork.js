@@ -4,7 +4,8 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
 import * as deviceActions from 'store/modules/device';
-import { DeviceWorkBox, DevicePallet } from 'components';
+import { DeviceWorkBox, DevicePallet, SensingPallet } from 'components';
+import { TestWork } from 'containers';
 import { Map, List } from 'immutable';
 import { BUTTON_TYPE } from 'constants/index';
 import DraggableLinker from 'components/TextBox/DraggableLinker';
@@ -19,7 +20,7 @@ class DeviceWork extends Component {
     _getInfoData = (type) => {
 
         let additionalInfo = null;
-        const { deviceActions, codeIdCounter } = this.props;
+        const { deviceActions, codeIdCounter, eventCodeIdCounter } = this.props;
 
         switch (type) {
             case 1: //버튼 일 때
@@ -28,19 +29,44 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            linker: null,
+                            isSpread: false,
+                            idx: 0,
+                            type: 1,
+                            eventCode: eventCodeIdCounter
                         }),
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
                 break;
-            case 3: //Entry 일 때
+            case 2: //dynamic
                 additionalInfo = {
                     buttons: List([
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            idx: 0,
+                            type: 0,
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                    ])
+                }
+                deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                break;
+            case 3: //time
+                additionalInfo = {
+                    buttons: List([
+                        Map({
+                            code: codeIdCounter,
+                            name: '',
+                            idx: 0,
+                            type: 0,
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
                         }),
                     ])
                 }
@@ -52,11 +78,16 @@ class DeviceWork extends Component {
                         Map({
                             code: codeIdCounter,
                             name: '',
-                            linker: null
+                            idx: 0,
+                            type: 1,
+                            linker: null,
+                            isSpread: false,
+                            eventCode: eventCodeIdCounter
                         }),
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
                 break;
             default:
         }
@@ -95,8 +126,8 @@ class DeviceWork extends Component {
         const id = dragType !== 5 ? blockIdCounter : 0; //Entry 블록이면 ID는 0
         //pallet 리스트에 새로 놓인 텍스트 박스 정보 푸쉬
         deviceActions.devAddTextBox({
-            top: pos.translateY,
-            left: pos.translateX,
+            y: pos.translateY,
+            x: pos.translateX,
             id: id, 
             type: dragType,
             preorder: info.headText,
@@ -191,7 +222,7 @@ class DeviceWork extends Component {
     }
 
     _getPosition = (e) => {
-        const { sb, scrollPos } = this.props;
+        const { sb, scrollPos, sbPos } = this.props;
 
         const scrollX = scrollPos.get('left'); //x축 스크롤
         const scrollY = scrollPos.get('top'); //y축 스크롤
@@ -201,7 +232,7 @@ class DeviceWork extends Component {
         const itemYHalf = 40;
 
         //실제 놓여야 하는 위치 계산
-        const translateX = e.clientX - (sb ? 246 : 36) + scrollX - itemXHalf;
+        const translateX = e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - itemXHalf;
         const translateY = e.clientY - 103 + scrollY - itemYHalf;
 
         return {
@@ -213,7 +244,7 @@ class DeviceWork extends Component {
     //버튼 텍스트 박스에 버튼 추가
     _addBtnFunc = (e, x, y, index) => {
         e.stopPropagation();
-        const { deviceActions, codeIdCounter } = this.props;
+        const { deviceActions, codeIdCounter, eventCodeIdCounter } = this.props;
         deviceActions.devBoxFocus({
             index: index,
             x: x - 20,
@@ -222,8 +253,12 @@ class DeviceWork extends Component {
 
         deviceActions.devAddBtn({
             index: index,
-            code: codeIdCounter
+            code: codeIdCounter,
+            eventCode: eventCodeIdCounter
         })
+
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+
         deviceActions.devCopyBtn({ code: codeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
     }
@@ -231,10 +266,12 @@ class DeviceWork extends Component {
     //버튼 텍스트 박스에 버튼 추가
     _addBtnFuncSide = (e, id) => {
         e.stopPropagation();
-        const { deviceActions, codeIdCounter, targetedBox, pallet } = this.props;
+        const { deviceActions, codeIdCounter, targetedBox, pallet, eventCodeIdCounter } = this.props;
+        console.log('eventcode:',eventCodeIdCounter)
         deviceActions.devAddBtnSide({
             id: id,
-            code: codeIdCounter
+            code: codeIdCounter,
+            eventCode: eventCodeIdCounter
         })
 
         /*targetedBox &&
@@ -242,22 +279,22 @@ class DeviceWork extends Component {
                 parentId: selectedLinker.get('parentId'),
                 code: selectedLinker.get('code')
             })
-
         selectedBox &&
             deviceActions.devSelectCopyLinker({
                 parentId: selectedLinker.get('parentId'),
                 code: selectedLinker.get('code')
             })*/
 
-        deviceActions.devCopyBtn({ code: codeIdCounter });
+        deviceActions.devCopyBtn({ code: codeIdCounter, eventCode: eventCodeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
 
         const pos = pallet.getIn([pallet.findIndex(box => box.get('id') === id), 'pos'])
 
         //버튼에서 연결하는 linker가 있다면
         this._changeLinkerSrc({
-            x: pos.get('left') + 20,
-            y: pos.get('top') + 38,
+            x: pos.get('x') + 20,
+            y: pos.get('y') + 38,
         }, targetedBox)
     }
 
@@ -304,7 +341,6 @@ class DeviceWork extends Component {
 
     _draggableLinkerStart = (e) => {
         const { deviceActions } = this.props;
-        console.log('linker start')
         deviceActions.devLinkerDragStart();
         document.addEventListener('mousemove', this._draggableLinkerMove);
     }
@@ -312,7 +348,6 @@ class DeviceWork extends Component {
     _draggableLinkerMove = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        console.log('ld')
         const { deviceActions, selectedLinker } = this.props;
         const x = selectedLinker.getIn(['m', 'x'])
         const y = selectedLinker.getIn(['m', 'y'])
@@ -322,42 +357,47 @@ class DeviceWork extends Component {
         else
             deviceActions.devSelectLinkerVisible(true)
 
+        //링크의 좌우 대각선이 길어지면 놓여지는 지점에 path랑 마우스가 오버랩됨
+        //이를 방지하기 위해 가감하여 계산
         deviceActions.devSelectLinkerChange({
-            x: pos.x,
+            x: x < pos.x ? pos.x-5 : pos.x+5,
             y: y < pos.y ? pos.y - 5 : pos.y + 5
         });
     }
 
+    //링킹 종료 시 호출
     _draggableLinkerEnd = (e) => {
         console.log('linker end')
         const { deviceActions, selectedLinker, linkerVisible, selectedLinkerTarget, targetedBox, selectedBox } = this.props;
         if (selectedLinker && linkerVisible) {
-            const linker = {
-                m: {
-                    x: selectedLinker.getIn(['m', 'x']),
-                    y: selectedLinker.getIn(['m', 'y']) + 11
-                },
-                z: selectedLinkerTarget ? {
-                    x: selectedLinkerTarget.get('x'),
-                    y: selectedLinkerTarget.get('y'),
-                } : {
-                        x: selectedLinker.getIn(['z', 'x']),
-                        y: selectedLinker.getIn(['z', 'y'])
-                    },
-                parentId: selectedLinker.get('parentId'),
-                code: selectedLinker.get('code'),
-                childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
-            }
 
-            deviceActions.devAddLinker(linker)
-
-            deviceActions.devLinkerDockingSrc({
-                id: selectedLinker.get('parentId'),
-                code: selectedLinker.get('code'),
-                childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
-            })
-
+            //링커 추가 작업은 하위 박스가 선택되어졌을 때만 가능하다.
             if (selectedLinkerTarget) {
+                const linker = {
+                    m: {
+                        x: selectedLinker.getIn(['m', 'x']),
+                        y: selectedLinker.getIn(['m', 'y']) + 11
+                    },
+                    z: selectedLinkerTarget ? {
+                        x: selectedLinkerTarget.get('x'),
+                        y: selectedLinkerTarget.get('y'),
+                    } : {
+                            x: selectedLinker.getIn(['z', 'x']),
+                            y: selectedLinker.getIn(['z', 'y'])
+                        },
+                    parentId: selectedLinker.get('parentId'),
+                    code: selectedLinker.get('code'),
+                    childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
+                }
+    
+                deviceActions.devAddLinker(linker)
+    
+                deviceActions.devLinkerDockingSrc({
+                    id: selectedLinker.get('parentId'),
+                    code: selectedLinker.get('code'),
+                    childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
+                })
+
                 console.log(selectedLinkerTarget.get('blockId'))
                 console.log(selectedLinker.get('parentId'))
                 deviceActions.devLinkerDockingDest({
@@ -386,14 +426,14 @@ class DeviceWork extends Component {
     }
 
     _getLinkerPosition = (e) => {
-        const { sb, scrollPos } = this.props;
+        const { sb, scrollPos, sbPos } = this.props;
 
         const scrollX = scrollPos.get('left'); //x축 스크롤
         const scrollY = scrollPos.get('top'); //y축 스크롤
 
         //실제 놓여야 하는 위치 계산
         return {
-            x: e.clientX - (sb ? 246 : 36) + scrollX - 3,
+            x: e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - 3,
             y: e.clientY - 123 + scrollY - 10
         }
     }
@@ -427,8 +467,8 @@ class DeviceWork extends Component {
             //원본 텍스트 박스 새로운 위치로
             deviceActions.devTextboxLocChange({
                 id: selectedBox.get('id'),
-                top: pos.translateY - 20,
-                left: pos.translateX - 20
+                y: pos.translateY - 20,
+                x: pos.translateX - 20
             })
 
             //사본 텍스트 박스 새로운 위치로
@@ -477,16 +517,31 @@ class DeviceWork extends Component {
         const { deviceActions } = this.props;
         console.log('change src')
         const buttons = box.getIn(['block', 'info', 'buttons'])
+        const type = box.getIn(['block', 'type']);
         const sz = buttons.size
-        buttons.map((button, index) => {
+        const dynamicHeight = box.getIn(['block', 'footRow'])*20 + box.getIn(['block', 'headRow'])*20
+        //버튼 박스, 엔트리 박스인 경우
+        if(type==1 || type ==5){
+            buttons.map((button, index) => {
+                button.get('linker') && deviceActions.devLinkerSrcChange({
+                    code: button.get('code'),
+                    m: {
+                        x: pos.x + 18 + index * 32,
+                        y: pos.y + dynamicHeight + 70 + 18 * (sz - 1),
+                    }
+                })
+            })
+        }
+        else{
+            const button = box.getIn(['block', 'info', 'buttons',0])
             button.get('linker') && deviceActions.devLinkerSrcChange({
                 code: button.get('code'),
                 m: {
-                    x: pos.x + 18 + index * 32,
-                    y: pos.y + box.getIn(['block', 'height']) + 90 + 18 * (sz - 1),
+                    x: pos.x + 18 + 2 * 32,
+                    y: pos.y + dynamicHeight + 55,
                 }
             })
-        })
+        }
     }
 
     _changeLinkerDest = (pos) => {
@@ -504,18 +559,71 @@ class DeviceWork extends Component {
     }
 
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
-    _changeTextBoxInfo = (e, id, name) => {
-        if (this._validationTextBox(e.target.value)) {
-            const { deviceActions } = this.props;
-            this._resize_height(e, id, name);
-            deviceActions.devInputChange({ key: e.target.name, text: e.target.value });
-            deviceActions.devInputTargetChange({ key: e.target.name, text: e.target.value, id: id });
+    _changeTextBoxInfo = (e, id, name, location, row) => {
+        //if (this._validationTextBox(e.target.value)) {
+            this._resize_height(e, id, name, location, row);
+        //}
+    }
+
+    _resize_height = (event, id, key, location, row) => {
+        const { deviceActions, targetedBox, selectedBox } = this.props;
+        const textareaLineHeight = 20;
+        const minRows=1
+        const maxRows=4
+        
+        const previousRows = event.target.rows;
+        event.target.rows = minRows; // reset number of rows in textarea 
+          
+        const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+      
+        if (currentRows === previousRows) {
+          event.target.rows = currentRows;
+        }
+          
+        if (currentRows > maxRows) {
+            event.target.rows = maxRows;
+            event.target.scrollTop = event.target.scrollHeight;
+            return;
+        }
+
+        const changeRow = currentRows < maxRows ? currentRows : maxRows
+
+        //deviceActions.devTargetTextboxHeightChange({ key: key, height: height })
+
+        //사본 변경
+        deviceActions.devInputChange({ key: event.target.name, text: event.target.value });
+        deviceActions.devInputRowChange({ key: location, row:  changeRow});
+
+        //원본 변경
+        deviceActions.devInputTargetChange({ 
+            key: event.target.name, 
+            text: event.target.value, 
+            id: id,
+            rowName: location,
+            row: changeRow
+        });
+
+        //row값이 변경되었다면 linker m position 변경
+        if(row!=currentRows){
+
+            //focus 박스가 존재한다면
+            if(selectedBox){
+                deviceActions.devInputSelectedRowChange({
+                    key: location, 
+                    row: changeRow
+                })
+            }
+            //버튼에서 연결하는 linker가 있다면
+            this._changeLinkerSrc({
+                x: targetedBox.get('x')+20,
+                y: targetedBox.get('y')+(row< currentRows ? 40 : 0)
+            }, targetedBox)
         }
     }
 
     //버튼 텍스트 박스의 버튼 정보들을 변경하기 위해 사용
     _devBtnInfoChange = (e, id, index) => {
-        //14자 까지만 허용
+        //13자 까지만 허용
         if (e.target.value.length <= 13) {
             const { deviceActions } = this.props;
             deviceActions.devBtnInfoChange({ key: e.target.name, index: index, text: e.target.value });
@@ -531,14 +639,6 @@ class DeviceWork extends Component {
         if (length > MAX) return false;
         else if (rows > MAX_ROW) return false;
         return true;
-    }
-
-    _resize_height = (e, id, key) => {
-        const { deviceActions } = this.props;
-        const height = e.currentTarget.scrollHeight;
-        //deviceActions.devTextBoxHeightChange({id: id, height: height, key: key})
-        deviceActions.devTargetTextboxHeightChange({ key: key, height: height })
-        console.log(height);
     }
 
     //텍스트 박스 삭제
@@ -586,14 +686,51 @@ class DeviceWork extends Component {
         })
     }
 
+    _saveDeviceTextBoxGraph = () => {
+        const { deviceActions, selectedDevice, devId } = this.props;
+        deviceActions.saveDeviceTextBoxGraph(devId, selectedDevice)
+    }
+
+    _deployDeviceTextBoxGraph = () => {
+        //저장이 안됬으면 수행불가능하게 만들어야
+        const { deviceActions, devId } = this.props;
+        deviceActions.deployDeviceTextBoxGraph(devId);
+    }
+
+    _modalChange = () => {
+        const { basicActions, codeModal } = this.props;
+        basicActions.changeCodeModal(!codeModal);
+    }
+
+    _pageSwitching = (page) => {
+        const { deviceActions } = this.props;
+        deviceActions.pageSwitching({page: page})
+    }
+
+    _buttonTypeChange = (e, idx) => {
+        const { deviceActions, targetedBox } = this.props;
+        deviceActions.devBtnSideTypeChange({
+            idx: idx,
+            id: targetedBox.getIn(['block', 'id']),
+            type: e.target.value
+        });
+        deviceActions.devCopyBtnType({
+            idx: idx,
+            type: e.target.value
+        })
+    }
+
     componentDidMount() {
+        const { deviceActions, location } = this.props;
+        deviceActions.pageSwitching({page: 3})
+        deviceActions.getDeviceInfo(location.state.dev.get('devId'));
     }
 
     componentWillUnmount() {
 
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    /*shouldComponentUpdate(nextProps, nextState) {
         const pallet = nextProps.pallet !== this.props.pallet;
         const linkers = nextProps.linkers !== this.props.linkers;
         const selectedBox = nextProps.selectedBox !== this.props.selectedBox;
@@ -601,7 +738,7 @@ class DeviceWork extends Component {
         const linkerVisible = nextProps.linkerVisible !== this.props.linkerVisible;
         const selectedLinker = nextProps.selectedLinker !== this.props.selectedLinker;
         return pallet || selectedBox || targetedBox || linkers || selectedLinker || linkerVisible;
-    }
+    }*/
 
     render() {
 
@@ -613,13 +750,16 @@ class DeviceWork extends Component {
             linkers,
             selectedLinker,
             linkerVisible,
-            haveEntry
+            haveEntry,
+            vHubId,
+            devName,
+            page
         } = this.props;
 
         return (
             <Fragment>
-                <DeviceWorkBox>
-                    <DevicePallet
+                <DeviceWorkBox vHubId={vHubId} devName={devName} pageSwitching={this._pageSwitching} page={page}>
+                    {page === 1 && <DevicePallet
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
                         drop={this._drop}
@@ -630,7 +770,11 @@ class DeviceWork extends Component {
                         devBtnInfoChange={this._devBtnInfoChange}
                         targetedBox={targetedBox}
                         draggableLinkerEnd={this._draggableLinkerEnd}
-                        haveEntry={haveEntry}>
+                        haveEntry={haveEntry}
+                        saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}
+                        deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
+                        modalChange={this._modalChange}
+                        buttonTypeChange={this._buttonTypeChange}>
 
                         <g>
                             {pallet.map((boxInfo, index) => {
@@ -640,7 +784,8 @@ class DeviceWork extends Component {
                                         key={boxInfo.get('id')}
                                         index={index}
                                         addBtnFunc={this._addBtnFunc}
-                                        focus={this._focus} />)
+                                        focus={this._focus} 
+                                        isEvent={true}/>)
                             })}
                         </g>
 
@@ -682,7 +827,13 @@ class DeviceWork extends Component {
                                 selectedLinker={selectedLinker}
                                 selectLinkerClear={this._selectLinkerClear}
                                 draggableLinkerStart={this._draggableLinkerStart} />}
-                    </DevicePallet>
+                    </DevicePallet>}
+
+                    {page === 2 && 
+                    <SensingPallet></SensingPallet>
+                    }
+
+                    {page ===3 && <TestWork></TestWork>}
                 </DeviceWorkBox>
             </Fragment>
         )
@@ -694,15 +845,23 @@ export default withRouter(
     connect(
         // props 로 넣어줄 스토어 상태값
         state => ({
+            page: state.device.get('page'),
+            selectedDevice: state.device.get('selectedDevice'),
+            devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
+            devId: state.device.getIn(['selectedDevice', 'devId']),
+            vHubId: state.device.getIn(['selectedDevice', 'vHubId']),
+            devName: state.device.getIn(['selectedDevice', 'devName']),
             pallet: state.device.getIn(['selectedDevice', 'pallet']),
             linkers: state.device.getIn(['selectedDevice', 'linkers']),
             blockIdCounter: state.device.getIn(['selectedDevice', 'blockIdCounter']),
             codeIdCounter: state.device.getIn(['selectedDevice', 'codeIdCounter']),
+            eventCodeIdCounter: state.device.getIn(['selectedDevice', 'eventCodeIdCounter']),
             scrollPos: state.device.get('scrollPos'),
             selectedBox: state.device.get('selectedBox'),
             selectedLinker: state.device.get('selectedLinker'),
             targetedBox: state.device.get('targetedBox'),
             sb: state.basic.getIn(['frameState', 'sb']),
+            codeModal: state.basic.getIn(['frameState', 'codeModal']),
             dragType: state.device.get('dragType'),
             isDragging: state.device.get('isDragging'),
             linkerVisible: state.device.get('linkerVisible'),
