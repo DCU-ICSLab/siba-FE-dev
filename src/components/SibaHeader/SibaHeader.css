@@ -20,11 +20,11 @@
     float: right;
     font-size: 13px;
     margin-right: 10px;
-    padding-top: 6px;
+    padding-top: 10px;
     padding-left: 10px;
     width: 100px;
-    height: 38px;
-    border-left: 2px solid #dadce0;
+    height: 35px;
+    border-left: 1px solid #dadce0;
 }
 
 #SibaHeader .userimage{
@@ -34,7 +34,7 @@
 #SibaHeader .username{
     position: absolute;
     top: 12px;
-    right: 44px;
+    right: 49px;
     display: inline-block;
     margin-right: 5px;
 }

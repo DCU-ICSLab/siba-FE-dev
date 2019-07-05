@@ -7,19 +7,24 @@
     padding: 10px 0 10px 25px;
     color: transparent;
     text-shadow: 0 0 5px rgba(0,0,0,0.6);
-    cursor: pointer;
 }
 
 #VirtualHubAddBtn .shadow{
     position: absolute;
     /* top:0;
     left:0; */
-    width: 276px;
-    height: 274px;
+    /* width: 282px;
+    height: 274px; */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 2px;
+    border: 1px solid #AAA;
     background-color: rgba(0,0,0,0.2);
     text-align: center;
     /* filter: blur(4px); */
+    cursor: pointer;
 }
 
 #VirtualHubAddBtn .shadow >div{
@@ -32,15 +37,16 @@
 
 #VirtualHubAddBtn > .inner{
     /* border: 1px solid #888; */
-    border: 1px solid #dadce0;
     border-radius: 2px;
     height: 100%;
     width: 100%;
-    background-color: #B8C6D8;
+    background-color: #fff;
+    padding: 0 3px 3px 3px;
+    position: relative;
 }
 
 #VirtualHubAddBtn .inner > header{
-    font-size: 14px;
+    font-size: 12px;
     border-bottom: 1px solid #dadce0;
     padding: 5px;
     background-color: #fff;
@@ -48,7 +54,7 @@
 
 #VirtualHubAddBtn .title{
     border-left: 3px solid transparent;
-    font-weight: 500;
+    font-weight: 450;
     /* color: #000; */
     padding-left: 7px;
     margin-left: 5px;
@@ -65,9 +71,10 @@
 
 #VirtualHubAddBtn .container{
     /* width: 100%; */
-    padding-top: 10px;
-    height: 191px;
+    padding-top: 5px;
+    height: 196px;
     overflow: auto;
+    background-color: #B8C6D8;
     /* background-color: #B8C6D8; */
     /* border-bottom: 1px solid #888; */
 }

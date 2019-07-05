@@ -12,7 +12,8 @@
     border-radius: 2px;
     height: 100%;
     width: 100%;
-    background-color: #B8C6D8;
+    background-color: #fff;
+    padding: 0 3px 3px 3px;
 }
 
 #VirtualHub .inner > header{
@@ -20,6 +21,7 @@
     border-bottom: 1px solid #dadce0;
     padding: 5px;
     background-color: #fff;
+    position: relative;
 }
 
 #VirtualHub .title{
@@ -48,6 +50,7 @@
 
 #VirtualHub .container{
     /* width: 100%; */
+    background-color: #B8C6D8;
     padding-top: 5px;
     height: 196px;
     overflow: auto;
@@ -193,4 +196,24 @@
   /* Handle on hover */
 #VirtualHub .container::-webkit-scrollbar-thumb:hover {
     background: #959596; 
+}
+
+#VirtualHub .hub-set-btn{
+    /* position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    padding-top: 3px;
+    padding-right: 3px;
+    display: block;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    width: 20px; */
+    color: #656565;
+}
+
+#VirtualHub .hub-set-btn:hover{
+    color: #222;
 }

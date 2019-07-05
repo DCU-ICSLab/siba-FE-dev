@@ -5,3 +5,4 @@ export {default as DeviceWork} from 'containers/DeviceWork';
 export {default as NotFound} from 'containers/NotFound';
 export {default as OAuth2RedirectHandler} from 'containers/OAuth2RedirectHandler';
 export {default as TestWork} from 'containers/TestWork';
+export {default as HubAdmin} from 'containers/HubAdmin';

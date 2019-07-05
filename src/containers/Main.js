@@ -90,7 +90,10 @@ class Main extends Component {
                         deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
                         hubList={userState.get('hubInfo')}>
                     </SideBar>
-                    <HubPallet sbState={sb} size={userState.get('hubInfo').size}>
+                    <HubPallet 
+                    sbState={sb} 
+                    size={userState.get('hubInfo').size}
+                    deviceAddModalChange={this._deviceAddModalChange}>
                         {
                             userState.get('hubInfo').map((hub, index) => 
                                 <VirtualHub 

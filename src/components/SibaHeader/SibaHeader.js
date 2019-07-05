@@ -20,8 +20,8 @@ const SibaHeader = ({ userState }) => {
                 </div>
                 <div className="userimage">
                     {profileImage ?
-                        <img alt='Avatar' src={profileImage} height={32} width={32} />
-                        : <MdAccountCircle size={32} color="#656565"/>}
+                        <img alt='Avatar' src={profileImage} height={26} width={26} />
+                        : <MdAccountCircle size={26} color="#656565"/>}
                 </div>
             </div>
         </div>

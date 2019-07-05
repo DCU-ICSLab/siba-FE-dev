@@ -18,6 +18,7 @@ const DEVICE_REG_VALUE_CHANGE = 'basic/DEVICE_REG_VALUE_CHANGE';
 const DEVICE_REG_INPUT_CLEAR = 'basic/DEVICE_REG_INPUT_CLEAR'
 const GET_DEVICE_AUTH_KEY = 'basic/GET_DEVICE_AUTH_KEY'
 const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
+const CHANGE_HUB_ADD_MODAL = 'basic/CHANGE_HUB_ADD_MODAL'
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -29,6 +30,7 @@ export const deviceAddBoxChange = createAction(DEVICE_ADD_BOX_CHANGE);
 export const deviceWorkBoxChange = createAction(DEVICE_WORK_BOX_CHANGE);
 export const changeCodeModal = createAction(CHANGE_CODE_MODAL);
 export const changeDeviceAddModal = createAction(CHANGE_DEIVCE_ADD_MODAL);
+export const changeHubAddModal = createAction(CHANGE_HUB_ADD_MODAL);
 export const changeCopy = createAction(CHANGE_COPY);
 export const deviceRegValueChange = createAction(DEVICE_REG_VALUE_CHANGE);
 export const deviceRegInputClear = createAction(DEVICE_REG_INPUT_CLEAR);
@@ -47,6 +49,7 @@ const initialState = Map({
         deviceWorkBox: false,
         codeModal: false,
         deviceModal: false,
+        hubModal: false,
         copy: false,
     }),
 
@@ -95,6 +98,10 @@ export default handleActions({
 
     [CHANGE_DEIVCE_ADD_MODAL]: (state, action) => {
         return state.setIn(['frameState', 'deviceModal'], action.payload);
+    },
+
+    [CHANGE_HUB_ADD_MODAL]: (state, action) => {
+        return state.setIn(['frameState', 'hubModal'], action.payload);
     },
 
     [DEVICE_REG_INPUT_CLEAR]: (state, action) => {

@@ -6,7 +6,8 @@ import {
     Main,
     Device,
     OAuth2RedirectHandler,
-    NotFound
+    NotFound,
+    HubAdmin
 } from 'containers';
 
 const DynamicRoute = ({ match, location }) => {
@@ -14,14 +15,13 @@ const DynamicRoute = ({ match, location }) => {
     //개발자의 디바이스라면
     console.log(location);
     if (location.state) {
-        console.log('ok!')
+        const component = match.url === '/device' ? Device : HubAdmin;
         return (<Route
             path={`${match.url}/:id`}
-            component={Device} />
+            component={component} />
         )
     }
     else {
-        console.log('false!')
         return <Route component={NotFound} />
     }
 }
@@ -35,6 +35,7 @@ class App extends Component {
                     <Route exact path="/" component={Welcome} />
                     <Route path="/main" component={Main} />
                     <Route path="/device" component={DynamicRoute} />
+                    <Route path="/hub" component={DynamicRoute} />
                     <Route path="/oauth2/redirect" component={OAuth2RedirectHandler} />
                     <Route component={NotFound} />
                 </Switch>

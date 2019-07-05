@@ -774,7 +774,8 @@ class DeviceWork extends Component {
                         saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}
                         deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
                         modalChange={this._modalChange}
-                        buttonTypeChange={this._buttonTypeChange}>
+                        buttonTypeChange={this._buttonTypeChange}
+                        >
 
                         <g>
                             {pallet.map((boxInfo, index) => {

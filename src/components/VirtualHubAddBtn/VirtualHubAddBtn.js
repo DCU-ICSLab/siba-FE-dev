@@ -5,14 +5,7 @@ import { MdAdd } from 'react-icons/md'
 const VirtualHubAddBtn = ({ vhubCreate }) => {
 
     return (
-        <div id="VirtualHubAddBtn" onClick={vhubCreate}>
-            <div className="shadow">
-                
-                <div>
-                    <div><MdAdd color="#fff" size={50}></MdAdd></div>
-                    <span>가상 IoT 허브 추가</span>
-                </div>
-            </div>
+        <div id="VirtualHubAddBtn">
             <div className="inner">
                 <header>
                     <span className="title">virtual IoT-Hub</span>
@@ -28,6 +21,12 @@ const VirtualHubAddBtn = ({ vhubCreate }) => {
                     <span className="on">on <strong>(0)</strong></span>
                     <span className="off">off <strong>(0)</strong></span>
                 </footer>
+                <div className="shadow" onClick={vhubCreate}>
+                <div>
+                    <div><MdAdd color="#fff" size={50}></MdAdd></div>
+                    <span>개발용 IoT 허브 생성</span>
+                </div>
+            </div>
             </div>
         </div>
     )
