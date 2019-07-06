@@ -3,7 +3,8 @@ import {
     MdNavigateBefore,
     MdDeviceHub,
     MdNavigateNext,
-    MdAdd
+    MdAdd,
+    MdHome
 } from 'react-icons/md'
 import './SideBar.css';
 import { Link } from 'react-router-dom';
@@ -17,8 +18,16 @@ const SideBar = ({ sbToggle, sbState, hubList }) => {
             <div className="container">
                 <div className="inner">
                     <div className="list-group">
-                        <div>main page</div>
-                        <div>virtual hub group ({hubList.size})</div>
+                        <div className="link-item">
+                            <Link pathname="/main">
+                                <MdHome size={20} color="#6397FD" style={{
+                                    display: 'inline-block',
+                                    margin: '1px'
+                                }}/>
+                                <span>메인 페이지</span>
+                            </Link>
+                        </div>
+                        <div className="link-item">virtual hub group ({hubList.size})</div>
                         {
                             hubList.map(hub=>{
                                 return (

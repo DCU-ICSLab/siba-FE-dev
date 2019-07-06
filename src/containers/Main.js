@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
 import * as vhubActions from 'store/modules/vhub';
+import { Link, Redirect } from 'react-router-dom';
 
 class Main extends Component {
 
@@ -49,18 +50,25 @@ class Main extends Component {
         }
     }
 
-    _deviceAddModalChange = (hubId) => {
+    _deviceAddModalChange = () => {
         const { basicActions, deviceModal } = this.props;
         basicActions.deviceRegInputClear();
         basicActions.getDeviceAuthKey();
-        basicActions.getVirtualHub({hubId: hubId});
         basicActions.changeDeviceAddModal(!deviceModal);
     }
 
     _createDevice = () => {
-        const { authActions, regInput } = this.props;
+        const { authActions, regInput, deviceModal } = this.props;
         //디바이스 생성 요청 전송 이전에 validation 해야
         authActions.createDevice(regInput);
+        basicActions.changeDeviceAddModal(!deviceModal);
+    }
+
+    _linkDevicePage = (devId, dev) => {
+        this.props.history.push({
+            pathname: `/device/${devId}`,
+            state: { dev: dev }
+        })
     }
 
     componentDidMount() {
@@ -93,7 +101,10 @@ class Main extends Component {
                     <HubPallet 
                     sbState={sb} 
                     size={userState.get('hubInfo').size}
-                    deviceAddModalChange={this._deviceAddModalChange}>
+                    deviceAddModalChange={this._deviceAddModalChange}
+                    deviceInfo={userState.get('deviceInfo')}
+                    linkDevicePage={this._linkDevicePage}
+                    >
                         {
                             userState.get('hubInfo').map((hub, index) => 
                                 <VirtualHub 

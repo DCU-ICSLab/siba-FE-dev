@@ -58,7 +58,6 @@ const DEV_BTN_SIDE_TYPE_CHANGE = 'device/DEV_BTN_SIDE_TYPE_CHANGE'
 const DEV_CP_BTN_TYPE = 'device/DEV_CP_BTN_TYPE'
 
 const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
-const SET_SAVE_GRAPH = 'device/SET_SAVE_GRAPH'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -111,7 +110,6 @@ export const devBtnSideTypeChange = createAction(DEV_BTN_SIDE_TYPE_CHANGE)
 export const devCopyBtnType = createAction(DEV_CP_BTN_TYPE)
 
 export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
-export const setSaveGraph = createAction(SET_SAVE_GRAPH)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -137,6 +135,8 @@ const initialState = Map({
 
         haveEntry: false,
     }),
+
+    graph: null,
 
     linkerVisible: false,
 
@@ -528,16 +528,12 @@ export default handleActions({
     [DEV_PAGE_SWITCHING]: (state, action) => {
         return state.set('page',action.payload.page);
     },
-
-    [SET_SAVE_GRAPH]: (state, action) => {
-        return state.set('page',action.payload.page);
-    },
     
     //개발자 서버로 부터 디바이스 정보, 텍스트 박스 체인 정보를 받아옴
     ...pender({
         type: GET_DEVICE_INFO,
         onSuccess: (state, action) => {
-            return state.set('selectedDevice', Map({
+            const dataset =  Map({
                 devId: action.payload.data.data.devId,
                 devAuthKey: action.payload.data.data.devAuthKey,
                 blockIdCounter: action.payload.data.data.blockIdCounter,
@@ -588,7 +584,12 @@ export default handleActions({
                         z: Map(linker.z)
                     }))
                 ),        
-            }));
+            })
+
+            return state.merge({
+                selectedDevice: dataset,
+                graph: dataset
+            });
         },
     }),
 

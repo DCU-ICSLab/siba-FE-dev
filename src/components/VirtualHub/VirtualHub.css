@@ -7,6 +7,17 @@
     padding: 10px 0 10px 25px;
 }
 
+#VirtualHub .inner > header::before {
+    position: relative;
+    left: 5px;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    content: '';
+    display: inline-block;
+    background-color: green;
+}
+
 #VirtualHub > .inner{
     border: 1px solid #BBB;
     border-radius: 2px;

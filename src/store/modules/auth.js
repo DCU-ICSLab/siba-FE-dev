@@ -18,7 +18,8 @@ const initialState = Map({
     userState: Map({
         isAuthenticated: false,
         user: null,
-        hubInfo: List([])
+        hubInfo: List([]),
+        deviceInfo: List([])
     }),
     
 });
@@ -33,6 +34,7 @@ export default handleActions({
                 {
                     isAuthenticated: true,
                     user: Map(action.payload.data.data.user),
+                    deviceInfo: List(action.payload.data.data.deviceList.map(device=>Map(device))),
                     hubInfo: List(action.payload.data.data.hubInfo.map(hub=>Map({
                         vhubId: hub.vhubId,
                         devices: List(hub.devices.map(device => Map(device))),
@@ -45,9 +47,12 @@ export default handleActions({
     ...pender({
         type: CREATE_DEVICE,
         onSuccess: (state, action) => {
-            const idx = state.getIn(['userState', 'hubInfo']).findIndex(hub => hub.get('vhubId') === action.payload.data.data.vHubId)
+            //const idx = state.getIn(['userState', 'hubInfo']).findIndex(hub => hub.get('vhubId') === action.payload.data.data.vHubId)
+
+            // return state.updateIn(['userState', 'hubInfo', idx, 'devices'], devices => 
+            //     devices.push(Map(action.payload.data.data)));
             
-            return state.updateIn(['userState', 'hubInfo', idx, 'devices'], devices => 
+            return state.updateIn(['userState', 'deviceInfo'], devices => 
                 devices.push(Map(action.payload.data.data)));
         },
     })

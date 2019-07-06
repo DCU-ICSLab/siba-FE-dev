@@ -722,8 +722,9 @@ class DeviceWork extends Component {
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        deviceActions.pageSwitching({page: 3})
+        deviceActions.pageSwitching({page: 1})
         deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        //deviceActions.setSaveGraph({graph: this.props.selectedDevice})
     }
 
     componentWillUnmount() {

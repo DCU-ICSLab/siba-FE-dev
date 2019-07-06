@@ -5,7 +5,9 @@ const HubPallet = ({
     children,
     sbState,
     size,
-    deviceAddModalChange
+    deviceAddModalChange,
+    deviceInfo,
+    linkDevicePage
 }) => {
 
     return (
@@ -25,7 +27,7 @@ const HubPallet = ({
                 </header>
                 <div className="repo-toolbar">
                     <div className="repo-toolbar-info">
-                        <span>Total: 0</span>
+                        <span>Total: {deviceInfo.size}</span>
                     </div>
                     <button onClick={deviceAddModalChange}>
                         디바이스 등록
@@ -47,25 +49,40 @@ const HubPallet = ({
                                 <th>연결허브</th>
                                 <th>최근 수정일시</th>
                                 <th>최근 배포일시</th>
-                                <th>디바이스 인증키</th>
+                                <th>분류</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td style={{
-                                    // backgroundColor: '#CEDDED'
-                                }}>1</td>
-                                <td>테스트</td>
-                                <td>제어</td>
-                                <td>aab</td>
-                                <td>Y</td>
-                                <td>Y</td>
-                                <td>1</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            
+                            {
+                                deviceInfo.map((device, index) => {
+                                    let typeString = '복합'
+                                    switch (device.get('devType')) {
+                                        case '1':
+                                            typeString = '제어'
+                                            break;
+                                        case '2':
+                                            typeString = '센싱'
+                                            break;
+                                        default:
+                                            break;
+                                    }
+
+                                    return (
+                                        <tr key={index} className="dev-row" onClick={(e)=>{linkDevicePage(device.get('devId'), device)}}>
+                                            <td>{index + 1}</td>
+                                            <td>{device.get('devName')}</td>
+                                            <td>{typeString}</td>
+                                            <td>{device.get('authKey')}</td>
+                                            <td>Y</td>
+                                            <td>Y</td>
+                                            <td>{device.get('vhubId') ? device.get('vhubId') : 'none'}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </table>
                 </div>

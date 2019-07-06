@@ -47,7 +47,7 @@
 }
 
 #SideBar .list-group{
-    margin-top: 6px;
+    margin: 6px 0px;
     font-size: 12px;
     font-family: "Noto Sans KR";
     color: #333;
@@ -89,4 +89,28 @@
     border-bottom: 9px solid transparent;
     z-index: 9994;
     /* box-shadow: 5px 5px 5px gray; */
+}
+
+#SideBar a{
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    display: block;
+    padding: 0 5px;
+}
+
+#SideBar a:hover 
+{
+     background-color:#DDD; 
+     text-decoration:none; 
+     cursor:pointer;  
+}
+
+#SideBar .link-item{
+    height: 24px;
+}
+
+#SideBar .link-item span{
+    display: inline-block;
+    margin-bottom: 5px;
 }

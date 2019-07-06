@@ -166,7 +166,7 @@ class TestWork extends Component {
             timeSetter,
             timeFormat,
             pallet,
-            linkers
+            linkers,
         } = this.props;
 
         return (
@@ -250,8 +250,8 @@ export default withRouter(
             userBoxList: state.test.get('userBoxList'),
             timeSetter: state.test.get('timeSetter'),
             timeFormat: state.test.get('timeFormat'),
-            pallet: state.device.getIn(['selectedDevice', 'pallet']),
-            linkers: state.device.getIn(['selectedDevice', 'linkers']),
+            pallet: state.device.getIn(['graph', 'pallet']),
+            linkers: state.device.getIn(['graph', 'linkers']),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

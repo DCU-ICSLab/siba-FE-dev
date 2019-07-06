@@ -153,6 +153,14 @@
     background-color: #6B94D9;
 }
 
+#HubPallet .dev-row{
+    cursor: pointer;
+}
+
+#HubPallet .dev-row:hover{
+    background-color: #F8F8F8;
+}
+
 /* #HubPallet .device-repo-list tbody tr:nth-child(even){
     background-color: #F5F9FE;
 } */

@@ -17,7 +17,7 @@ const CHANGE_DEIVCE_ADD_MODAL = 'basic/CHANGE_DEIVCE_ADD_MODAL';
 const DEVICE_REG_VALUE_CHANGE = 'basic/DEVICE_REG_VALUE_CHANGE';
 const DEVICE_REG_INPUT_CLEAR = 'basic/DEVICE_REG_INPUT_CLEAR'
 const GET_DEVICE_AUTH_KEY = 'basic/GET_DEVICE_AUTH_KEY'
-const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
+//const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
 const CHANGE_HUB_ADD_MODAL = 'basic/CHANGE_HUB_ADD_MODAL'
 
 /*--------create action--------*/
@@ -35,7 +35,7 @@ export const changeCopy = createAction(CHANGE_COPY);
 export const deviceRegValueChange = createAction(DEVICE_REG_VALUE_CHANGE);
 export const deviceRegInputClear = createAction(DEVICE_REG_INPUT_CLEAR);
 export const getDeviceAuthKey = createAction(GET_DEVICE_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
-export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
+//export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -108,7 +108,7 @@ export default handleActions({
         return state.set('regInput', Map({
             devName: '',
             authKey: '',
-            vHubId: null,
+            //vHubId: null,
             devType: null,
             devDefName: '',
             category: null
@@ -119,9 +119,9 @@ export default handleActions({
         return state.setIn(['regInput', action.payload.key], action.payload.value);
     },
 
-    [GET_VIRTUAL_HUB]: (state, action) => {
-        return state.setIn(['regInput', 'vHubId'], action.payload.hubId);
-    },
+    // [GET_VIRTUAL_HUB]: (state, action) => {
+    //     return state.setIn(['regInput', 'vHubId'], action.payload.hubId);
+    // },
 
 
     ...pender({
