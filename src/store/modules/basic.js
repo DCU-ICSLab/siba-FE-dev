@@ -19,6 +19,9 @@ const DEVICE_REG_INPUT_CLEAR = 'basic/DEVICE_REG_INPUT_CLEAR'
 const GET_DEVICE_AUTH_KEY = 'basic/GET_DEVICE_AUTH_KEY'
 //const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
 const CHANGE_HUB_ADD_MODAL = 'basic/CHANGE_HUB_ADD_MODAL'
+const HUB_REG_VALUE_CHANGE = 'basic/HUB_REG_VALUE_CHANGE'
+const HUB_REG_INPUT_CLEAR = 'basic/HUB_REG_INPUT_CLEAR'
+const GET_HUB_AUTH_KEY = 'basic/GET_HUB_AUTH_KEY'
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -35,6 +38,9 @@ export const changeCopy = createAction(CHANGE_COPY);
 export const deviceRegValueChange = createAction(DEVICE_REG_VALUE_CHANGE);
 export const deviceRegInputClear = createAction(DEVICE_REG_INPUT_CLEAR);
 export const getDeviceAuthKey = createAction(GET_DEVICE_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
+export const hubRegValueChange = createAction(HUB_REG_VALUE_CHANGE);
+export const hubRegInputClear = createAction(HUB_REG_INPUT_CLEAR);
+export const getHubAuthKey = createAction(GET_HUB_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
 //export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
 
 /*--------state definition--------*/
@@ -54,6 +60,10 @@ const initialState = Map({
     }),
 
     regInput: Map({
+
+    }),
+
+    hubInput: Map({
 
     })
 });
@@ -119,6 +129,18 @@ export default handleActions({
         return state.setIn(['regInput', action.payload.key], action.payload.value);
     },
 
+    [HUB_REG_VALUE_CHANGE]: (state, action) => {
+        return state.setIn(['hubInput', action.payload.key], action.payload.value);
+    },
+
+    [HUB_REG_INPUT_CLEAR]: (state, action) => {
+        return state.set('hubInput', Map({
+            hubName: '',
+            authKey: '',
+            hubType: '1',
+        }));
+    },
+
     // [GET_VIRTUAL_HUB]: (state, action) => {
     //     return state.setIn(['regInput', 'vHubId'], action.payload.hubId);
     // },
@@ -128,6 +150,13 @@ export default handleActions({
         type: GET_DEVICE_AUTH_KEY,
         onSuccess: (state, action) => {
             return state.setIn(['regInput', 'authKey'], action.payload.data.data);
+        },
+    }),
+
+    ...pender({
+        type: GET_HUB_AUTH_KEY,
+        onSuccess: (state, action) => {
+            return state.setIn(['hubInput', 'authKey'], action.payload.data.data);
         },
     }),
     

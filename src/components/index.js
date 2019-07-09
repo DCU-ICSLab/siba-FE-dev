@@ -22,6 +22,7 @@ import TestTextBox from './TestTextBox/TestTextBox';
 import TestUserTextBox from './TestUserTextBox/TestUserTextBox';
 import SendReceiveBox from './SendReceiveBox/SendReceiveBox';
 import TestToolBox from './TestToolBox/TestToolBox';
+import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
 
 export {
     SibaFrame,
@@ -47,5 +48,6 @@ export {
     TestTextBox,
     TestUserTextBox,
     SendReceiveBox,
-    TestToolBox
+    TestToolBox,
+    HubAddModalWrapper
 }

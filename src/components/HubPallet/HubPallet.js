@@ -20,6 +20,37 @@ const HubPallet = ({
                     <div className="hub-list-info">등록된 개발용 허브 ({size})</div>
                     {children}
                 </div>
+                <div className="wrapper-side">
+                    <table className="hub-log-list">
+                        <thead>
+                            <tr>
+                                <th style={{
+                                    width: '27px',
+                                    borderLeft: 'none'
+                                }}>No.</th>
+                                <th
+                                style={{
+                                    width: '95px',
+                                }}>수행시간</th>
+                                <th 
+                                style={{
+                                    width: '45px',
+                                }}>수행허브</th>
+                                <th style={{
+                                    width: '70px',
+                                }}>메시지</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>2019-12-07 13:15</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div className="device-repo">
                 <header>
@@ -72,7 +103,10 @@ const HubPallet = ({
                                             <td>{index + 1}</td>
                                             <td>{device.get('devName')}</td>
                                             <td>{typeString}</td>
-                                            <td>{device.get('authKey')}</td>
+                                            <td>
+                                                {device.get('authKey')}
+                                                
+                                            </td>
                                             <td>Y</td>
                                             <td>Y</td>
                                             <td>{device.get('vhubId') ? device.get('vhubId') : 'none'}</td>

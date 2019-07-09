@@ -26,3 +26,19 @@ export const createDevice = (deviceInfo) =>{
         return res;
     });
 }
+
+//새 허브 구성 생성
+export const vhubCreate = (hubInput) =>{
+
+    const baseURL = `${API_BASE_URL}/vhub`
+
+    return axios.post(baseURL,{
+        hubName: hubInput.get('hubName'),
+        authKey: hubInput.get('authKey'),
+        hubType: hubInput.get('hubType')
+    })
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

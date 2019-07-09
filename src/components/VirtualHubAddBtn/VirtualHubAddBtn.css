@@ -89,3 +89,9 @@
 #VirtualHubAddBtn footer> span{
     margin-right: 13px;
 }
+
+#VirtualHubAddBtn .sub-info{
+    margin-top: 45px;
+    font-size: 11px;
+    color: #333;
+}

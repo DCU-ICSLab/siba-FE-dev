@@ -47,11 +47,13 @@ const VirtualHub = ({ hub, deviceAddModalChange }) => {
 
     const size = hub.get('devices').size;
     const hubId = hub.get('vhubId');
+    const hubStatus = hub.get('hubStatus');
+    const hubSt = hubStatus ? 'hub-on' : 'hub-off';
 
     return (
         <div id="VirtualHub">
             <div className="inner">
-                <header>
+                <header className={hubSt}>
                     <span className="title">virtual IoT hub</span>
                     <span className="vcode">{`  (key: ${hubId})`}</span>
                     <Link 
@@ -67,7 +69,7 @@ const VirtualHub = ({ hub, deviceAddModalChange }) => {
                     </Link>
                 </header>
                 <div className="info">
-                    develop device sets
+                    {hub.get('hubKey')}
                 </div>
                 <div className="container">
                     {

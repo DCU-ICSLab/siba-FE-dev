@@ -9,6 +9,7 @@ import {
     NotFound,
     HubAdmin
 } from 'containers';
+import './App.css'
 
 const DynamicRoute = ({ match, location }) => {
 
