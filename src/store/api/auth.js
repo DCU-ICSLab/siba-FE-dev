@@ -34,7 +34,7 @@ export const vhubCreate = (hubInput) =>{
 
     return axios.post(baseURL,{
         hubName: hubInput.get('hubName'),
-        authKey: hubInput.get('authKey'),
+        hubKey: hubInput.get('authKey'),
         hubType: hubInput.get('hubType')
     })
     .then(res=> {

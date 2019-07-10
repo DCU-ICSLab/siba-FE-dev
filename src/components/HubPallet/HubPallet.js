@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import './HubPallet.css';
+import moment from 'moment';
 
 const HubPallet = ({
     children,
@@ -7,47 +8,96 @@ const HubPallet = ({
     size,
     deviceAddModalChange,
     deviceInfo,
-    linkDevicePage
+    linkDevicePage,
+    logList,
+    onClick
 }) => {
 
     return (
         <div id="HubPallet" style={{ left: sbState ? '273px' : '28px' }}>
             <div className="hub-list">
-                <header>
+                <header style={{
+                    borderBottom: '1px solid #dadce0',
+                    marginLeft: '3px',
+                    marginRight: '3px',
+                    paddingLeft: '2px'
+                }}>
                     <span className="title">개발용 허브 집합</span>
                 </header>
                 <div className="wrapper">
-                    <div className="hub-list-info">등록된 개발용 허브 ({size})</div>
-                    {children}
+                    <div className="hub-list-info">
+                        <div>
+                            <span>Total: {size}</span>
+                        </div>
+                        <button onClick={onClick}>
+                        허브 생성
+                        </button>
+                    </div>
+                    <div className="hub-pallet">
+                        {children}
+                    </div>
                 </div>
                 <div className="wrapper-side">
                     <table className="hub-log-list">
                         <thead>
                             <tr>
                                 <th style={{
-                                    width: '27px',
+                                    width: '22px',
                                     borderLeft: 'none'
                                 }}>No.</th>
                                 <th
-                                style={{
-                                    width: '95px',
-                                }}>수행시간</th>
-                                <th 
-                                style={{
-                                    width: '45px',
-                                }}>수행허브</th>
+                                    style={{
+                                        width: '99px',
+                                    }}>수행시간</th>
+                                <th
+                                    style={{
+                                        width: '35px',
+                                    }}>허브</th>
                                 <th style={{
-                                    width: '70px',
+                                    width: '81px',
                                 }}>메시지</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>2019-12-07 13:15</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            {logList.map((log, index) => {
+
+                                let msg = 'disconnect'
+                                let className = 'red'
+                                switch(log.get('messageType')){
+                                    case '1':
+                                        msg = 'connect'
+                                        className = 'green'
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                return (
+                                    <tr key={index}>
+                                        <td style={{
+                                            width: '23px',
+                                            // borderRight: '1px solid #dadce0',
+                                            backgroundColor: '#CEDDED',
+                                            fontSize: '10px',
+                                            color: '#777'
+                                        }}>{index+1}</td>
+                                        <td style={{
+                                            width: '101px',
+                                            // borderRight: '1px solid #dadce0'
+                                        }}>{moment(log.get('actTime')).format('YYYY-MM-DD HH:mm')}</td>
+                                        {/* 2019-12-07 13:15 */}
+                                        <td style={{
+                                            width: '36px',
+                                            // borderRight: '1px solid #dadce0'
+                                        }}>{log.get('hubId')}</td>
+                                        <td className={className} style={{
+                                            width: '66px',
+                                            textAlign: 'left',
+                                            paddingLeft: '4px'
+                                        }}>{msg}</td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 </div>
@@ -99,13 +149,16 @@ const HubPallet = ({
                                     }
 
                                     return (
-                                        <tr key={index} className="dev-row" onClick={(e)=>{linkDevicePage(device.get('devId'), device)}}>
-                                            <td>{index + 1}</td>
+                                        <tr key={index} className="dev-row" onClick={(e) => { linkDevicePage(device.get('devId'), device) }}>
+                                            <td style={{
+                                                backgroundColor: '#CEDDED',
+                                                color: '#777',
+                                            }}>{index + 1}</td>
                                             <td>{device.get('devName')}</td>
                                             <td>{typeString}</td>
                                             <td>
                                                 {device.get('authKey')}
-                                                
+
                                             </td>
                                             <td>Y</td>
                                             <td>Y</td>

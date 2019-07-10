@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import './VirtualHub.css';
-import { MdSettings, MdAdd } from 'react-icons/md';
+import { MdSettings, MdAdd, MdExpandLess, MdExpandMore } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 const LogicalDeviceAddBtn = ({ deviceAddModalChange }) => {
@@ -43,19 +43,23 @@ const LogicalDevice = ({ dev }) => {
     )
 }
 
-const VirtualHub = ({ hub, deviceAddModalChange }) => {
+const VirtualHub = ({ hub, deviceAddModalChange, foldChange }) => {
 
     const size = hub.get('devices').size;
+    const fold = hub.get('fold');
     const hubId = hub.get('vhubId');
     const hubStatus = hub.get('hubStatus');
     const hubSt = hubStatus ? 'hub-on' : 'hub-off';
+    const hubType = hub.get('hubType')==='1' ? '범용 서비스 허브' : '고정형 서비스 허브'
 
     return (
-        <div id="VirtualHub">
+        <div id="VirtualHub" style={{
+            height: !fold ? '290px' : '117px'
+        }}>
             <div className="inner">
                 <header className={hubSt}>
-                    <span className="title">virtual IoT hub</span>
-                    <span className="vcode">{`  (key: ${hubId})`}</span>
+                    <span className="title">{hub.get('hubName')}</span>
+                    <span className="vcode">{`  (ID: ${hubId})`}</span>
                     <Link 
                     to={{
                         pathname: `/hub/${hubId}`,
@@ -66,24 +70,47 @@ const VirtualHub = ({ hub, deviceAddModalChange }) => {
                     className="hub-set-btn"
                     >
                         <MdSettings style={{ float: "right", marginTop: 2 }} size={16} />
+                        <span style={{
+                            float: 'right',
+                            fontSize: '11px',
+                            marginRight: '2px'
+                        }}>관리</span> 
                     </Link>
                 </header>
                 <div className="info">
-                    {hub.get('hubKey')}
+                    <div className="row">
+                        <div className="key">인증키</div>
+                        <div className="value">{hub.get('hubKey')}</div>
+                    </div>
+                    {/* <div className="row">
+                        <div className="key">등록 장치</div>
+                        <div className="value">{hub.get('devices').size}</div>
+                    </div> */}
+                    <div className="row" style={{
+                        borderBottom: '1px solid #dadce0'
+                    }}>
+                        <div className="key">허브 타입</div>
+                        <div className="value">{hubType}</div>
+                    </div>
+                    <div className="row sub-title">
+                        <span>등록 디바이스 ({hub.get('devices').size})</span>
+                        <button className="expand-btn" onClick={(e)=>{foldChange(hubId)}}>
+                            {!fold ? <MdExpandLess size={20}></MdExpandLess>
+                            : <MdExpandMore size={20}></MdExpandMore>}
+                        </button>
+                    </div>
                 </div>
-                <div className="container">
+                {!fold && <div className="container">
                     {
                         hub.get('devices').map((dev, index) => {
                             return <LogicalDevice dev={dev} key={dev.get('devId')} />
                         })
                     }
                     {size !== 9 && <LogicalDeviceAddBtn deviceAddModalChange={() => deviceAddModalChange(hub.get('vhubId'))} />}
-                </div>
-                <footer>
+                </div>}
+                {/*<footer>
                     <span className="total">Total <strong>{`(${size}/9)`}</strong></span>
-                    <span className="on">on <strong>(9)</strong></span>
-                    <span className="off">off <strong>(9)</strong></span>
-                </footer>
+                </footer> */}
             </div>
         </div>
     )

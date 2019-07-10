@@ -19,7 +19,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/index';
 import axios from 'axios';
-import { ToastContainer, toast, cssTransition } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 
@@ -78,6 +78,11 @@ class Main extends Component {
             id: msg.hubId,
             value: isHubConnect
         })
+        authActions.pushClog({
+            hubId: msg.hubId,
+            messageType: msg.msgType+'',
+            actTime: new Date().getTime()
+        })
         toast(this._generateToastMessage({
             message: outputMessage
         }), {
@@ -109,7 +114,7 @@ class Main extends Component {
     }
 
     _vhubCreate = () => {
-        const { vhubActions, basicActions, hubInput, hubModal } = this.props;
+        const { basicActions, authActions, hubInput, hubModal } = this.props;
         authActions.vhubCreate(hubInput);
         basicActions.changeHubAddModal(!hubModal);
     }
@@ -122,6 +127,11 @@ class Main extends Component {
     _refreshAuthKey = () => {
         const { basicActions } = this.props;
         basicActions.getDeviceAuthKey();
+    }
+
+    _refreshHubKey = () => {
+        const { basicActions } = this.props;
+        basicActions.getHubAuthKey();
     }
 
     _hubInput = (event) => {
@@ -184,6 +194,11 @@ class Main extends Component {
         })
     }
 
+    _fold = (hubId) => {
+        const { authActions } = this.props; 
+        authActions.fold({hubId: hubId})
+    }
+
     componentDidMount() {
         //const { authActions } = this.props;
         this._checkUser();
@@ -212,6 +227,7 @@ class Main extends Component {
                     />
                     <SibaHeader userState={userState}></SibaHeader>
                     <SideBar
+                        deviceList={userState.get('deviceInfo')}
                         sbToggle={this._sbToggle}
                         sbState={sb}
                         deviceAddBoxOpenFunc={this._deviceAddBoxChange}
@@ -225,7 +241,9 @@ class Main extends Component {
                         size={userState.get('hubInfo').size}
                         deviceAddModalChange={this._deviceAddModalChange}
                         deviceInfo={userState.get('deviceInfo')}
+                        logList={userState.get('clogList')}
                         linkDevicePage={this._linkDevicePage}
+                        onClick={this._hubAddModalChange}
                     >
                         {
                             userState.get('hubInfo').map((hub, index) =>
@@ -233,10 +251,11 @@ class Main extends Component {
                                     hub={hub}
                                     key={index}
                                     deviceAddModalChange={this._deviceAddModalChange}
+                                    foldChange={this._fold}
                                 />
                             )
                         }
-                        <VirtualHubAddBtn vhubCreate={this._vhubCreate} onClick={this._hubAddModalChange} />
+                        {/* <VirtualHubAddBtn vhubCreate={this._vhubCreate} onClick={this._hubAddModalChange} /> */}
                     </HubPallet>
                     {/* <HubNav></HubNav> */}
                 </SibaFrame>
@@ -244,7 +263,7 @@ class Main extends Component {
                     deviceModal={hubModal}
                     deviceAddModalChange={this._hubAddModalChange}
                     regInput={hubInput}
-                    refreshAuthKey={this._refreshAuthKey}
+                    refreshAuthKey={this._refreshHubKey}
                     valueInput={this._hubInput}
                     createDevice={this._vhubCreate}>
                 </HubAddModalWrapper>

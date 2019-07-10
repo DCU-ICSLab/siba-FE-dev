@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
+import { ToastContainer, toast } from 'react-toastify';
 
 var copyTimeout = null;
 
@@ -103,9 +104,15 @@ class Device extends Component {
 
         return (
             <Fragment>
+                <ToastContainer
+                    hideProgressBar={true}
+                    autoClose={8000}
+                    newestOnTop={true}
+                />
                 <SibaFrame>
                     <SibaHeader userState={userState}></SibaHeader>
                     <SideBar
+                        deviceList={userState.get('deviceInfo')}
                         sbToggle={this._sbToggle}
                         sbState={sb}
                         deviceAddBoxOpenFunc={this._deviceAddBoxChange}

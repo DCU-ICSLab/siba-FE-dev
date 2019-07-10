@@ -3,7 +3,6 @@
     width: 299px;
     box-sizing: border-box;
     vertical-align: top;
-    height: 290px;
     padding: 10px 0 10px 25px;
 }
 
@@ -11,19 +10,19 @@
     position: relative;
     left: 5px;
     border-radius: 50%;
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     content: '';
     display: inline-block;
-    background-color: #23DD7A;
+    background-color: green;
 }
 
 #VirtualHub .inner > .hub-off::before {
     position: relative;
     left: 5px;
     border-radius: 50%;
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     content: '';
     display: inline-block;
     background-color: #E1E1E1;
@@ -51,7 +50,7 @@
     font-weight: 450;
     color: #000;
     padding-left: 7px;
-    margin-left: 5px;
+    margin-left: 3px;
 }
 
 #VirtualHub .vcode{
@@ -61,20 +60,42 @@
 }
 
 #VirtualHub .info{
-    /* background-color: #fff; */
-    background-color: #A9B1C1;
-    padding-left: 19px;
-    font-size: 12px;
+    background-color: #fff;
+    /* background-color: #A9B1C1; */
+    /* padding-left: 19px; */
+    font-size: 11px;
     height: 20px;
     color: #333;
     /* border-bottom: 1px solid #888; */
 }
 
+#VirtualHub .info .row{
+    padding: 3px 3px;
+}
+
+#VirtualHub .info .key{
+    display: inline-block;
+    width: 20%;
+    color: #666;
+}
+
+#VirtualHub .info .value{
+    display: inline-block;
+    width: 80%;
+    text-align: right;
+}
+
+#VirtualHub .sub-title{
+    color: #000;
+    position: relative;
+}
+
 #VirtualHub .container{
     /* width: 100%; */
+    margin-top: 53px;
     background-color: #B8C6D8;
     padding-top: 5px;
-    height: 196px;
+    height: 163px;
     overflow: auto;
     /* background-color: #B8C6D8; */
     /* border-bottom: 1px solid #888; */
@@ -237,5 +258,21 @@
 }
 
 #VirtualHub .hub-set-btn:hover{
+    color: #222;
+}
+
+#VirtualHub .expand-btn{
+    position: absolute;
+    padding: 0;
+    top: 2px;
+    right: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: #656565;
+}
+
+#VirtualHub .expand-btn:hover{
     color: #222;
 }

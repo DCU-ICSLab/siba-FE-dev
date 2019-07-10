@@ -4,7 +4,8 @@
     position: fixed;
     height: 43px;
     background-color: #FFFFFF;
-    border-bottom: 1px solid #DDDDDD;
+    border-bottom: 1px solid #a9afb4;
+    /* border-bottom: 1px solid #DDDDDD; */
     width: 100%;
     z-index: 9998;
 }
