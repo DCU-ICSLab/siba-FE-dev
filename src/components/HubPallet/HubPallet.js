@@ -77,7 +77,7 @@ const HubPallet = ({
                                         <td style={{
                                             width: '23px',
                                             // borderRight: '1px solid #dadce0',
-                                            backgroundColor: '#CEDDED',
+                                            // backgroundColor: '#CEDDED',
                                             fontSize: '10px',
                                             color: '#777'
                                         }}>{index+1}</td>
@@ -151,7 +151,7 @@ const HubPallet = ({
                                     return (
                                         <tr key={index} className="dev-row" onClick={(e) => { linkDevicePage(device.get('devId'), device) }}>
                                             <td style={{
-                                                backgroundColor: '#CEDDED',
+                                                // backgroundColor: '#CEDDED',
                                                 color: '#777',
                                             }}>{index + 1}</td>
                                             <td>{device.get('devName')}</td>

@@ -23,8 +23,10 @@ import TestUserTextBox from './TestUserTextBox/TestUserTextBox';
 import SendReceiveBox from './SendReceiveBox/SendReceiveBox';
 import TestToolBox from './TestToolBox/TestToolBox';
 import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
+import DeviceListModal from './DeviceListModal/DeviceListModal';
 
 export {
+    DeviceListModal,
     SibaFrame,
     SibaSideBar,
     SibaContent,

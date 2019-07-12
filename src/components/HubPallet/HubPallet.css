@@ -39,6 +39,7 @@
     bottom: 0;
     flex-wrap: wrap;
     display: flex;
+    align-content: flex-start;
     overflow: auto;
     border: 1px solid #dadce0;
     /* padding-top: 40px; */

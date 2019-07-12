@@ -94,8 +94,8 @@
     /* width: 100%; */
     margin-top: 53px;
     background-color: #B8C6D8;
-    padding-top: 5px;
-    height: 163px;
+    padding-top: 1px;
+    height: 132px;
     overflow: auto;
     /* background-color: #B8C6D8; */
     /* border-bottom: 1px solid #888; */
@@ -151,7 +151,7 @@
     height: 50px;
     padding: 5px 0 5px 10px;
     /* width: 78px; */
-    width: 122px;
+    width: 254px;
     position: relative;
 }
 
@@ -159,11 +159,74 @@
     position: absolute;
     top: 5px;
     left: 10px;
-    width: 120px;
-    height: 50px;
+    width: 254px;
+    height: 62px;
     border: 1px solid #888;
-    background-color: #E7EFF5;
+    /* background-color: #E7EFF5; */
+    background-color: #fff;
+    border-radius: 2px;
     font-size: 11px;
+    cursor: pointer;
+}
+
+#LogicalDevice > .inner img{
+    border-radius: 40%;
+    border: 1px solid #dadce0;
+    margin: 6px 6px;
+}
+
+#LogicalDevice .dev-info{
+    position: absolute;
+    top: 2px;
+    left:55px;
+    right:0;
+
+}
+
+#LogicalDevice .dev-delete-btn{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    /* background-color: #dadce0; */
+    background-color: transparent;
+    color: #333;
+    border-radius: 50%;
+    float: right;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    margin-top: 2px;
+    margin-right: 4px;
+}
+
+#LogicalDevice .dev-delete-btn:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+#LogicalDevice .dev-info header{
+    font-size: 12px;
+    font-weight: 500;
+    padding-bottom: 2px;
+    /* border-bottom: 1px solid #dadce0; */
+}
+
+#LogicalDevice .row{
+    padding: 1px 0;
+    font-size: 10px;
+    width: 95%;
+}
+
+#LogicalDevice .key{
+    display: inline-block;
+    width: 45%;
+    color: #666;
+}
+
+#LogicalDevice .value{
+    display: inline-block;
+    width: 55%;
+    text-align: right;
 }
 
 #LogicalDevice .name{
@@ -178,25 +241,24 @@
 }
 
 #LogicalDevice > .inner:hover{
-    cursor: pointer;
-    background-color: #fff;
+    /* cursor: pointer; */
+    background-color: #F8F8F8;
 }
 
 #LogicalDeviceAddBtn{
     display: inline-block;
     height: 50px;
     padding: 5px 0 5px 10px;
-    width: 122px;
+    width: 254px;
     position: relative;
 }
 
 #LogicalDeviceAddBtn .add{
     position: absolute;
-    top: 5px;
+    top: 10px;
     left: 10px;
-    
     height: 48px;
-    width: 118px;
+    width: 254px;
     background-color: transparent;
     
     
@@ -204,7 +266,7 @@
 
 #LogicalDeviceAddBtn .add > button{
     text-align: center;
-    border: 2px dashed #AAB0BF;
+    border: 1.5px dashed #AAB0BF;
     border-radius: 2px;
     color: #AAB0BF;
     outline: none;
@@ -215,8 +277,8 @@
 
 #LogicalDeviceAddBtn .add > button:hover{
     background-color: transparent;
-    border: 2px dashed #fff;
-    color: #fff;
+    border: 1.5px dashed #555;
+    color: #555;
 }
 
 /* width */

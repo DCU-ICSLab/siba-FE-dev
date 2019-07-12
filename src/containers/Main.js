@@ -8,6 +8,7 @@ import {
     SideBar,
     VirtualHubAddBtn,
     DeviceAddModalWrapper,
+    DeviceListModal,
     HubAddModalWrapper
 } from 'components';
 import { bindActionCreators } from 'redux';
@@ -180,6 +181,14 @@ class Main extends Component {
         basicActions.changeDeviceAddModal(!deviceModal);
     }
 
+    _deviceListModalChange = (hubId, limitSize) => {
+        const { basicActions, deviceListModal} = this.props;
+        if(!deviceListModal){
+            this._selectDevRepoClear(hubId, limitSize)
+        }
+        basicActions.deviceListModalChange(deviceListModal);
+    }
+
     _createDevice = () => {
         const { authActions, regInput, deviceModal } = this.props;
         //디바이스 생성 요청 전송 이전에 validation 해야
@@ -199,6 +208,60 @@ class Main extends Component {
         authActions.fold({hubId: hubId})
     }
 
+    _selectDevRepo = (idx, dev, flag=false) => {
+        const { authActions, tempDevRepo } = this.props; 
+        const hubId = tempDevRepo.get('hubId')
+        authActions.selectDevRepo({
+            devId: idx,
+            hubId: !flag ? hubId : null
+        })
+        if(!flag){
+            authActions.pushDevRepo(dev)
+        }
+        else{
+            authActions.popDevRepo({
+                devId: dev.get('devId')
+            })
+        }
+    }
+
+    //DeviceListModal을 열 때 초기화 작업 수행 
+    _selectDevRepoClear = (hubId, limitSize) => {
+        const { authActions, deviceInfo } = this.props; 
+
+        const list = deviceInfo.filter((dev)=>{
+            return dev.get('vhubId')===null
+        })
+
+        console.log(limitSize)
+
+        authActions.selectDevRepoClear({
+            hubId: hubId,
+            limitSize: limitSize,
+            list: list
+        })
+    }
+
+    _linkHubAndRepo = () => {
+        const { authActions, tempDevRepo } = this.props; 
+        const hubId = tempDevRepo.get('hubId')
+        const bucket = tempDevRepo.get('bucket');
+        authActions.linkHubAndRepo(hubId,bucket).then(res=>{
+            bucket.map(item=>authActions.repoLink({
+                devId: item.get('devId'),
+                hubId: hubId
+            }))
+        })
+        this._deviceListModalChange()
+    }
+
+    _repoDeletion = (vhubId, devId) => {
+        const { authActions } = this.props; 
+        authActions.repoDeletion(vhubId, devId).then(res=>{
+            authActions.repoUnlink({devId: devId})
+        })
+    }
+
     componentDidMount() {
         //const { authActions } = this.props;
         this._checkUser();
@@ -214,7 +277,10 @@ class Main extends Component {
             regInput,
             userState,
             hubModal,
-            hubInput } = this.props;
+            hubInput,
+            deviceInfo,
+            deviceListModal,
+            tempDevRepo } = this.props;
 
 
         return (
@@ -252,6 +318,9 @@ class Main extends Component {
                                     key={index}
                                     deviceAddModalChange={this._deviceAddModalChange}
                                     foldChange={this._fold}
+                                    redirectDevicePage={this._linkDevicePage}
+                                    deviceListModalChange={this._deviceListModalChange}
+                                    repoDeletion={this._repoDeletion}
                                 />
                             )
                         }
@@ -275,6 +344,16 @@ class Main extends Component {
                     valueInput={this._valueInput}
                     createDevice={this._createDevice}>
                 </DeviceAddModalWrapper>
+                <DeviceListModal
+                    deviceModal={deviceListModal}
+                    deviceAddModalChange={this._deviceListModalChange}
+                    deviceInfo={tempDevRepo.get('list')}
+                    selectDevRepo={this._selectDevRepo}
+                    linkHubAndRepo={this._linkHubAndRepo}
+                    limitSize={tempDevRepo.get('limitSize')}
+                    listSize={tempDevRepo.get('list').size}
+                >
+                </DeviceListModal>
             </Fragment>
         )
     }
@@ -296,7 +375,10 @@ export default withRouter(
             deviceAddBox: state.basic.getIn(['frameState', 'deviceAddBox']),
             deviceWorkBox: state.basic.getIn(['frameState', 'deviceWorkBox']),
             deviceModal: state.basic.getIn(['frameState', 'deviceModal']),
-            hubModal: state.basic.getIn(['frameState', 'hubModal'])
+            deviceListModal: state.basic.getIn(['frameState', 'deviceListModal']),
+            hubModal: state.basic.getIn(['frameState', 'hubModal']),
+            deviceInfo: state.auth.getIn(['userState', 'deviceInfo']),
+            tempDevRepo: state.auth.get('tempDevRepo'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({
