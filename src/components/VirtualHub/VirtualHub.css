@@ -351,4 +351,6 @@
     z-index: 9999;
     border-radius: 1px;
     border: 1px solid #000;
+    text-align: center;
+    color: #fff;
 }

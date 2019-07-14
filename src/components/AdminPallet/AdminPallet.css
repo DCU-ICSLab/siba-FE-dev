@@ -22,19 +22,77 @@
     font-weight: 400;
 }
 
+#AdminPallet .graph-area > header {
+    margin-bottom: 5px;
+    padding-left: 3px;
+    font-size: 14px;
+}
+
+#AdminPallet .monitor-fold{
+    outline: none;
+    border: none;
+    float: right;
+    height: 17px;
+    background-color: #4A4D57;
+    color: #fff;
+    border-radius: 2px;
+}
+
 #AdminPallet .graph-area{
     position: absolute;
     top: 0px;
     left: 0;
     right: 0;
-    height: 200px;
+    height: 230px;
     background-color: #fff;
     border-top: 1px solid #dadce0;
     border-bottom: 1px solid #dadce0;
+    padding: 5px;
+}
+
+#AdminPallet .graph-area-wrapper{
+    border: 1px solid #dadce0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* overflow-x: auto; */
+}
+
+#AdminPallet .chart-item{
+    /* width: 300px; */
+    width: 33%;
+    height: 200px;
+    flex: 1;
+    /* border: 1px solid #dadce0; */
+    margin: 0 2px;
 }
 
 #AdminPallet .admin-pallet{
+    top: 242px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    /* background-color: beige */
+}
 
+#AdminPallet .network-graph{
+    top: 0;
+    left: 0;
+    right: 201px;
+    bottom: 0;
+    position: absolute;
+    overflow: auto;
+    /* background-color: #BCC5D7; */
+}
+
+#AdminPallet .side-bar{
+    position: absolute;
+    top: 0;
+    width: 200px;
+    right: 0;
+    bottom: 0;
+    border-left: 1px solid #dadce0;
 }
 
 #AdminPallet .wrapper{

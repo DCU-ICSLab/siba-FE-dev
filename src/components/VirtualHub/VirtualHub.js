@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import './VirtualHub.css';
-import { MdSettings, MdAdd, MdExpandLess, MdExpandMore, MdClear } from 'react-icons/md';
+import { MdSettings, MdAdd, MdExpandLess, MdExpandMore, MdClear, MdVpnLock } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import SIBA from 'resources/siba.jpg'
 // import { Progress } from 'react-sweet-progress';
@@ -87,7 +87,19 @@ const VirtualHub = ({ hub, redirectDevicePage, foldChange, deviceListModalChange
             height: !fold ? 200+size*69 : 117
         }}>
             <div className="inner">
-                {!hubStatus && <div className="hub-shadow"></div>}
+                {!hubStatus && <div className="hub-shadow">
+                    {/* <div style={{
+                        position: 'relative'
+                    }}>
+                        <MdVpnLock size={28} color="#fff"
+                        style={{
+                            position: 'absolute'
+                        }}/>
+                        <span style={{
+                            marginLeft: 30,
+                        }}>Disconnected</span>
+                    </div> */}
+                </div>}
                 <header className={hubSt}>
                     <span className="title">{hub.get('hubName')}</span>
                     <span className="vcode">{`  (ID: ${hubId})`}</span>
