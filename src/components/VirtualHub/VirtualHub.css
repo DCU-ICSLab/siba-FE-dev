@@ -29,6 +29,7 @@
 }
 
 #VirtualHub > .inner{
+    position: relative;
     border: 1px solid #BBB;
     border-radius: 2px;
     height: 100%;
@@ -337,4 +338,17 @@
 
 #VirtualHub .expand-btn:hover{
     color: #222;
+}
+
+#VirtualHub .hub-shadow{
+    background-color: #333;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    border-radius: 1px;
+    border: 1px solid #000;
 }

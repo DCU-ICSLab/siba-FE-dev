@@ -1,0 +1,158 @@
+#AdminPallet{
+    position: fixed;
+    top: 47px;
+    right: 10px;
+    bottom: 10px;
+    overflow: auto;
+    transition: .3s;
+    border-radius: 2px;
+}
+
+#AdminPallet .hub-list > header, #AdminPallet .device-repo > header{
+    background-color: #fff;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #dadce0;
+}
+
+#AdminPallet .hub-list > header .title, #AdminPallet .device-repo > header .title{
+    border-left: 3px solid #333;
+    padding-left: 7px;
+    margin-left: 5px;
+    font-weight: 400;
+}
+
+#AdminPallet .graph-area{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background-color: #fff;
+    border-top: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+}
+
+#AdminPallet .admin-pallet{
+
+}
+
+#AdminPallet .wrapper{
+    position: absolute;
+    top: 31px;
+    left: 3px;
+    right: 3px;
+    bottom: 378px;
+    background-color: #fff;
+    border-left: 1px solid #dadce0;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+}
+
+#AdminPallet .admin-console{
+    border: 1px 1px 0 1px solid #dadce0;
+    background-color: #212121;
+    height: 370px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* border-radius: 2px; */
+}
+
+#AdminPallet .admin-console .console-hub-info{
+    background-color: #1A1A1A;
+    height: 20px;
+    padding: 0 9px 0 20px;
+    position: relative;
+}
+
+#AdminPallet .unselected{
+    background-color: #212121;
+    color: #888;
+}
+
+#AdminPallet .selected{
+    background-color: #1A1A1A;
+    color: #fff;
+}
+
+#AdminPallet .console-fold-btn{
+    color: #e1e1e1;
+    float: right;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#AdminPallet .console-fold-btn:hover{
+    color: #fff;
+}
+
+#AdminPallet .admin-console > header{
+    height: 20px;
+    background-color: #292929;
+    color: #e1e1e1;
+    font-size: 12px;
+    font-weight: 200;
+}
+
+#AdminPallet .admin-console > header > span{
+    float: left;
+    margin-left: 10px;
+}
+
+#AdminPallet .console-body{
+    /* width: 100%;
+    height: 100%; */
+    /* overflow: auto; */
+    overflow: hidden;
+    height: 320px;
+    width: 100%;
+}
+
+#AdminPallet .console-body .terminal{
+    padding: 5px;
+}
+
+#AdminPallet .console-body .terminal:focus .terminal-cursor {
+    background-color: #fafafa;
+  }
+
+  #AdminPallet .admin-console-helper{
+    background-color: #212121;
+    width: 100%;
+    height: 20px;
+}
+
+#AdminPallet .admin-console-helper > button{
+    outline: none;
+    border: none;
+    height: 20px;
+    float: left;
+    font-size: 11px;
+    width: 60px;
+}
+
+/* width */
+.console-body *::-webkit-scrollbar {
+    width: 7px;
+    height: 10px;
+}
+
+  /* Track */
+  .console-body *::-webkit-scrollbar-track {
+    background: #212121; 
+}
+
+/* Handle */
+.console-body *::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 20px;
+}
+
+/* Handle on hover */
+.console-body *::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

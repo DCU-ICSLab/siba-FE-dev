@@ -2,8 +2,9 @@
     top: 0;
     left: 0;
     position: fixed;
-    height: 43px;
-    background-color: #FFFFFF;
+    height: 37px;
+    /* background-color: #FFFFFF; */
+    background-color: #323234;
     border-bottom: 1px solid #a9afb4;
     /* border-bottom: 1px solid #DDDDDD; */
     width: 100%;
@@ -12,20 +13,26 @@
 
 #SibaHeader h1{
     float: left;
-    margin-left: 30px;
+    margin: 0;
+    padding-left: 30px;
+    padding-right: 33px;
     font-size: 16px;
-    margin-top: 9px;
+    padding-top: 5px;
+    padding-bottom: 8px;
+    color: #fff;
+    background-color: #1F1F1F;
 }
 
 #SibaHeader .util-list{
     float: right;
     font-size: 13px;
     margin-right: 10px;
-    padding-top: 10px;
+    padding-top: 5px;
     padding-left: 10px;
     width: 100px;
-    height: 35px;
-    border-left: 1px solid #dadce0;
+    height: 32px;
+    /* border-left: 1px solid #fff; */
+    color: #fff;
 }
 
 #SibaHeader .userimage{
@@ -34,7 +41,7 @@
 
 #SibaHeader .username{
     position: absolute;
-    top: 12px;
+    top: 8px;
     right: 49px;
     display: inline-block;
     margin-right: 5px;
@@ -45,4 +52,5 @@
     margin-left: auto;
     margin-right: auto;
     border-radius: 50%;
+    border: 0.08px solid #333;
 }

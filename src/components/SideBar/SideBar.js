@@ -9,7 +9,9 @@ import {
 import './SideBar.css';
 import { Link } from 'react-router-dom';
 
-const SideBar = ({ sbToggle, sbState, hubList, deviceList }) => {
+const SideBar = ({ sbToggle, sbState, hubList, deviceList, location }) => {
+    console.log('ddddddddddddd')
+    console.log(location)
     return (
         <div id="SideBar" style={{ left: sbState ? '5px' : '-240px' }}>
             <header>
@@ -18,18 +20,24 @@ const SideBar = ({ sbToggle, sbState, hubList, deviceList }) => {
             <div className="container">
                 <div className="inner">
                     <div className="list-group">
-                        {/* <div className="link-item">
-                            <Link pathname="/main">
-                                <MdHome size={20} color="#6397FD" style={{
-                                    display: 'inline-block',
-                                    margin: '1px'
-                                }}/>
-                                <span>메인 페이지</span>
+                        {/* <div className="link-item"><Link to={{
+                                pathname: '/main'
+                            }}
+                            style={{
+                                textDecoration: 'none',
+                                color: '#000',
+                            }}>
+                                <span>메인 관리자 콘솔</span>
                             </Link>
                         </div> */}
+                        <div className="link-item" 
+                        style={{
+                            backgroundColor: location.pathname==='/main' ? '#DEDFE0' : 'transparent',
+                            color: location.pathname==='/main' ? '#000' : '#333'
+                        }}>메인 관리자 콘솔
                         <div className="link-item">SIBA 허브 집합 ({hubList.size})</div>
                         {
-                            hubList.map((hub, index)=>{
+                            hubList.map((hub, index) => {
                                 return (
                                     <div className="element" key={index}>
                                         <Link to={{
@@ -37,12 +45,12 @@ const SideBar = ({ sbToggle, sbState, hubList, deviceList }) => {
                                             state: {
                                                 hub: hub
                                             }
-                                        }} 
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#000',
-                                        }}>
-                                            {hub.get('hubName')} ({hub.get('devices').size})
+                                        }}
+                                            style={{
+                                                textDecoration: 'none',
+                                                color: '#000',
+                                            }}>
+                                            {hub.get('hubName')} ({hub.get('devices').size}/9)
                                         </Link>
                                     </div>
                                 )
@@ -50,7 +58,7 @@ const SideBar = ({ sbToggle, sbState, hubList, deviceList }) => {
                         }
                         <div className="link-item">개발 디바이스 저장소 ({deviceList.size})</div>
                         {
-                            deviceList.map((dev, index)=>{
+                            deviceList.map((dev, index) => {
                                 return (
                                     <div className="element" key={index}>
                                         <Link to={{
@@ -58,18 +66,20 @@ const SideBar = ({ sbToggle, sbState, hubList, deviceList }) => {
                                             state: {
                                                 dev: dev
                                             }
-                                        }} 
-                                        style={{
-                                            textDecoration: 'none',
-                                            color: '#000',
-                                        }}>
+                                        }}
+                                            style={{
+                                                textDecoration: 'none',
+                                                color: '#000',
+                                            }}>
                                             {dev.get('devName')}
                                         </Link>
                                     </div>
                                 )
                             })
                         }
-                        <div className="link-item">SIBA Hub</div>
+                        </div>
+                        
+                        {/* <div className="link-item">SIBA Hub</div> */}
                     </div>
                 </div>
             </div>

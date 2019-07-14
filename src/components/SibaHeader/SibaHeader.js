@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { MdAccountCircle } from 'react-icons/md'
+import { MdAccountCircle, MdFingerprint} from 'react-icons/md'
 import './SibaHeader.css';
 
 const SibaHeader = ({ userState }) => {
@@ -23,6 +23,10 @@ const SibaHeader = ({ userState }) => {
                         <img alt='Avatar' src={profileImage} height={26} width={26} />
                         : <MdAccountCircle size={26} color="#656565"/>}
                 </div>
+                <MdFingerprint size={26} style={{
+                    position: 'absolute',
+                    right: 10
+                }}/>
             </div>
         </div>
     )

@@ -8,6 +8,7 @@
     "cross-env": "^5.2.0",
     "history": "^4.9.0",
     "immutable": "^4.0.0-rc.12",
+    "local-echo": "github:wavesoft/local-echo",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "query-string": "^6.5.0",
@@ -29,8 +30,10 @@
     "redux-actions": "^2.6.5",
     "redux-logger": "^3.0.6",
     "redux-pender": "^2.0.12",
+    "socket.io-client": "^2.2.0",
     "sockjs-client": "^1.3.0",
-    "stompjs": "^2.3.3"
+    "stompjs": "^2.3.3",
+    "xterm": "^3.14.5"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src react-scripts start",

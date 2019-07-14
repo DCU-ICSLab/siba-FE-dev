@@ -33,7 +33,6 @@ class Main extends Component {
         const tokenValue = localStorage.getItem(ACCESS_TOKEN)
         if (tokenValue) {
             const { authActions } = this.props;
-            console.log(tokenValue)
             axios.defaults.headers.common.Authorization = 'Bearer ' + tokenValue;
             authActions.kakaoAuth().then(() => {
                 this._stompConnection(tokenValue);
@@ -278,9 +277,9 @@ class Main extends Component {
             userState,
             hubModal,
             hubInput,
-            deviceInfo,
             deviceListModal,
-            tempDevRepo } = this.props;
+            tempDevRepo,
+            location } = this.props;
 
 
         return (
@@ -296,11 +295,10 @@ class Main extends Component {
                         deviceList={userState.get('deviceInfo')}
                         sbToggle={this._sbToggle}
                         sbState={sb}
-                        deviceAddBoxOpenFunc={this._deviceAddBoxChange}
                         deviceAddBox={deviceAddBox}
                         deviceWorkBox={deviceWorkBox}
-                        deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
-                        hubList={userState.get('hubInfo')}>
+                        hubList={userState.get('hubInfo')}
+                        location={location}>
                     </SideBar>
                     <HubPallet
                         sbState={sb}

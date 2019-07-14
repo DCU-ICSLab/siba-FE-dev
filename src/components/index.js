@@ -24,6 +24,7 @@ import SendReceiveBox from './SendReceiveBox/SendReceiveBox';
 import TestToolBox from './TestToolBox/TestToolBox';
 import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
 import DeviceListModal from './DeviceListModal/DeviceListModal';
+import AdminPallet from './AdminPallet/AdminPallet';
 
 export {
     DeviceListModal,
@@ -51,5 +52,6 @@ export {
     TestUserTextBox,
     SendReceiveBox,
     TestToolBox,
-    HubAddModalWrapper
+    HubAddModalWrapper,
+    AdminPallet
 }

@@ -87,6 +87,7 @@ const VirtualHub = ({ hub, redirectDevicePage, foldChange, deviceListModalChange
             height: !fold ? 200+size*69 : 117
         }}>
             <div className="inner">
+                {!hubStatus && <div className="hub-shadow"></div>}
                 <header className={hubSt}>
                     <span className="title">{hub.get('hubName')}</span>
                     <span className="vcode">{`  (ID: ${hubId})`}</span>

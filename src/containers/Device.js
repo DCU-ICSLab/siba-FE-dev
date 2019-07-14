@@ -119,7 +119,8 @@ class Device extends Component {
                         deviceAddBox={deviceAddBox}
                         deviceWorkBox={deviceWorkBox}
                         deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
-                        hubList={userState.get('hubInfo')}>
+                        hubList={userState.get('hubInfo')}
+                        location={location}>
                     </SideBar>
                     <SibaContent
                         style={{

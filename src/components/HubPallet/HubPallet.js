@@ -111,7 +111,7 @@ const HubPallet = ({
                         <span>Total: {deviceInfo.size}</span>
                     </div>
                     <button onClick={deviceAddModalChange}>
-                        디바이스 등록
+                        저장소 생성
                     </button>
                 </div>
                 <div className="device-repo-wrapper">
