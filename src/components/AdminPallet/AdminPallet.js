@@ -2,38 +2,64 @@ import React, { Fragment } from 'react';
 import './AdminPallet.css';
 import moment from 'moment';
 import { Line, HorizontalBar } from 'react-chartjs-2';
+import { BoxButton } from 'components';
 import {
     MdRemove,
     MdDeviceHub,
     MdKeyboardArrowDown,
     MdKeyboardArrowUp,
-    MdTimeline
+    MdTimeline,
+    MdClear
 } from 'react-icons/md'
 import { Graph } from 'react-d3-graph';
+import SIBA from 'resources/siba.jpg'
 
 const data = {
-    nodes: [{ id: 'SIBA platform' }, { id: 'test-hub' }, { id: 'dev' },  { id: 'dev2' }],
-    links: [{ source: 'SIBA platform', target: 'test-hub' }, { source: 'test-hub', target: 'dev' },  { source: 'test-hub', target: 'dev2' }]
+    nodes: [{ id: 'SIBA platform' }, { id: 'test-hub' }, { id: 'dev' }, { id: 'dev2' }],
+    links: [{ source: 'SIBA platform', target: 'test-hub' }, { source: 'test-hub', target: 'dev' }, { source: 'test-hub', target: 'dev2' }]
 };
- 
-// the graph configuration, you only need to pass down properties
-// that you want to override, otherwise default ones will be used
-const myConfig = {
-    nodeHighlightBehavior: true,
-    node: {
-        color: 'lightgreen',
-        size: 120,
-        highlightStrokeColor: 'blue'
-    },
-    link: {
-        highlightColor: 'lightblue'
-    }
-};
+
+const ConnectedDevice = ({ }) => {
+    return (
+        <div id="ConnectedDevice">
+            <img src={SIBA} width={40}></img>
+            <div className="dev-info">
+                <header>
+                    <span>test</span>
+                    <button
+                        className="dev-delete-btn"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // repoDeletion(hubId, devId)
+                        }
+                        }>
+                        <MdClear size={11} style={{
+                            position: 'absolute',
+                            right: '2px',
+                            top: '2px'
+                        }} />
+                    </button>
+                </header>
+                <div className="drow" style={{
+                    borderTop: '1px solid #dadce0'
+                }}>
+                    <div className="dkey">디바이스 타입</div>
+                    <div className="dvalue">복합 디바이스</div>
+                </div>
+                <div className="drow">
+                    <div className="dkey">디바이스 배포 상태</div>
+                    <div className="dvalue">YES</div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const AdminPallet = ({
     children,
     sbState,
-    setRef
+    setRef,
+    hub,
 }) => {
 
     return (
@@ -47,8 +73,17 @@ const AdminPallet = ({
                 }}>
                     <span className="title">테스트 허브</span>
                 </header>
+                <BoxButton enabled={true} left={5} width={80}>
+                    허브 정보 조회
+                </BoxButton>
+                <BoxButton enabled={true} left={97} width={80}>
+                    허브 모니터링
+                </BoxButton>
+                <BoxButton enabled={true} left={189} width={80}>
+                    데이터베이스
+                </BoxButton>
                 <div className="wrapper">
-                    <div className="graph-area">
+                    {/* <div className="graph-area">
                         <header>
                             <MdTimeline style={{
                                 float: 'left'
@@ -67,6 +102,9 @@ const AdminPallet = ({
                                         responsive: true,
                                         maintainAspectRatio: false,
                                         scales: {
+                                            xAxes: [{
+                                                display: true,
+                                            }],
                                             yAxes: [{
                                                 ticks: {
                                                     display: true,
@@ -74,14 +112,22 @@ const AdminPallet = ({
                                                     max: 100,
                                                     steps: 10,
                                                     stepValue: 10,
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'percentage (%)'
                                                 }
                                             }]
-                                        }
+                                        },
+                                        // title: {
+                                        //     display: true,
+                                        //     text: 'IoT Hub CPU Load'
+                                        // }
                                     }}
                                     height={200}
                                     data={{
                                         backgroundColor: '#fff',
-                                        labels: [1, 2, 3, 4, 5, 6],
+                                        labels: ['', '', '', '', '', ''],
                                         datasets: [{
                                             label: 'IoT Hub CPU Load',
                                             // backgroundColor: 'rgb(255, 99, 132)',
@@ -150,17 +196,99 @@ const AdminPallet = ({
                                     }} />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="admin-pallet">
                         <div className="side-bar">
-
+                            <table className="hub-log-list">
+                                <thead>
+                                    <tr>
+                                        <th style={{
+                                            width: '22px',
+                                            borderLeft: 'none'
+                                        }}>No.</th>
+                                        <th
+                                            style={{
+                                                width: '99px',
+                                            }}>수행시간</th>
+                                        <th
+                                            style={{
+                                                width: '35px',
+                                            }}>장치</th>
+                                        <th style={{
+                                            width: '81px',
+                                        }}>메시지</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                         <div className="network-graph">
-                            {children}
-                            {/* <Graph
-                                id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
-                                data={data}
-                            /> */}
+                            <div className="graph-upper">
+                                <header>
+                                    {/* 인증키: <span>{hub.get('hubKey')}</span> */}
+                                    인증키: <span style={{
+                                        borderLeft: '5px solid #6E93CD',
+                                        marginLeft: 2,
+                                        paddingLeft: 3
+                                    }}>4b3b5e1275604f1cb70704f8236c7242</span>
+                                </header>
+                                <div className="graph-upper-detail">
+                                    <div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 운영체제</span>
+                                            </div>
+                                            <div className="value">raspbian</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 IPv4</span>
+                                            </div>
+                                            <div className="value">192.168.0.7</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                    </div>
+                                    <div>
+
+                                    </div>
+                                </div>
+                                <div className="graph-title">
+                                    <span>SIBA 허브 네트워크 구성정보</span>
+                                </div>
+                            </div>
+                            <div className="graph-pallet">
+                                <Graph
+                                    id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
+                                    data={data}
+                                    config={{
+                                        nodeHighlightBehavior: true,
+                                        height: 500,
+                                        node: {
+                                            color: '#6E93CD',
+                                            size: 120,
+                                            highlightStrokeColor: 'blue'
+                                        },
+                                        link: {
+                                            highlightColor: 'lightblue',
+                                            color: '#4A4D57'
+                                        }
+                                    }}
+                                />
+                                <div className="graph-info">
+                                    <span>Nodes: 4 | Links: 3</span>
+                                </div>
+                            </div>
+                            <div className="graph-dev-side">
+                                <ConnectedDevice />
+                                <ConnectedDevice />
+                                <ConnectedDevice />
+                            </div>
                         </div>
                     </div>
                 </div>

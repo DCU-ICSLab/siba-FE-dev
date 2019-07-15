@@ -67,8 +67,103 @@
     margin: 0 2px;
 }
 
+#AdminPallet .graph-upper{
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+    height: 200px;
+    /* width: 100%; */
+    border-bottom: 1px solid #dadce0;
+    padding: 5px;
+}
+
+#AdminPallet .graph-upper-detail{
+    margin-top: 5px;
+    border-top: 1px solid #dadce0;
+    display: flex;
+    flex-direction: row;
+}
+
+#AdminPallet .graph-upper-detail > div{
+    flex: 1;
+    height: 176px;
+    /* border: 1px solid #dadce0; */
+    display: flex;
+    flex-direction: column;
+}
+
+#AdminPallet .graph-upper-detail .row{
+    font-size: 12px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#AdminPallet .graph-upper-detail .key{
+    width: 45%;
+    text-align: right;
+    display: inline-block;
+    
+}
+
+#AdminPallet .graph-upper-detail .key span{
+    padding-bottom: 2px;
+    border-bottom: 1px dashed #dadce0;
+}
+
+#AdminPallet .graph-upper-detail .value{
+    width: 45%;
+    text-align: left;
+    display: inline-block;
+}
+
+#AdminPallet .graph-upper > header{
+    font-size: 13px;
+}
+
+#AdminPallet .graph-pallet{
+    position: absolute;
+    top: 240px;
+    left: 229px;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    background-color: #B2C7D9;
+    /* border: 1px solid #dadce0; */
+}
+
+#AdminPallet .graph-dev-side{
+    background-color: #B2C7D9;
+    overflow: auto;
+    position: absolute;
+    left: 0;
+    top: 240px;
+    width: 229px;
+    bottom: 0;
+}
+
+#AdminPallet .graph-title{
+    position: absolute;
+    left: 10px;
+    bottom: -23px;
+    font-size: 13px;
+    /* font-weight: 400; */
+    /* color: #333; */
+}
+
+#AdminPallet .graph-info{
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    font-size: 11px;
+}
+
 #AdminPallet .admin-pallet{
-    top: 242px;
+    border-top: 1px solid #dadce0;
+    top: 0px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -77,27 +172,29 @@
 }
 
 #AdminPallet .network-graph{
-    top: 0;
-    left: 0;
-    right: 201px;
-    bottom: 0;
+    top: 3px;
+    left: 3px;
+    right: 249px;
+    bottom: 3px;
     position: absolute;
+    border: 1px solid #dadce0;
     overflow: auto;
+    /* background-color: #4385F3; */
     /* background-color: #BCC5D7; */
 }
 
 #AdminPallet .side-bar{
     position: absolute;
-    top: 0;
-    width: 200px;
-    right: 0;
-    bottom: 0;
-    border-left: 1px solid #dadce0;
+    top: 3px;
+    width: 240px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px solid #dadce0;
 }
 
 #AdminPallet .wrapper{
     position: absolute;
-    top: 31px;
+    top: 56px;
     left: 3px;
     right: 3px;
     bottom: 378px;
@@ -193,6 +290,64 @@
     width: 60px;
 }
 
+#AdminPallet table{
+    font-weight: normal;
+    padding: 0;
+    background-color: transparent;
+    border-spacing: 0;
+    border-collapse: collapse;
+    color: #555;
+}
+
+#AdminPallet .hub-log-list{
+    font-size: 11px;
+    display: block;
+    width: 240px;
+    border-collapse: collapse;
+    position: relative;
+    height: 100%;
+}
+
+#AdminPallet .hub-log-list tbody{
+    display: block;
+    overflow-y: scroll;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 27px;
+    background-color: #F5F5F5;
+}
+
+#AdminPallet .hub-log-list tbody tr{
+    background-color: #fff;
+    width: 100%;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+}
+
+#AdminPallet .hub-log-list thead{
+    background-color: #EDEDED;
+    border-bottom: 1px solid #dadce0;
+    font-family: NanumGothic;
+}
+
+#AdminPallet .hub-log-list thead th{
+    padding: 2px 0;
+    height: 22px;
+    text-align: center;
+    border-top: 0 none;
+    border-bottom: 0 none;
+    overflow: hidden;
+    margin: 0;
+    border-left: 1px solid #dadce0;
+}
+
+#AdminPallet .hub-log-list tbody td{
+    padding: 4px 0;
+    text-align: center;
+}
+
 /* width */
 .console-body *::-webkit-scrollbar {
     width: 7px;
@@ -213,4 +368,73 @@
 /* Handle on hover */
 .console-body *::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+#ConnectedDevice{
+    background-color: #fff;
+    border-radius: 2px;
+    border: 1px solid #dadce0;
+    height: 64px;
+    margin-top: 5px;
+    margin-left: 5px;
+    position: relative;
+}
+
+#ConnectedDevice img{
+    border-radius: 40%;
+    border: 1px solid #dadce0;
+    margin: 6px 6px;
+}
+
+#ConnectedDevice .dev-info{
+    position: absolute;
+    top: 2px;
+    left:55px;
+    right:0;
+}
+
+#ConnectedDevice .dev-delete-btn{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    /* background-color: #dadce0; */
+    background-color: transparent;
+    color: #333;
+    border-radius: 50%;
+    float: right;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    margin-top: 2px;
+    margin-right: 4px;
+}
+
+#ConnectedDevice .dev-delete-btn:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+#ConnectedDevice .dev-info header{
+    font-size: 12px;
+    font-weight: 500;
+    padding-bottom: 2px;
+    /* border-bottom: 1px solid #dadce0; */
+}
+
+#ConnectedDevice .drow{
+    padding: 1px 0;
+    font-size: 10px;
+    width: 95%;
+}
+
+#ConnectedDevice .dkey{
+    display: inline-block;
+    width: 55%;
+    color: #666;
+}
+
+#ConnectedDevice .dvalue{
+    display: inline-block;
+    width: 45%;
+    text-align: right;
 }

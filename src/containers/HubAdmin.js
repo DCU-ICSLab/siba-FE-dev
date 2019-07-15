@@ -125,7 +125,15 @@ class HomeAdmin extends Component {
             socket.on('disconnect',()=>{
                 term.write('connection is failed\r\n');
             })
+
+            /*socket.on('resources',()=>{
+
+            })*/
         })
+    }
+
+    _setMonitoringInfo = (resources) => {
+
     }
 
     _setRef = (ref) => {
@@ -133,7 +141,7 @@ class HomeAdmin extends Component {
     }
 
     _sbToggle = () => {
-        const { basicActions, sb } = this.props;
+        const { basicActions, sb, location } = this.props;
         basicActions.sbToggle(sb);
     }
 
@@ -170,7 +178,7 @@ class HomeAdmin extends Component {
                         deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
                         hubList={userState.get('hubInfo')}>
                     </SideBar>
-                    <AdminPallet sbState={sb} setRef={this._setRef}>
+                    <AdminPallet sbState={sb} setRef={this._setRef} hub={location.state.hub}>
 
                     </AdminPallet>
                 </SibaFrame>
