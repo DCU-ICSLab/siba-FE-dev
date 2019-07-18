@@ -63,7 +63,22 @@ class Main extends Component {
         stompClient.connect('temp', 'temp', (frame) => {
             console.log('Connected: ' + frame);
             stompClient.subscribe(`/topic/keep-alive-${userState.getIn(['user', 'userId'])}`, this._showHubStateChange);
+            stompClient.subscribe(`/topic/device-conn-${userState.getIn(['user', 'userId'])}`, this._showDeivceStateChange);
         });
+    }
+
+    _showDeivceStateChange = (message) => {
+        const msg = JSON.parse(message.body)
+        const isDeviceConnect = msg.msgType === 1;
+
+        const outputMessage = isDeviceConnect ? `디바이스가 연결되었습니다. \n ${msg.mac}` : `디바이스가 제거되었습니다. \n ${msg.mac}`
+
+        toast(this._generateToastMessage({
+            message: outputMessage
+        }), {
+                className: 'toast',
+                bodyClassName: 'toast',
+            })
     }
 
     _showHubStateChange = (message) => {

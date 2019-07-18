@@ -3,13 +3,15 @@ import {
     SibaFrame,
     SibaHeader,
     SideBar,
-    AdminPallet
+    AdminPallet,
+    DeviceListModal
 } from 'components';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
+import * as hubActions from 'store/modules/hub';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
@@ -46,7 +48,7 @@ class HomeAdmin extends Component {
             this._xterm.dispose();
         }
 
-        const {userState} = this.props
+        const {userState, location} = this.props
 
         const providerId = userState.getIn(['user', 'providerId'])
 
@@ -72,7 +74,7 @@ class HomeAdmin extends Component {
 
         term.write('*** establish to your SIBA IoT Hub ***\r\n\r\n');
 
-        const socket = socketIOClient('http://192.168.0.7:3000')
+        const socket = socketIOClient(`http://${location.state.hub.get('hubIp')}:${location.state.hub.get('hubPort')}`)
         
         socket.on('connect', ()=>{
 
@@ -96,7 +98,7 @@ class HomeAdmin extends Component {
             term.write('   |\\_________\\|__|\\|_______|\\|__|\\|__|\r\n')
             term.write('   \\|_________|                        \r\n\r\n')
 
-            term.write('connected your SNS & IoT Based on AI Chatbot hub [192.168.0.21]\r\n');
+            term.write(`connected your SNS & IoT Based on AI Chatbot hub [${location.state.hub.get('hubIp')}]\r\n`);
 
             //client -> hub
             /*term.on('key', (key, ev)=>{
@@ -145,8 +147,76 @@ class HomeAdmin extends Component {
         basicActions.sbToggle(sb);
     }
 
+    _pageSwitching = (page) => {
+        const { hubActions } = this.props;
+        hubActions.pageSwitching(page)
+    }
+
+    _deviceListModalChange = (hubId, limitSize) => {
+        const { basicActions, deviceListModal} = this.props;
+        if(!deviceListModal){
+            this._selectDevRepoClear(hubId, limitSize)
+        }
+        basicActions.deviceListModalChange(deviceListModal);
+    }
+
+    _selectDevRepoClear = (hubId, limitSize) => {
+        const { authActions, deviceInfo } = this.props; 
+
+        const list = deviceInfo.filter((dev)=>{
+            return dev.get('vhubId')===null
+        })
+
+        console.log(limitSize)
+
+        authActions.selectDevRepoClear({
+            hubId: hubId,
+            limitSize: limitSize,
+            list: list
+        })
+    }
+
+    _selectDevRepo = (idx, dev, flag=false) => {
+        const { authActions, tempDevRepo } = this.props; 
+        const hubId = tempDevRepo.get('hubId')
+        authActions.selectDevRepo({
+            devId: idx,
+            hubId: !flag ? hubId : null
+        })
+        if(!flag){
+            authActions.pushDevRepo(dev)
+        }
+        else{
+            authActions.popDevRepo({
+                devId: dev.get('devId')
+            })
+        }
+    }
+
+    _linkHubAndRepo = () => {
+        const { authActions, tempDevRepo } = this.props; 
+        const hubId = tempDevRepo.get('hubId')
+        const bucket = tempDevRepo.get('bucket');
+        authActions.linkHubAndRepo(hubId,bucket).then(res=>{
+            bucket.map(item=>authActions.repoLink({
+                devId: item.get('devId'),
+                hubId: hubId
+            }))
+        })
+        this._deviceListModalChange()
+    }
+
+    _getHubInfo = () => {
+        const { hubActions, location } = this.props; 
+        const hub = location.state.hub;
+        hubActions.getHubInfo(hub.get('hubIp'), hub.get('hubPort'))
+    }
+
     componentDidMount() {
+        const { hubActions } = this.props;
         this._createTerminal();
+        hubActions.pageSwitching(1);
+        this._getHubInfo();
         //this._checkUser();
     }
 
@@ -157,7 +227,11 @@ class HomeAdmin extends Component {
             deviceAddBox,
             deviceWorkBox,
             userState,
-            location } = this.props;
+            location,
+            tempDevRepo,
+            deviceListModal,
+            logInfo,
+            page } = this.props;
 
         return (
             <Fragment>
@@ -178,9 +252,26 @@ class HomeAdmin extends Component {
                         deviceWorkBoxChangeFunc={this._deviceWorkBoxChange}
                         hubList={userState.get('hubInfo')}>
                     </SideBar>
-                    <AdminPallet sbState={sb} setRef={this._setRef} hub={location.state.hub}>
-
+                    <AdminPallet 
+                    sbState={sb} 
+                    setRef={this._setRef} 
+                    hub={location.state.hub}
+                    pageSwitching={this._pageSwitching}
+                    page={page}
+                    deviceListModalChange={this._deviceListModalChange}
+                    logInfo={logInfo}>
+                        
                     </AdminPallet>
+                    <DeviceListModal
+                    deviceModal={deviceListModal}
+                    deviceAddModalChange={this._deviceListModalChange}
+                    deviceInfo={tempDevRepo.get('list')}
+                    selectDevRepo={this._selectDevRepo}
+                    linkHubAndRepo={this._linkHubAndRepo}
+                    limitSize={tempDevRepo.get('limitSize')}
+                    listSize={tempDevRepo.get('list').size}
+                >
+                </DeviceListModal>
                 </SibaFrame>
             </Fragment>
         )
@@ -194,13 +285,19 @@ export default withRouter(
         state => ({
             sb: state.basic.getIn(['frameState', 'sb']),
             userState: state.auth.get('userState'),
+            page: state.hub.get('page'),
             deviceAddBox: state.basic.getIn(['frameState', 'deviceAddBox']),
             deviceWorkBox: state.basic.getIn(['frameState', 'deviceWorkBox']),
+            deviceListModal: state.basic.getIn(['frameState', 'deviceListModal']),
+            deviceInfo: state.auth.getIn(['userState', 'deviceInfo']),
+            tempDevRepo: state.auth.get('tempDevRepo'),
+            logInfo: state.hub.getIn(['hub', 'logInfo'])
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
             authActions: bindActionCreators(authActions, dispatch),
+            hubActions: bindActionCreators(hubActions, dispatch),
         })
     )(HomeAdmin)
 )

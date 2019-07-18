@@ -9,23 +9,32 @@ import {
     MdKeyboardArrowDown,
     MdKeyboardArrowUp,
     MdTimeline,
-    MdClear
+    MdClear,
+    MdAdd
 } from 'react-icons/md'
 import { Graph } from 'react-d3-graph';
 import SIBA from 'resources/siba.jpg'
 
-const data = {
-    nodes: [{ id: 'SIBA platform' }, { id: 'test-hub' }, { id: 'dev' }, { id: 'dev2' }],
-    links: [{ source: 'SIBA platform', target: 'test-hub' }, { source: 'test-hub', target: 'dev' }, { source: 'test-hub', target: 'dev2' }]
-};
+const AdminLogicalDeviceAddBtn = ({ deviceListModalChange }) => {
 
-const ConnectedDevice = ({ }) => {
+    return (
+        <div id="AdminLogicalDeviceAddBtn">
+            <div className="add">
+                <button onClick={deviceListModalChange}>
+                    <MdAdd size={36} style={{ marginTop: 4 }} />
+                </button>
+            </div>
+        </div>
+    )
+}
+
+const ConnectedDevice = ({ dev }) => {
     return (
         <div id="ConnectedDevice">
             <img src={SIBA} width={40}></img>
             <div className="dev-info">
                 <header>
-                    <span>test</span>
+                    <span>{dev.get('devName')}</span>
                     <button
                         className="dev-delete-btn"
                         onClick={(e) => {
@@ -60,7 +69,38 @@ const AdminPallet = ({
     sbState,
     setRef,
     hub,
+    pageSwitching,
+    page,
+    logInfo,
+    deviceListModalChange
 }) => {
+
+    console.log(hub.get('hubName'))
+
+    let nodes = [
+        { id: 'SIBA platform' },
+        { id: `NAT router (${hub.get('hubIp')})` },
+        { id: `${hub.get('hubName')}(hub)` }
+    ];
+
+    let links = [
+        { source: 'SIBA platform', target: `NAT router (${hub.get('hubIp')})` },
+        { source: `NAT router (${hub.get('hubIp')})`, target: `${hub.get('hubName')}(hub)` },
+    ];
+
+    hub.get('devices').map((item) => {
+
+        const devName = item.get('devName')
+
+        nodes.push({
+            id: devName
+        })
+
+        links.push({
+            source: `${hub.get('hubName')}(hub)`,
+            target: devName
+        })
+    })
 
     return (
         <div id="AdminPallet" style={{ left: sbState ? '273px' : '28px' }}>
@@ -73,13 +113,19 @@ const AdminPallet = ({
                 }}>
                     <span className="title">테스트 허브</span>
                 </header>
-                <BoxButton enabled={true} left={5} width={80}>
+                <BoxButton enabled={page === 1} left={5} width={80} onClick={(e) => {
+                    pageSwitching(1)
+                }}>
                     허브 정보 조회
                 </BoxButton>
-                <BoxButton enabled={true} left={97} width={80}>
+                <BoxButton enabled={page === 2} left={97} width={80} onClick={(e) => {
+                    pageSwitching(2)
+                }}>
                     허브 모니터링
                 </BoxButton>
-                <BoxButton enabled={true} left={189} width={80}>
+                <BoxButton enabled={page === 3} left={189} width={80} onClick={(e) => {
+                    pageSwitching(3)
+                }}>
                     데이터베이스
                 </BoxButton>
                 <div className="wrapper">
@@ -220,6 +266,46 @@ const AdminPallet = ({
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {
+                                        logInfo.map((log, index) => {
+                                            let msg = 'disconnect'
+                                            let className = 'red'
+                                            switch (log.get('clog_res')) {
+                                                case '1':
+                                                    msg = 'connect'
+                                                    className = 'green'
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td style={{
+                                                        width: '23px',
+                                                        // borderRight: '1px solid #dadce0',
+                                                        // backgroundColor: '#CEDDED',
+                                                        fontSize: '10px',
+                                                        color: '#777'
+                                                    }}>{index + 1}</td>
+                                                    <td style={{
+                                                        width: '101px',
+                                                        // borderRight: '1px solid #dadce0'
+                                                    }}>{moment(log.get('clog_time')).format('YYYY-MM-DD HH:mm')}</td>
+                                                    {/* 2019-12-07 13:15 */}
+                                                    <td style={{
+                                                        width: '36px',
+                                                        // borderRight: '1px solid #dadce0'
+                                                    }}>{log.get('dev_mac')}</td>
+                                                    <td className={className} style={{
+                                                        width: '66px',
+                                                        textAlign: 'left',
+                                                        paddingLeft: '4px'
+                                                    }}>{msg}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -253,19 +339,63 @@ const AdminPallet = ({
                                             </div>
                                             <div className="value">armv71l</div>
                                         </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
                                     </div>
                                     <div>
-
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
+                                        <div className="row">
+                                            <div className="key">
+                                                <span>허브 CPU</span>
+                                            </div>
+                                            <div className="value">armv71l</div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="graph-title">
-                                    <span>SIBA 허브 네트워크 구성정보</span>
-                                </div>
+                            </div>
+                            <div className="graph-title">
+                                <span>SIBA 허브 네트워크 구성정보</span>
                             </div>
                             <div className="graph-pallet">
                                 <Graph
                                     id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
-                                    data={data}
+                                    data={{
+                                        nodes: nodes,
+                                        links: links
+                                    }}
                                     config={{
                                         nodeHighlightBehavior: true,
                                         height: 500,
@@ -285,9 +415,14 @@ const AdminPallet = ({
                                 </div>
                             </div>
                             <div className="graph-dev-side">
-                                <ConnectedDevice />
-                                <ConnectedDevice />
-                                <ConnectedDevice />
+                                {
+                                    hub.get('devices').map((item, index) => {
+                                        return (
+                                            <ConnectedDevice key={index} dev={item} />
+                                        )
+                                    })
+                                }
+                                <AdminLogicalDeviceAddBtn deviceListModalChange={(e) => deviceListModalChange(hub.get('hubId'), 9 - hub.get('devices').size)} />
                             </div>
                         </div>
                     </div>
@@ -301,7 +436,7 @@ const AdminPallet = ({
                                 left: 4,
                                 top: 4
                             }} />
-                            SIBA hub [ 192.168.0.21 ]
+                            SIBA hub [ {hub.get('hubIp')} ]
                         </span>
                         <button className="console-fold-btn">
                             <MdRemove size={20} />

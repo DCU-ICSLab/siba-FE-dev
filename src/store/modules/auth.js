@@ -145,6 +145,8 @@ export default handleActions({
                     hubInfo: List(action.payload.data.data.hubInfo.map(hub=>Map({
                         vhubId: hub.vhubId,
                         hubName: hub.hubName,
+                        hubIp: hub.hubIp,
+                        hubPort: hub.hubPort,
                         hubStatus: hub.hubStatus,
                         hubType: hub.hubType,
                         hubKey: hub.hubKey,

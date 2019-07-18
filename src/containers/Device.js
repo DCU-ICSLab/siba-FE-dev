@@ -104,11 +104,11 @@ class Device extends Component {
 
         return (
             <Fragment>
-                <ToastContainer
+                {/* <ToastContainer
                     hideProgressBar={true}
                     autoClose={8000}
                     newestOnTop={true}
-                />
+                /> */}
                 <SibaFrame>
                     <SibaHeader userState={userState}></SibaHeader>
                     <SideBar
