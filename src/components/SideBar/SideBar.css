@@ -16,9 +16,10 @@
     /* margin-top: 44px; */
     background-color: #fff;
     padding-left: 20px;
-    text-align: center;
-    font-size: 13px;
+    text-align: left;
+    font-size: 11px;
     padding: 5px;
+    height: 29px;
     /* border-bottom: 1px solid #dadce0; */
     /* background-color: #3C4045;
     color: white; */
@@ -35,7 +36,8 @@
 }
 
 #SideBar .container .inner{
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: absolute;
     right: 5px;
     top: 0;
@@ -47,7 +49,8 @@
 }
 
 #SideBar .list-group{
-    margin-top: 6px;
+    margin: 0px 0px;
+    /* padding-left: 5px; */
     font-size: 12px;
     font-family: "Noto Sans KR";
     color: #333;
@@ -89,4 +92,47 @@
     border-bottom: 9px solid transparent;
     z-index: 9994;
     /* box-shadow: 5px 5px 5px gray; */
+}
+
+#SideBar a{
+    text-decoration: none;
+    color: inherit;
+    /* width: 100%; */
+    display: block;
+    padding: 0 5px;
+}
+
+#SideBar a:hover 
+{
+     background-color:#DDD; 
+     text-decoration:none; 
+     cursor:pointer;  
+}
+
+#SideBar .link-item{
+    height: 20px;
+    padding-left: 10px;
+}
+
+#SideBar .link-item span{
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+#SideBar .element{
+    border-left: 1px solid #aaa;
+    padding-left: 20px;
+    margin-left: 8px;
+    height: 20px;
+}
+
+#SideBar .link-item::before {
+    position: relative;
+    left: -5px;
+    border-radius: 50%;
+    width: 7px;
+    height: 7px;
+    content: '';
+    display: inline-block;
+    background-color: #aaa;
 }

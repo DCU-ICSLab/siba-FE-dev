@@ -17,7 +17,12 @@ const CHANGE_DEIVCE_ADD_MODAL = 'basic/CHANGE_DEIVCE_ADD_MODAL';
 const DEVICE_REG_VALUE_CHANGE = 'basic/DEVICE_REG_VALUE_CHANGE';
 const DEVICE_REG_INPUT_CLEAR = 'basic/DEVICE_REG_INPUT_CLEAR'
 const GET_DEVICE_AUTH_KEY = 'basic/GET_DEVICE_AUTH_KEY'
-const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
+//const GET_VIRTUAL_HUB = 'basic/GET_VIRTUAL_HUB'
+const CHANGE_HUB_ADD_MODAL = 'basic/CHANGE_HUB_ADD_MODAL'
+const HUB_REG_VALUE_CHANGE = 'basic/HUB_REG_VALUE_CHANGE'
+const HUB_REG_INPUT_CLEAR = 'basic/HUB_REG_INPUT_CLEAR'
+const GET_HUB_AUTH_KEY = 'basic/GET_HUB_AUTH_KEY'
+const DEVICE_LIST_MODAL_CHANGE = 'basic/DEVICE_LIST_MODAL_CHANGE'
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -29,11 +34,16 @@ export const deviceAddBoxChange = createAction(DEVICE_ADD_BOX_CHANGE);
 export const deviceWorkBoxChange = createAction(DEVICE_WORK_BOX_CHANGE);
 export const changeCodeModal = createAction(CHANGE_CODE_MODAL);
 export const changeDeviceAddModal = createAction(CHANGE_DEIVCE_ADD_MODAL);
+export const changeHubAddModal = createAction(CHANGE_HUB_ADD_MODAL);
 export const changeCopy = createAction(CHANGE_COPY);
 export const deviceRegValueChange = createAction(DEVICE_REG_VALUE_CHANGE);
 export const deviceRegInputClear = createAction(DEVICE_REG_INPUT_CLEAR);
 export const getDeviceAuthKey = createAction(GET_DEVICE_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
-export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
+export const hubRegValueChange = createAction(HUB_REG_VALUE_CHANGE);
+export const hubRegInputClear = createAction(HUB_REG_INPUT_CLEAR);
+export const deviceListModalChange = createAction(DEVICE_LIST_MODAL_CHANGE);
+export const getHubAuthKey = createAction(GET_HUB_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
+//export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -47,16 +57,27 @@ const initialState = Map({
         deviceWorkBox: false,
         codeModal: false,
         deviceModal: false,
+        deviceListModal: false,
+        hubModal: false,
         copy: false,
     }),
 
     regInput: Map({
+
+    }),
+
+    hubInput: Map({
 
     })
 });
 
 /*--------reducer--------*/
 export default handleActions({
+    
+    [DEVICE_LIST_MODAL_CHANGE]: (state, action) => {
+        return state.setIn(['frameState', 'deviceListModal'], !action.payload);
+    },
+
     [SB_TOGGLE]: (state, action) => {
         return state.setIn(['frameState', 'sb'], !action.payload);
     },
@@ -97,11 +118,15 @@ export default handleActions({
         return state.setIn(['frameState', 'deviceModal'], action.payload);
     },
 
+    [CHANGE_HUB_ADD_MODAL]: (state, action) => {
+        return state.setIn(['frameState', 'hubModal'], action.payload);
+    },
+
     [DEVICE_REG_INPUT_CLEAR]: (state, action) => {
         return state.set('regInput', Map({
             devName: '',
             authKey: '',
-            vHubId: null,
+            //vHubId: null,
             devType: null,
             devDefName: '',
             category: null
@@ -112,15 +137,34 @@ export default handleActions({
         return state.setIn(['regInput', action.payload.key], action.payload.value);
     },
 
-    [GET_VIRTUAL_HUB]: (state, action) => {
-        return state.setIn(['regInput', 'vHubId'], action.payload.hubId);
+    [HUB_REG_VALUE_CHANGE]: (state, action) => {
+        return state.setIn(['hubInput', action.payload.key], action.payload.value);
     },
+
+    [HUB_REG_INPUT_CLEAR]: (state, action) => {
+        return state.set('hubInput', Map({
+            hubName: '',
+            authKey: '',
+            hubType: '1',
+        }));
+    },
+
+    // [GET_VIRTUAL_HUB]: (state, action) => {
+    //     return state.setIn(['regInput', 'vHubId'], action.payload.hubId);
+    // },
 
 
     ...pender({
         type: GET_DEVICE_AUTH_KEY,
         onSuccess: (state, action) => {
             return state.setIn(['regInput', 'authKey'], action.payload.data.data);
+        },
+    }),
+
+    ...pender({
+        type: GET_HUB_AUTH_KEY,
+        onSuccess: (state, action) => {
+            return state.setIn(['hubInput', 'authKey'], action.payload.data.data);
         },
     }),
     

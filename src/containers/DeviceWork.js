@@ -722,8 +722,9 @@ class DeviceWork extends Component {
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        deviceActions.pageSwitching({page: 3})
+        deviceActions.pageSwitching({page: 1})
         deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        //deviceActions.setSaveGraph({graph: this.props.selectedDevice})
     }
 
     componentWillUnmount() {
@@ -774,7 +775,8 @@ class DeviceWork extends Component {
                         saveDeviceTextBoxGraph={this._saveDeviceTextBoxGraph}
                         deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
                         modalChange={this._modalChange}
-                        buttonTypeChange={this._buttonTypeChange}>
+                        buttonTypeChange={this._buttonTypeChange}
+                        >
 
                         <g>
                             {pallet.map((boxInfo, index) => {

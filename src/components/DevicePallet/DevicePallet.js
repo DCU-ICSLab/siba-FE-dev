@@ -367,8 +367,7 @@ const DevicePallet = ({
             {/* pallet */}
             <div className="overflow-trick"></div>
             <div className="pallet" onScroll={scrollFunc}>
-                <div className="background">
-                </div>
+                <div className="background"></div>
                 <svg
                     id="draggable"
                     onClick={focusClear}

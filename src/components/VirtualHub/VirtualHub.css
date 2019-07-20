@@ -3,16 +3,39 @@
     width: 299px;
     box-sizing: border-box;
     vertical-align: top;
-    height: 290px;
     padding: 10px 0 10px 25px;
 }
 
+#VirtualHub .inner > .hub-on::before {
+    position: relative;
+    left: 5px;
+    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+    content: '';
+    display: inline-block;
+    background-color: green;
+}
+
+#VirtualHub .inner > .hub-off::before {
+    position: relative;
+    left: 5px;
+    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+    content: '';
+    display: inline-block;
+    background-color: #E1E1E1;
+}
+
 #VirtualHub > .inner{
+    position: relative;
     border: 1px solid #BBB;
     border-radius: 2px;
     height: 100%;
     width: 100%;
-    background-color: #B8C6D8;
+    background-color: #fff;
+    padding: 0 3px 3px 3px;
 }
 
 #VirtualHub .inner > header{
@@ -20,6 +43,7 @@
     border-bottom: 1px solid #dadce0;
     padding: 5px;
     background-color: #fff;
+    position: relative;
 }
 
 #VirtualHub .title{
@@ -27,7 +51,7 @@
     font-weight: 450;
     color: #000;
     padding-left: 7px;
-    margin-left: 5px;
+    margin-left: 3px;
 }
 
 #VirtualHub .vcode{
@@ -37,19 +61,42 @@
 }
 
 #VirtualHub .info{
-    /* background-color: #fff; */
-    background-color: #A9B1C1;
-    padding-left: 19px;
-    font-size: 12px;
+    background-color: #fff;
+    /* background-color: #A9B1C1; */
+    /* padding-left: 19px; */
+    font-size: 11px;
     height: 20px;
     color: #333;
     /* border-bottom: 1px solid #888; */
 }
 
+#VirtualHub .info .row{
+    padding: 3px 3px;
+}
+
+#VirtualHub .info .key{
+    display: inline-block;
+    width: 20%;
+    color: #666;
+}
+
+#VirtualHub .info .value{
+    display: inline-block;
+    width: 80%;
+    text-align: right;
+}
+
+#VirtualHub .sub-title{
+    color: #000;
+    position: relative;
+}
+
 #VirtualHub .container{
     /* width: 100%; */
-    padding-top: 5px;
-    height: 196px;
+    margin-top: 53px;
+    background-color: #B8C6D8;
+    padding-top: 1px;
+    height: 132px;
     overflow: auto;
     /* background-color: #B8C6D8; */
     /* border-bottom: 1px solid #888; */
@@ -65,6 +112,25 @@
 
 #VirtualHub footer> span{
     margin-right: 13px;
+}
+
+#VirtualHub .key-copy-btn{
+    outline: none;
+    border: none;
+    background-color: #464C57;
+    border-radius: 2px;
+    font-size: 11px;
+    color: #fff;
+    border: 1px solid #dadce0;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+#VirtualHub .key-copy-btn:hover{
+    background-color: #fff;
+    color: #333;
 }
 
 #VirtualHub .total::before {
@@ -105,7 +171,7 @@
     height: 50px;
     padding: 5px 0 5px 10px;
     /* width: 78px; */
-    width: 122px;
+    width: 254px;
     position: relative;
 }
 
@@ -113,11 +179,73 @@
     position: absolute;
     top: 5px;
     left: 10px;
-    width: 120px;
-    height: 50px;
+    width: 254px;
+    height: 62px;
     border: 1px solid #888;
-    background-color: #E7EFF5;
+    /* background-color: #E7EFF5; */
+    background-color: #fff;
+    border-radius: 2px;
     font-size: 11px;
+    cursor: pointer;
+}
+
+#LogicalDevice > .inner img{
+    border-radius: 40%;
+    border: 1px solid #dadce0;
+    margin: 6px 6px;
+}
+
+#LogicalDevice .dev-info{
+    position: absolute;
+    top: 2px;
+    left:55px;
+    right:0;
+}
+
+#LogicalDevice .dev-delete-btn{
+    border: none;
+    outline: none;
+    cursor: pointer;
+    /* background-color: #dadce0; */
+    background-color: transparent;
+    color: #333;
+    border-radius: 50%;
+    float: right;
+    width: 15px;
+    height: 15px;
+    position: relative;
+    margin-top: 2px;
+    margin-right: 4px;
+}
+
+#LogicalDevice .dev-delete-btn:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+#LogicalDevice .dev-info header{
+    font-size: 12px;
+    font-weight: 500;
+    padding-bottom: 2px;
+    /* border-bottom: 1px solid #dadce0; */
+}
+
+#LogicalDevice .row{
+    padding: 1px 0;
+    font-size: 10px;
+    width: 95%;
+}
+
+#LogicalDevice .key{
+    display: inline-block;
+    width: 45%;
+    color: #666;
+}
+
+#LogicalDevice .value{
+    display: inline-block;
+    width: 55%;
+    text-align: right;
 }
 
 #LogicalDevice .name{
@@ -132,25 +260,24 @@
 }
 
 #LogicalDevice > .inner:hover{
-    cursor: pointer;
-    background-color: #fff;
+    /* cursor: pointer; */
+    background-color: #F8F8F8;
 }
 
 #LogicalDeviceAddBtn{
     display: inline-block;
     height: 50px;
     padding: 5px 0 5px 10px;
-    width: 122px;
+    width: 254px;
     position: relative;
 }
 
 #LogicalDeviceAddBtn .add{
     position: absolute;
-    top: 5px;
+    top: 10px;
     left: 10px;
-    
     height: 48px;
-    width: 118px;
+    width: 254px;
     background-color: transparent;
     
     
@@ -158,7 +285,7 @@
 
 #LogicalDeviceAddBtn .add > button{
     text-align: center;
-    border: 2px dashed #AAB0BF;
+    border: 1.5px dashed #AAB0BF;
     border-radius: 2px;
     color: #AAB0BF;
     outline: none;
@@ -169,8 +296,8 @@
 
 #LogicalDeviceAddBtn .add > button:hover{
     background-color: transparent;
-    border: 2px dashed #fff;
-    color: #fff;
+    border: 1.5px dashed #555;
+    color: #555;
 }
 
 /* width */
@@ -193,4 +320,55 @@
   /* Handle on hover */
 #VirtualHub .container::-webkit-scrollbar-thumb:hover {
     background: #959596; 
+}
+
+#VirtualHub .hub-set-btn{
+    /* position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    padding-top: 3px;
+    padding-right: 3px;
+    display: block;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    width: 20px; */
+    color: #656565;
+}
+
+#VirtualHub .hub-set-btn:hover{
+    color: #222;
+}
+
+#VirtualHub .expand-btn{
+    position: absolute;
+    padding: 0;
+    top: 2px;
+    right: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: #656565;
+}
+
+#VirtualHub .expand-btn:hover{
+    color: #222;
+}
+
+#VirtualHub .hub-shadow{
+    background-color: #333;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    border-radius: 1px;
+    border: 1px solid #000;
+    text-align: center;
+    color: #fff;
 }

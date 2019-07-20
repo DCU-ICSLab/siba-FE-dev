@@ -58,7 +58,9 @@ const DEV_BTN_SIDE_TYPE_CHANGE = 'device/DEV_BTN_SIDE_TYPE_CHANGE'
 const DEV_CP_BTN_TYPE = 'device/DEV_CP_BTN_TYPE'
 
 const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
-const SET_SAVE_GRAPH = 'device/SET_SAVE_GRAPH'
+const GET_CONNECTED_DEV_INFO = 'device/GET_CONNECTED_DEV_INFO'
+const PUSH_CONNECTED_DEV = 'device/PUSH_CONNECTED_DEV'
+const DELETE_CONNECTED_DEV = 'device/DELETE_CONNECTED_DEV'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -111,7 +113,9 @@ export const devBtnSideTypeChange = createAction(DEV_BTN_SIDE_TYPE_CHANGE)
 export const devCopyBtnType = createAction(DEV_CP_BTN_TYPE)
 
 export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
-export const setSaveGraph = createAction(SET_SAVE_GRAPH)
+export const getConnectedDevInfo = createAction(GET_CONNECTED_DEV_INFO, DeviceAPI.getConnectedDevInfo)
+export const pushConnectedDev = createAction(PUSH_CONNECTED_DEV)
+export const deleteConnectedDev = createAction(DELETE_CONNECTED_DEV)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -137,6 +141,8 @@ const initialState = Map({
 
         haveEntry: false,
     }),
+
+    graph: null,
 
     linkerVisible: false,
 
@@ -167,11 +173,34 @@ const initialState = Map({
     serverResponse:Map({
         msg: null,
         status: null
-    })
+    }),
+
+    connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [DELETE_CONNECTED_DEV]: (state, action) => {
+
+        const idx = state.get('connectedDev').findIndex(connectedDev => connectedDev.get('devMac')===action.payload.devMac)
+
+        return state.update('connectedDev', connectedDev =>
+            connectedDev.delete(idx)
+        );
+    },
+
+    [PUSH_CONNECTED_DEV]: (state, action) => {
+        return state.update('connectedDev', connectedDev =>
+            connectedDev.push(
+                Map({
+                    devMac: action.payload.devMac,
+                    connectedAt: new Date(),
+                })
+            )
+        );
+    },
+
     [DEV_SELECT]: (state, action) => {
         return state.set('selectedDevice', Map(action.payload));
     },
@@ -528,16 +557,13 @@ export default handleActions({
     [DEV_PAGE_SWITCHING]: (state, action) => {
         return state.set('page',action.payload.page);
     },
-
-    [SET_SAVE_GRAPH]: (state, action) => {
-        return state.set('page',action.payload.page);
-    },
     
     //개발자 서버로 부터 디바이스 정보, 텍스트 박스 체인 정보를 받아옴
     ...pender({
         type: GET_DEVICE_INFO,
         onSuccess: (state, action) => {
-            return state.set('selectedDevice', Map({
+            const dataset =  Map({
+                vHubId: action.payload.data.data.vhubId,
                 devId: action.payload.data.data.devId,
                 devAuthKey: action.payload.data.data.devAuthKey,
                 blockIdCounter: action.payload.data.data.blockIdCounter,
@@ -588,16 +614,24 @@ export default handleActions({
                         z: Map(linker.z)
                     }))
                 ),        
-            }));
+            })
+
+            return state.merge({
+                selectedDevice: dataset,
+                graph: dataset
+            });
         },
     }),
 
     ...pender({
         type: SAVE_DEVICE_TEXT_BOX_GRAPH,
         onSuccess: (state, action) => {
-            return state.set('serverResponse', Map({
-                msg: action.payload.data.msg
-            }));
+            return state.merge({
+                serverResponse: Map({
+                    msg: action.payload.data.msg
+                }),
+                graph: state.get('selectedDevice')
+            })
         },
     }),
 
@@ -607,6 +641,13 @@ export default handleActions({
             return state.set('serverResponse', Map({
                 msg: action.payload.data.msg
             }));
+        },
+    }),
+
+    ...pender({
+        type: GET_CONNECTED_DEV_INFO,
+        onSuccess: (state, action) => {
+            return state.set('connectedDev', List(action.payload.data.data.map(connDev => Map(connDev))));
         },
     }),
 

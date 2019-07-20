@@ -46,3 +46,14 @@ export const getDeviceAuthKey = () =>{
         return res;
     });
 }
+
+export const getConnectedDevInfo = (devId) =>{
+
+    const baseURL = `${API_BASE_URL}/device/${devId}/conndev`
+
+    return axios.get(baseURL)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

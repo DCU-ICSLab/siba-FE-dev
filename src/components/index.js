@@ -22,8 +22,13 @@ import TestTextBox from './TestTextBox/TestTextBox';
 import TestUserTextBox from './TestUserTextBox/TestUserTextBox';
 import SendReceiveBox from './SendReceiveBox/SendReceiveBox';
 import TestToolBox from './TestToolBox/TestToolBox';
+import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
+import DeviceListModal from './DeviceListModal/DeviceListModal';
+import AdminPallet from './AdminPallet/AdminPallet';
+import TestEndBox from './TestEndBox/TestEndBox';
 
 export {
+    DeviceListModal,
     SibaFrame,
     SibaSideBar,
     SibaContent,
@@ -45,7 +50,10 @@ export {
     TestWindow,
     TestBox,
     TestTextBox,
+    TestEndBox,
     TestUserTextBox,
     SendReceiveBox,
-    TestToolBox
+    TestToolBox,
+    HubAddModalWrapper,
+    AdminPallet
 }

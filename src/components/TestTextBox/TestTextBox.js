@@ -13,6 +13,7 @@ const TestTextBox = ({
     boxType,
     sendCommand,
     changeTimeSetter,
+    saveTempType,
 }) => {
 
     return (
@@ -52,7 +53,10 @@ const TestTextBox = ({
                             <button 
                             key={index} 
                             className="link-btn"
-                            onClick={(e)=>sendCommand(`${index+1}번`, btn.get('cboxId'))}>
+                            onClick={(e)=>{
+                                saveTempType(btn.get('btnType'), btn.get('evCode'))
+                                sendCommand(`${index+1}번`, btn.get('cboxId'))
+                            }}>
                             {index+1}
                             </button>
                         )

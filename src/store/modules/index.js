@@ -5,15 +5,15 @@ import { connectRouter } from 'connected-react-router'
 import basic from './basic';
 import device from './device';
 import auth from './auth';
-import vhub from './vhub';
 import test from './test';
+import hub from './hub';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
     basic,
     device,
     auth,
-    vhub,
     test,
+    hub,
     pender: penderReducer, //pender 리듀서 추가
 });

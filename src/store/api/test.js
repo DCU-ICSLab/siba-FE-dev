@@ -25,3 +25,22 @@ export const cancelTest = (authKey) =>{
         return res;
     });
 }
+
+//명령 전송
+export const sendBuildingJson = (cmdList, devMac, vhubId, devId) =>{
+
+    const baseURL = `${API_BASE_URL}/test/${devMac}`
+
+    console.log('dfdfdfdfd')
+    console.log(vhubId)
+
+    return axios.post(baseURL, {
+        cmdList: cmdList,
+        vhubId: vhubId,
+        devId:devId
+    })
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

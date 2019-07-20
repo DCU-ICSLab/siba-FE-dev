@@ -1,38 +1,276 @@
 #HubPallet{
     position: fixed;
-    top: 50px;
+    top: 47px;
     right: 10px;
     bottom: 10px;
     /* flex: 1; */
     overflow: auto;
     transition: .3s;
     /* margin-left: 200px; */
-    border: 1px solid #dadce0;
     border-radius: 2px;
-    background-color: #F5F5F5;
 }
 
-#HubPallet > header{
+#HubPallet .hub-list > header, #HubPallet .device-repo > header{
     background-color: #fff;
     padding: 5px;
     font-size: 14px;
-    border-bottom: 1px solid #dadce0;
 }
 
-#HubPallet > header .title{
-    border-left: 3px solid #000;
+#HubPallet .hub-list > header .title, #HubPallet .device-repo > header .title{
+    border-left: 3px solid #333;
     padding-left: 7px;
     margin-left: 5px;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 #HubPallet .wrapper{
-    margin-top: 6px;
+    position: absolute;
+    top: 34px;
+    left: 3px;
+    right: 250px;
+    bottom: 3px;
+}
+
+#HubPallet .wrapper .hub-pallet{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 27px;
+    bottom: 0;
     flex-wrap: wrap;
     display: flex;
+    align-content: flex-start;
+    overflow: auto;
+    border: 1px solid #dadce0;
+    /* padding-top: 40px; */
+    background-color: #F5F5F5;
+}
+
+#HubPallet .wrapper-side{
+    position: absolute;
+    right:4px;
+    top: 34px;
+    bottom: 3px;
+    width: 240px;
+    border: 1px solid #dadce0;
+}
+
+#HubPallet .hub-list-info > div{
+    float: left;
+    margin-top: 3px;
+    margin-left: 3px;
 }
 
 #HubPallet .hub-list-info{
-    padding-top: 10px;
-    padding-left: 27px;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    height: 26px;
+    background-color: #fff;
+    /* border-bottom: 1px solid #dadce0; */
+    left: 0;
+    right: 0;
 }
+
+#HubPallet .hub-list{
+    border: 1px solid #dadce0;
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 405px;
+}
+
+#HubPallet .device-repo{
+    border: 1px solid #dadce0;
+    background-color: #fff;
+    height: 400px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 2px;
+}
+
+#HubPallet .device-repo-wrapper{
+    position: absolute;
+    top: 68px;
+    left: 8px;
+    right: 8px;
+    bottom: 7px;
+    border: 1px solid #dadce0;
+    background-color: #F5F5F5;
+    overflow-y: auto;
+}
+
+#HubPallet .device-repo-list{
+    /* height: 300px; */
+    font-size: 11px;
+    border-radius: 2px;
+    width: 981px;
+    border-right: 1px solid #dadce0;
+    /* font-weight: 100; */
+}
+
+#HubPallet table{
+    font-weight: normal;
+    padding: 0;
+    background-color: transparent;
+    border-spacing: 0;
+    border-collapse: collapse;
+    color: #555;
+}
+
+#HubPallet .hub-log-list{
+    font-size: 11px;
+    display: block;
+    width: 240px;
+    border-collapse: collapse;
+    position: relative;
+    height: 100%;
+}
+
+#HubPallet .hub-log-list tbody{
+    display: block;
+    overflow-y: scroll;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 27px;
+    background-color: #F5F5F5;
+}
+
+#HubPallet .hub-log-list tbody tr{
+    background-color: #fff;
+    width: 100%;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+}
+
+#HubPallet .hub-log-list thead{
+    background-color: #EDEDED;
+    border-bottom: 1px solid #dadce0;
+    font-family: NanumGothic;
+}
+
+#HubPallet .hub-log-list thead th{
+    padding: 2px 0;
+    height: 22px;
+    text-align: center;
+    border-top: 0 none;
+    border-bottom: 0 none;
+    overflow: hidden;
+    margin: 0;
+    border-left: 1px solid #dadce0;
+}
+
+#HubPallet .hub-log-list tbody td{
+    padding: 4px 0;
+    text-align: center;
+}
+
+#HubPallet .device-repo-list thead{
+    background-color: #EDEDED;
+    border-bottom: 1px solid #dadce0;
+    font-family: NanumGothic;
+}
+
+#HubPallet .device-repo-list tbody{
+    /* display: block; */
+    overflow-x: auto;
+    overflow-y: visible;
+    background-color: #fff;
+    /* direction: rtl; */
+}
+
+#HubPallet .device-repo-list thead th{
+    padding: 4px 0;
+    height: 22px;
+    text-align: center;
+    border-top: 0 none;
+    border-bottom: 0 none;
+    overflow: hidden;
+    margin: 0;
+    width: 139px;
+    border-left: 1px solid #dadce0;
+}
+
+#HubPallet .device-repo-list tbody tr{
+    width: 100%;
+    border-bottom: 1px solid #dadce0;
+}
+
+#HubPallet .device-repo-list tbody td{
+    /* border-left: 1px solid #dadce0; */
+    padding: 6px 0;
+    text-align: center;
+}
+
+#HubPallet .repo-toolbar{
+    border-top: 1px solid #dadce0;
+    margin: 3px 7px 0 7px;
+}
+
+#HubPallet .repo-toolbar-info{
+    margin-top: 5px;
+    float: left;
+    font-size: 12px;
+}
+
+#HubPallet .hub-list-info > button{
+    margin-top: 2px;
+    float: right;
+    outline: none;
+    border: none;
+    /* background-color: #464C57; */
+    background-color: #464C57;
+    /* border: 1px solid #dadce0; */
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 9px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+#HubPallet .hub-list-info > button:hover{
+    background-color: #6B94D9;
+}
+
+#HubPallet .repo-toolbar > button{
+    margin-top: 5px;
+    float: right;
+    outline: none;
+    border: none;
+    background-color: #464C57;
+    color: #fff;
+    font-size: 11px;
+    padding: 3px 9px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+#HubPallet .repo-toolbar > button:hover{
+    background-color: #6B94D9;
+}
+
+#HubPallet .dev-row{
+    cursor: pointer;
+}
+
+#HubPallet .dev-row:hover{
+    background-color: #F8F8F8;
+}
+
+#HubPallet .red{
+    color: #333;
+}
+
+#HubPallet .green{
+    color: #0078D4;
+}
+
+/* #HubPallet .device-repo-list tbody tr:nth-child(even){
+    background-color: #F5F9FE;
+} */
