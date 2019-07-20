@@ -183,7 +183,7 @@
 #AdminPallet .network-graph{
     top: 3px;
     left: 3px;
-    right: 249px;
+    right: 279px;
     bottom: 3px;
     position: absolute;
     border: 1px solid #dadce0;
@@ -195,7 +195,7 @@
 #AdminPallet .side-bar{
     position: absolute;
     top: 3px;
-    width: 240px;
+    width: 270px;
     right: 3px;
     bottom: 3px;
     border: 1px solid #dadce0;
@@ -311,7 +311,7 @@
 #AdminPallet .hub-log-list{
     font-size: 11px;
     display: block;
-    width: 240px;
+    width: 270px;
     border-collapse: collapse;
     position: relative;
     height: 100%;
@@ -475,4 +475,30 @@
     background-color: transparent;
     border: 1.5px dashed #555;
     color: #555;
+}
+
+#ConnectedDevice .dev-on::before {
+    position: relative;
+    left: 5px;
+    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+    content: '';
+    display: inline-block;
+    background-color: green;
+}
+
+#ConnectedDevice .dev-off::before {
+    position: relative;
+    left: -5px;
+    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+    content: '';
+    display: inline-block;
+    background-color: #E1E1E1;
+}
+
+#ConnectedDevice .dev-title{
+    margin-left: 5px;
 }

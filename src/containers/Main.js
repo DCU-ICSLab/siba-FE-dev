@@ -16,6 +16,8 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
+import * as hubActions from 'store/modules/hub';
+import * as deviceActions from 'store/modules/device';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/index';
@@ -68,10 +70,27 @@ class Main extends Component {
     }
 
     _showDeivceStateChange = (message) => {
+        const { deviceActions } = this.props;
         const msg = JSON.parse(message.body)
         const isDeviceConnect = msg.msgType === 1;
 
         const outputMessage = isDeviceConnect ? `디바이스가 연결되었습니다. \n ${msg.mac}` : `디바이스가 제거되었습니다. \n ${msg.mac}`
+
+        if(isDeviceConnect){
+            deviceActions.pushConnectedDev({
+                devMac: msg.mac
+            })
+        }
+        else{
+            deviceActions.deleteConnectedDev({
+                devMac: msg.mac
+            })
+        }
+
+        this.props.hubActions.pushHubClog({
+            clog_res: msg.msgType,
+            dev_mac: msg.mac
+        })
 
         toast(this._generateToastMessage({
             message: outputMessage
@@ -211,6 +230,7 @@ class Main extends Component {
     }
 
     _linkDevicePage = (devId, dev) => {
+        console.log(dev)
         this.props.history.push({
             pathname: `/device/${devId}`,
             state: { dev: dev }
@@ -397,6 +417,8 @@ export default withRouter(
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
             authActions: bindActionCreators(authActions, dispatch),
+            hubActions: bindActionCreators(hubActions, dispatch),
+            deviceActions: bindActionCreators(deviceActions, dispatch),
         })
     )(Main)
 )

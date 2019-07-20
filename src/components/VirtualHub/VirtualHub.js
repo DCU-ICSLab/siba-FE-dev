@@ -3,6 +3,7 @@ import './VirtualHub.css';
 import { MdSettings, MdAdd, MdExpandLess, MdExpandMore, MdClear, MdVpnLock } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import SIBA from 'resources/siba.jpg'
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 // import { Progress } from 'react-sweet-progress';
 // import "react-sweet-progress/lib/style.css";
 
@@ -99,6 +100,9 @@ const VirtualHub = ({ hub, redirectDevicePage, foldChange, deviceListModalChange
                             marginLeft: 30,
                         }}>Disconnected</span>
                     </div> */}
+                    <CopyToClipboard text={hub.get('hubKey')} onCopy={() => {}}>
+                        <button className="key-copy-btn">인증키 복사</button>
+                    </CopyToClipboard>
                 </div>}
                 <header className={hubSt}>
                     <span className="title">{hub.get('hubName')}</span>

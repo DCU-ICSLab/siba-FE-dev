@@ -7,7 +7,6 @@ import { dark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 const TestBox = ({
     children
 }) => {
-    const codeString = SendJsonGenerator()
     return (
         <div id="TestBox">
             <div className="testbox-wrapper">

@@ -25,6 +25,7 @@ import TestToolBox from './TestToolBox/TestToolBox';
 import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
 import DeviceListModal from './DeviceListModal/DeviceListModal';
 import AdminPallet from './AdminPallet/AdminPallet';
+import TestEndBox from './TestEndBox/TestEndBox';
 
 export {
     DeviceListModal,
@@ -49,6 +50,7 @@ export {
     TestWindow,
     TestBox,
     TestTextBox,
+    TestEndBox,
     TestUserTextBox,
     SendReceiveBox,
     TestToolBox,

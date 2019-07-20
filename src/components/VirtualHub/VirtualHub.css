@@ -114,6 +114,25 @@
     margin-right: 13px;
 }
 
+#VirtualHub .key-copy-btn{
+    outline: none;
+    border: none;
+    background-color: #464C57;
+    border-radius: 2px;
+    font-size: 11px;
+    color: #fff;
+    border: 1px solid #dadce0;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+
+#VirtualHub .key-copy-btn:hover{
+    background-color: #fff;
+    color: #333;
+}
+
 #VirtualHub .total::before {
     position: relative;
     left: -3px;

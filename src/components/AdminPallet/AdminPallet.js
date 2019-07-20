@@ -34,7 +34,7 @@ const ConnectedDevice = ({ dev }) => {
             <img src={SIBA} width={40}></img>
             <div className="dev-info">
                 <header>
-                    <span>{dev.get('devName')}</span>
+                    <span className="dev-title dev-off">{dev.get('devName')}</span>
                     <button
                         className="dev-delete-btn"
                         onClick={(e) => {
@@ -254,11 +254,11 @@ const AdminPallet = ({
                                         }}>No.</th>
                                         <th
                                             style={{
-                                                width: '99px',
+                                                width: '79px',
                                             }}>수행시간</th>
                                         <th
                                             style={{
-                                                width: '35px',
+                                                width: '92px',
                                             }}>장치</th>
                                         <th style={{
                                             width: '81px',
@@ -271,7 +271,7 @@ const AdminPallet = ({
                                             let msg = 'disconnect'
                                             let className = 'red'
                                             switch (log.get('clog_res')) {
-                                                case '1':
+                                                case 1:
                                                     msg = 'connect'
                                                     className = 'green'
                                                     break;
@@ -289,12 +289,12 @@ const AdminPallet = ({
                                                         color: '#777'
                                                     }}>{index + 1}</td>
                                                     <td style={{
-                                                        width: '101px',
+                                                        width: '79px',
                                                         // borderRight: '1px solid #dadce0'
                                                     }}>{moment(log.get('clog_time')).format('YYYY-MM-DD HH:mm')}</td>
                                                     {/* 2019-12-07 13:15 */}
                                                     <td style={{
-                                                        width: '36px',
+                                                        width: '92px',
                                                         // borderRight: '1px solid #dadce0'
                                                     }}>{log.get('dev_mac')}</td>
                                                     <td className={className} style={{
@@ -411,7 +411,7 @@ const AdminPallet = ({
                                     }}
                                 />
                                 <div className="graph-info">
-                                    <span>Nodes: 4 | Links: 3</span>
+                                    <span>Nodes: {nodes.size} | Links: {links.size}</span>
                                 </div>
                             </div>
                             <div className="graph-dev-side">

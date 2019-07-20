@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
+import * as deviceActions from 'store/modules/device';
 import { ToastContainer, toast } from 'react-toastify';
 
 var copyTimeout = null;
@@ -76,6 +77,8 @@ class Device extends Component {
     }
 
     componentDidMount() {
+        const { deviceActions, location } = this.props;
+        deviceActions.getConnectedDevInfo(location.state.dev.get('devId'))
     }
 
     componentWillUnmount() {
@@ -104,11 +107,11 @@ class Device extends Component {
 
         return (
             <Fragment>
-                {/* <ToastContainer
+                <ToastContainer
                     hideProgressBar={true}
                     autoClose={8000}
                     newestOnTop={true}
-                /> */}
+                />
                 <SibaFrame>
                     <SibaHeader userState={userState}></SibaHeader>
                     <SideBar
@@ -172,6 +175,7 @@ export default withRouter(
         // props 로 넣어줄 액션 생성함수
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
+            deviceActions: bindActionCreators(deviceActions, dispatch),
         })
     )(Device)
 )

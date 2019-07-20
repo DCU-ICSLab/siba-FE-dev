@@ -13,6 +13,7 @@ const TestWindow = ({
     changeTimeValue,
     sendCommand,
     setRef,
+    testClear,
 }) => {
 
     return (

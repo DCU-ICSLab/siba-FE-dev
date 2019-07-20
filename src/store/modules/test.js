@@ -14,6 +14,12 @@ const TEXTBOX_ENABLE_CHANGE = 'test/TEXTBOX_ENABLE_CHANGE'
 const CHANGE_TIME_SETTER = 'test/CHANGE_TIME_SETTER'
 const CHANGE_TIME_FORMAT = 'test/CHANGE_TIME_FORMAT'
 const CHANGE_TIME_FORMAT_ALL = 'test/CHANGE_TIME_FORMAT_ALL'
+const TESTBOX_INIT = 'test/TESTBOX_INIT'
+const SAVE_TEMP_TYPE = 'test/SAVE_TEMP_TYPE'
+const SET_TEXTBOX_END = 'test/SET_TEXTBOX_END'
+const SEND_BUILDING_JSON = 'test/SEND_BUILDING_JSON'
+const SET_DUPLICATE = 'test/SET_DUPLICATE'
+const SET_SEND_STATE = 'test/SET_SEND_STATE'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -24,22 +30,67 @@ export const textBoxEnableChange = createAction(TEXTBOX_ENABLE_CHANGE)
 export const changeTimeSetter = createAction(CHANGE_TIME_SETTER)
 export const changeTimeFormatAll = createAction(CHANGE_TIME_FORMAT_ALL)
 export const changeTimeFormat = createAction(CHANGE_TIME_FORMAT)
+export const testboxInit = createAction(TESTBOX_INIT)
+export const saveTempType = createAction(SAVE_TEMP_TYPE)
+export const setTextboxEnd = createAction(SET_TEXTBOX_END)
+export const sendBuildingJson = createAction(SEND_BUILDING_JSON, TestAPI.sendBuildingJson)
+export const setDuplicate = createAction(SET_DUPLICATE)
+export const setSendState = createAction(SET_SEND_STATE)
 
 /*--------state definition--------*/
 const initialState = Map({
     testBoxList: List([]),
     userBoxList: List([]),
+    cmdList: List([]),
     timeSetter: false,
     timeFormat: Map({
         date: null,
         md: '',
         h: '',
         t: ''
-    })
+    }),
+
+    isEnd: false,
+    isSend: false,
+
+    testResult: Map({
+        msg: '',
+        status: false
+    }),
+
+    isDuplicate: false
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [SET_SEND_STATE]: (state, action) => {
+        return state.set('isSend', action.payload);
+    },
+
+    [SET_DUPLICATE]: (state, action) => {
+        return state.set('isDuplicate', action.payload);
+    },
+
+    [SET_TEXTBOX_END]: (state, action) => {
+        return state.set('isEnd', action.payload);
+    },
+
+    [SAVE_TEMP_TYPE]: (state, action) => {
+        return state.update('cmdList', cmdList =>
+            cmdList.push(
+                Map({
+                    btnType: action.payload.btnType,
+                    eventCode: action.payload.eventCode,
+                    additional: List([])
+                })
+            )
+        );
+    },
+
+    [TESTBOX_INIT]: (state, action) => {
+        return state.set('testBoxList', List([])).set('cmdList', List([]))
+    },
 
     [ADD_USER_TEXTBOX]: (state, action) => {
         return state.update('userBoxList', boxes =>
@@ -53,7 +104,7 @@ export default handleActions({
     },
 
     [TEXTBOX_ENABLE_CHANGE]: (state, action) => {
-        return state.setIn(['testBoxList', state.get('testBoxList').size-1, 'enable'], false);
+        return state.setIn(['testBoxList', state.get('testBoxList').size - 1, 'enable'], false);
     },
 
     [CHANGE_TIME_SETTER]: (state, action) => {
@@ -118,6 +169,25 @@ export default handleActions({
                     })
                 )
             );
+        },
+    }),
+
+    ...pender({
+        type: SEND_BUILDING_JSON,
+        onSuccess: (state, action) => {
+
+            return state.set('testResult', Map({
+                msg: action.payload.msg,
+                status: action.payload.status
+            }));
+        },
+
+        onFailure: (state, action) => {
+
+            return state.set('testResult', Map({
+                msg: action.payload.msg,
+                status: action.payload.status
+            }));
         },
     }),
 

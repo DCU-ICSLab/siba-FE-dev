@@ -42,13 +42,15 @@ class HomeAdmin extends Component {
     //     }
     // }
 
-    _createTerminal = () => {
+    _createTerminal = (hub) => {
+
+        console.log(hub)
 
         if(this._xterm){
             this._xterm.dispose();
         }
 
-        const {userState, location} = this.props
+        const {userState} = this.props
 
         const providerId = userState.getIn(['user', 'providerId'])
 
@@ -74,7 +76,7 @@ class HomeAdmin extends Component {
 
         term.write('*** establish to your SIBA IoT Hub ***\r\n\r\n');
 
-        const socket = socketIOClient(`http://${location.state.hub.get('hubIp')}:${location.state.hub.get('hubPort')}`)
+        const socket = socketIOClient(`http://${hub.get('hubIp')}:${hub.get('hubPort')}`)
         
         socket.on('connect', ()=>{
 
@@ -98,7 +100,7 @@ class HomeAdmin extends Component {
             term.write('   |\\_________\\|__|\\|_______|\\|__|\\|__|\r\n')
             term.write('   \\|_________|                        \r\n\r\n')
 
-            term.write(`connected your SNS & IoT Based on AI Chatbot hub [${location.state.hub.get('hubIp')}]\r\n`);
+            term.write(`connected your SNS & IoT Based on AI Chatbot hub [${hub.get('hubIp')}]\r\n`);
 
             //client -> hub
             /*term.on('key', (key, ev)=>{
@@ -206,17 +208,29 @@ class HomeAdmin extends Component {
         this._deviceListModalChange()
     }
 
-    _getHubInfo = () => {
-        const { hubActions, location } = this.props; 
-        const hub = location.state.hub;
+    _getHubInfo = (hub) => {
+        const { hubActions } = this.props; 
         hubActions.getHubInfo(hub.get('hubIp'), hub.get('hubPort'))
     }
 
     componentDidMount() {
-        const { hubActions } = this.props;
-        this._createTerminal();
+        const { hubActions, location } = this.props;
+
+        hubActions.moveHubInfo({
+            hubName: location.state.hub.get('hubName'),
+            hubStatus: location.state.hub.get('hubStatus'),
+            hubKey:location.state.hub.get('hubKey'),
+            hubType:location.state.hub.get('hubType'),
+            hubPort: location.state.hub.get('hubPort'),
+            vhubId: location.state.hub.get('vhubId'),
+            hubIp: location.state.hub.get('hubIp'),
+            devices: location.state.hub.get('devices'),
+        })
+
+        this._createTerminal(location.state.hub);
+        this._getHubInfo(location.state.hub);
         hubActions.pageSwitching(1);
-        this._getHubInfo();
+        
         //this._checkUser();
     }
 
@@ -231,6 +245,7 @@ class HomeAdmin extends Component {
             tempDevRepo,
             deviceListModal,
             logInfo,
+            hub,
             page } = this.props;
 
         return (
@@ -255,7 +270,7 @@ class HomeAdmin extends Component {
                     <AdminPallet 
                     sbState={sb} 
                     setRef={this._setRef} 
-                    hub={location.state.hub}
+                    hub={hub}
                     pageSwitching={this._pageSwitching}
                     page={page}
                     deviceListModalChange={this._deviceListModalChange}
@@ -291,7 +306,8 @@ export default withRouter(
             deviceListModal: state.basic.getIn(['frameState', 'deviceListModal']),
             deviceInfo: state.auth.getIn(['userState', 'deviceInfo']),
             tempDevRepo: state.auth.get('tempDevRepo'),
-            logInfo: state.hub.getIn(['hub', 'logInfo'])
+            logInfo: state.hub.getIn(['hub','logInfo']),
+            hub: state.hub.get('hub')
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

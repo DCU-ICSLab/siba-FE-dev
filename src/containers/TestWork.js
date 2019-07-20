@@ -14,6 +14,7 @@ import {
     TestWindow,
     SendReceiveBox,
     TestToolBox,
+    TestEndBox
 } from 'components';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
@@ -30,7 +31,10 @@ class TestWork extends Component {
     }
 
     _cancelTest = () => {
-
+        const { testActions } = this.props
+        testActions.testboxInit();
+        testActions.setTextboxEnd(false);
+        testActions.setSendState(false)
     }
 
     _setRef = (ref) => {
@@ -47,7 +51,11 @@ class TestWork extends Component {
         const { testActions, devId } = this.props;
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
-        testActions.sendCommand(devId, boxId)
+        if (boxId !== null)
+            testActions.sendCommand(devId, boxId)
+        else {
+            testActions.setTextboxEnd(true);
+        }
         this._scrollToBottom()
     }
 
@@ -119,39 +127,66 @@ class TestWork extends Component {
     }
 
     _renderVisibleBox = () => {
-        const { testBoxList, pallet } = this.props;
-        if(testBoxList.size===0) return;
+        const { testBoxList, pallet, isSend } = this.props;
+        if (testBoxList.size === 0) return;
 
-        const boxId = testBoxList.getIn([testBoxList.size-1, 'boxId'])
+        const boxId = testBoxList.getIn([testBoxList.size - 1, 'boxId'])
 
-        const boxInfo = pallet.get(pallet.findIndex((box)=>box.get('id') === boxId));
+        const boxInfo = pallet.get(pallet.findIndex((box) => box.get('id') === boxId));
 
-        return(
+        return (
             <Fragment>
-                <VisibleBox
-                boxInfo={boxInfo}
-                key={boxInfo.get('id')}
-                isCurrent={true}
-                index={0}/>
-                {boxInfo.getIn(['info','buttons']).map((btn,index)=>{
-                    const cboxInfo = pallet.get(pallet.findIndex(box=>btn.getIn(['linker','childId'])=== box.get('id')))
-                    return(
-                    <VisibleBox
-                    boxInfo={cboxInfo}
-                    key={cboxInfo.get('id')}
-                    isCurrent={false}
-                    index={index+1}/>
-                    )
+                {!isSend && <VisibleBox
+                    boxInfo={boxInfo}
+                    key={boxInfo.get('id')}
+                    isCurrent={true}
+                    index={0} />}
+                {boxInfo.getIn(['info', 'buttons']).map((btn, index) => {
+                    if (btn.get('linker')) {
+                        const cboxInfo = pallet.get(pallet.findIndex(box => btn.getIn(['linker', 'childId']) === box.get('id')))
+                        return (
+                            <VisibleBox
+                                boxInfo={cboxInfo}
+                                key={cboxInfo.get('id')}
+                                isCurrent={false}
+                                index={index + 1} />
+                        )
+                    }
                 })}
             </Fragment>
         )
     }
 
+    _saveTempType = (btnType, eventCode) => {
+        const { testActions } = this.props
+        testActions.saveTempType({
+            btnType: btnType,
+            eventCode: eventCode,
+            additional: null
+        })
+    }
+
+    _sendCommandToHub = () => {
+        const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice } = this.props
+        console.log('test send');
+        console.log(selectedDevice.toJS());
+        if (connectedDev.size === 1){
+            console.log('send to hub');
+            testActions.setSendState(true)
+            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId)
+        }
+        else {
+            testActions.setDuplicate(true)
+        }
+    }
+
     componentDidMount() {
+        const { testActions } = this.props
         const g = this.svgArea.childNodes[0]
         const rect = g.getBBox();
         this.svgArea.style.height = rect.height + rect.y + 20 + 'px';
         this.svgArea.style.width = rect.width + rect.x + 20 + 'px';
+        //testActions.testboxInit();
     }
 
     componentWillUnmount() {
@@ -167,6 +202,11 @@ class TestWork extends Component {
             timeFormat,
             pallet,
             linkers,
+            cmdList,
+            isEnd,
+            isDuplicate,
+            connectedDev,
+            isSend
         } = this.props;
 
         return (
@@ -193,7 +233,8 @@ class TestWork extends Component {
                                             buttons={box.get('buttons')}
                                             boxType={box.get('boxType')}
                                             sendCommand={this._sendCommand}
-                                            changeTimeSetter={this._changeTimeSetter}>
+                                            changeTimeSetter={this._changeTimeSetter}
+                                            saveTempType={this._saveTempType}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
@@ -204,6 +245,36 @@ class TestWork extends Component {
                                     </Fragment>
                                 )
                             })
+                        }
+                        {
+                            isEnd &&
+                            <TestEndBox
+                                sendCommandToHub={this._sendCommandToHub}
+                                isSend={isSend}
+                                text={'명령을 전송하시겠습니까?'}>
+                            </TestEndBox>
+                        }
+                        {
+                            isDuplicate &&
+                            <TestTextBox
+                                preText={'연결된 디바이스가 여러개 존재합니다.'}
+                                postText={'명령을 보낼 디바이스를 선택하세요.'}
+                                time={new Date()}
+                                enable={null}
+                                buttons={null}
+                                boxType={'1'}
+                                sendCommand={this._sendCommand}
+                                changeTimeSetter={this._changeTimeSetter}
+                                saveTempType={this._saveTempType}>
+                            </TestTextBox>
+                        }
+                        {
+                            isSend &&
+                            <TestEndBox
+                                sendCommandToHub={this._sendCommandToHub}
+                                isSend={isSend}
+                                text={'명령이 허브에게 전송되었습니다.'}>
+                            </TestEndBox>
                         }
                     </TestWindow>
                     <TestBox>
@@ -229,7 +300,9 @@ class TestWork extends Component {
                                     )
                                 })}
                         </TestToolBox>
-                        <SendReceiveBox>
+                        <SendReceiveBox
+                            cmdList={cmdList}
+                        >
 
                         </SendReceiveBox>
                     </TestBox>
@@ -244,7 +317,9 @@ export default withRouter(
     connect(
         // props 로 넣어줄 스토어 상태값
         state => ({
+            selectedDevice: state.device.get('selectedDevice'),
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
+            vHubId: state.device.getIn(['selectedDevice', 'vHubId']),
             devId: state.device.getIn(['selectedDevice', 'devId']),
             testBoxList: state.test.get('testBoxList'),
             userBoxList: state.test.get('userBoxList'),
@@ -252,6 +327,11 @@ export default withRouter(
             timeFormat: state.test.get('timeFormat'),
             pallet: state.device.getIn(['graph', 'pallet']),
             linkers: state.device.getIn(['graph', 'linkers']),
+            cmdList: state.test.get('cmdList'),
+            isEnd: state.test.get('isEnd'),
+            isSend: state.test.get('isSend'),
+            isDuplicate: state.test.get('isDuplicate'),
+            connectedDev: state.device.get('connectedDev')
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

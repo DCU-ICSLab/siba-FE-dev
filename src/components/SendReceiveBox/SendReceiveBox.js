@@ -5,9 +5,11 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { dark, idea } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const SendReceiveBox = ({
-    children
+    children,
+    cmdList
 }) => {
-    const codeString = SendJsonGenerator()
+    console.log(cmdList)
+    const codeString = SendJsonGenerator(cmdList)
     return (
         <div id="SendReceiveBox">
             <div className="test-area">
