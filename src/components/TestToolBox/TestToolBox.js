@@ -1,10 +1,28 @@
 import React, { Fragment } from 'react';
 import './TestToolBox.css';
 import { MdAccessTime, MdCheckCircle } from 'react-icons/md'
+import { PacmanLoader} from 'react-spinners';
 
-const TestInfoCard = ({})=>{
+const TestInfoCard = ({log})=>{
+    console.log(log)
+    const isPending = log.get('testStatus')==='2'
+
+    let className='pending'
+    switch(log.get('testStatus')){
+        //sucess
+        case '0':
+            className='success'
+            break;
+        //fail
+        case '1':
+            className='failure'
+            break;
+        //pending
+        default:
+            break;
+    }
     return(
-        <div id="TestInfoCard">
+        <div id="TestInfoCard" className={className}>
             <header>
                 <span className="test-name">test/AA:BB:CC:DD:EE:FF</span>
                 <span className="test-code"># 1</span>
@@ -17,6 +35,24 @@ const TestInfoCard = ({})=>{
                     <MdCheckCircle/> Finished:
                 </div>
             </div>
+            <div className="add-on">
+
+            </div>
+            {/* {isPending && 
+            <div className="pender">
+                <PacmanLoader
+                    css={{
+                        display: 'block',
+                        margin: '0 auto',
+                        marginTop: '20px'
+                    }}
+                    sizeUnit={"px"}
+                    size={20}
+                    // color={'#87D5B7'}
+                    color={'#CDC53C'}
+                    loading={isPending}
+                />
+            </div>} */}
             <div className="additional">
 
             </div>
@@ -27,7 +63,8 @@ const TestInfoCard = ({})=>{
 const TestToolBox = ({
     children,
     setRef,
-    renderVisibleBox
+    renderVisibleBox,
+    testLogList
 }) => {
     return (
         <div id="TestToolBox">
@@ -38,8 +75,13 @@ const TestToolBox = ({
                         <span>수행 테스트 목록</span>
                     </header>
                     <div className="test-list">
-                        <TestInfoCard/>
-                        <TestInfoCard/>
+                        {
+                            testLogList.map((log,index)=>{
+                                return(
+                                    <TestInfoCard key={index} log={log}/>
+                                )
+                            })
+                        }
                     </div>
                 </div>
                 <div className="graph-area">

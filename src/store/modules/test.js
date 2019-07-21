@@ -177,8 +177,8 @@ export default handleActions({
         onSuccess: (state, action) => {
 
             return state.set('testResult', Map({
-                msg: action.payload.msg,
-                status: action.payload.status
+                msg: action.payload.data.msg,
+                status: action.payload.data.status
             }));
         },
 

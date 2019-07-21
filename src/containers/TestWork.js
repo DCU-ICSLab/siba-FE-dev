@@ -167,13 +167,18 @@ class TestWork extends Component {
     }
 
     _sendCommandToHub = () => {
-        const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice } = this.props
+        const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice, deviceActions, userId } = this.props
         console.log('test send');
         console.log(selectedDevice.toJS());
         if (connectedDev.size === 1){
             console.log('send to hub');
             testActions.setSendState(true)
-            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId)
+            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId, userId).then((data)=>{
+                if(data.status===200){
+                    console.log('push new log')
+                    deviceActions.pushTestLog(data.data);
+                }
+            })
         }
         else {
             testActions.setDuplicate(true)
@@ -206,6 +211,7 @@ class TestWork extends Component {
             isEnd,
             isDuplicate,
             connectedDev,
+            selectedDevice,
             isSend
         } = this.props;
 
@@ -278,7 +284,10 @@ class TestWork extends Component {
                         }
                     </TestWindow>
                     <TestBox>
-                        <TestToolBox setRef={this._setRef} renderVisibleBox={this._renderVisibleBox}>
+                        <TestToolBox 
+                        setRef={this._setRef} 
+                        renderVisibleBox={this._renderVisibleBox}
+                        testLogList={selectedDevice.get('testLogList')}>
                             <g>
                                 {pallet.map((boxInfo, index) => {
                                     return (
@@ -331,7 +340,8 @@ export default withRouter(
             isEnd: state.test.get('isEnd'),
             isSend: state.test.get('isSend'),
             isDuplicate: state.test.get('isDuplicate'),
-            connectedDev: state.device.get('connectedDev')
+            connectedDev: state.device.get('connectedDev'),
+            userId: state.auth.getIn(['userState', 'user', 'userId']), 
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

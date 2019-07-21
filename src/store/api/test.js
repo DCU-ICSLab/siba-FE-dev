@@ -27,17 +27,20 @@ export const cancelTest = (authKey) =>{
 }
 
 //명령 전송
-export const sendBuildingJson = (cmdList, devMac, vhubId, devId) =>{
+export const sendBuildingJson = (cmdList, devMac, vhubId, devId, userId) =>{
 
     const baseURL = `${API_BASE_URL}/test/${devMac}`
 
     console.log('dfdfdfdfd')
     console.log(vhubId)
+    console.log(devId)
+    console.log(userId)
 
     return axios.post(baseURL, {
         cmdList: cmdList,
         vhubId: vhubId,
-        devId:devId
+        devId:devId,
+        userId: userId
     })
     .then(res=> {
         console.log(res);

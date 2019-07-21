@@ -15,9 +15,11 @@ const CodeGenerator = (selectedDevices)=>{
 * button index: ${btn.get('idx')}
 * button event code: ${eventCode}
 */
-void command_code_e${eventCode}() {
+size_t command_code_e${eventCode}(size_t before) {
+    size_t result = 1;
     //define logic code in here
-
+    
+    return result;
 }
 `
 
@@ -40,8 +42,8 @@ void command_code_e${eventCode}() {
 SIBA siba;
 
 //your router information
-const char* ssid = "your router ip";
-const char* pwd = "your router password";
+const char* ssid = "your SIBA hub ssid";
+const char* pwd = "your SIBA hub password";
 
 //your device's key for authentication
 const char* hw_auth_key = "${selectedDevices.get('devAuthKey')}";

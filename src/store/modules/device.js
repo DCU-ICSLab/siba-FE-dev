@@ -61,6 +61,7 @@ const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
 const GET_CONNECTED_DEV_INFO = 'device/GET_CONNECTED_DEV_INFO'
 const PUSH_CONNECTED_DEV = 'device/PUSH_CONNECTED_DEV'
 const DELETE_CONNECTED_DEV = 'device/DELETE_CONNECTED_DEV'
+const PUSH_TEST_LOG = 'test/PUSH_TEST_LOG'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -116,6 +117,7 @@ export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
 export const getConnectedDevInfo = createAction(GET_CONNECTED_DEV_INFO, DeviceAPI.getConnectedDevInfo)
 export const pushConnectedDev = createAction(PUSH_CONNECTED_DEV)
 export const deleteConnectedDev = createAction(DELETE_CONNECTED_DEV)
+export const pushTestLog = createAction(PUSH_TEST_LOG)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -140,6 +142,7 @@ const initialState = Map({
         eventCodeIdCounter: 0,
 
         haveEntry: false,
+        testLogList:List([])
     }),
 
     graph: null,
@@ -180,6 +183,11 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [PUSH_TEST_LOG]: (state, action) => {
+        return state.updateIn(['selectedDevice','testLogList'], testLogList=>
+            testLogList.unshift(Map(action.payload)));
+    },
 
     [DELETE_CONNECTED_DEV]: (state, action) => {
 
@@ -571,6 +579,7 @@ export default handleActions({
                 codeIdCounter: action.payload.data.data.codeIdCounter,
                 haveEntry: action.payload.data.data.haveEntry,
                 eventCodeIdCounter: action.payload.data.data.eventCodeIdCounter,
+                testLogList: List(action.payload.data.data.testLogList.map(log=>Map(log))),
                 pallet: List(
                     action.payload.data.data.pallet.map(box=>{
                         return Map({

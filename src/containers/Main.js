@@ -102,7 +102,7 @@ class Main extends Component {
 
     _showHubStateChange = (message) => {
 
-        const { authActions } = this.props;
+        const { authActions, deviceActions } = this.props;
 
         const msg = JSON.parse(message.body)
         const isHubConnect = msg.msgType === 1;
@@ -124,6 +124,10 @@ class Main extends Component {
                 bodyClassName: 'toast',
             })
         console.log(message)
+
+        if(!isHubConnect){
+            
+        }
     }
 
     _generateToastMessage = ({ message }) => {
