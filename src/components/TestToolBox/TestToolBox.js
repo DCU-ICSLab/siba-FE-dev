@@ -2,8 +2,9 @@ import React, { Fragment } from 'react';
 import './TestToolBox.css';
 import { MdAccessTime, MdCheckCircle } from 'react-icons/md'
 import { PacmanLoader} from 'react-spinners';
+import Moment from 'react-moment';
 
-const TestInfoCard = ({log})=>{
+const TestInfoCard = ({log, devName})=>{
     console.log(log)
     const isPending = log.get('testStatus')==='2'
 
@@ -24,15 +25,19 @@ const TestInfoCard = ({log})=>{
     return(
         <div id="TestInfoCard" className={className}>
             <header>
-                <span className="test-name">test/AA:BB:CC:DD:EE:FF</span>
-                <span className="test-code"># 1</span>
+                <span className="test-name"><strong>{devName}/</strong>{log.get('devMac')}</span>
+                <span className="test-code"># {log.get('testId')}</span>
             </header>
             <div className="test-card-body">
                 <div className="duration">
                     <MdAccessTime/> Duration:
                 </div>
                 <div className="finished">
-                    <MdCheckCircle/> Finished:
+                    <MdCheckCircle/><span> Finished: </span>
+                    {log.get('finishedAt') ? 
+                    <Moment date={log.get('finishedAt')} format="YYYY/MM/DD HH:mm:ss A"></Moment>
+                    : <span> - </span>
+                    }
                 </div>
             </div>
             <div className="add-on">
@@ -64,7 +69,8 @@ const TestToolBox = ({
     children,
     setRef,
     renderVisibleBox,
-    testLogList
+    testLogList,
+    devName
 }) => {
     return (
         <div id="TestToolBox">
@@ -78,7 +84,7 @@ const TestToolBox = ({
                         {
                             testLogList.map((log,index)=>{
                                 return(
-                                    <TestInfoCard key={index} log={log}/>
+                                    <TestInfoCard key={index} log={log} devName={devName}/>
                                 )
                             })
                         }

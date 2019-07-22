@@ -89,7 +89,7 @@ export default handleActions({
     },
 
     [TESTBOX_INIT]: (state, action) => {
-        return state.set('testBoxList', List([])).set('cmdList', List([]))
+        return state.set('testBoxList', List([])).set('cmdList', List([])).set('isEnd',false).set('isSend', false)
     },
 
     [ADD_USER_TEXTBOX]: (state, action) => {

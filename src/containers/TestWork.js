@@ -176,6 +176,7 @@ class TestWork extends Component {
             testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId, userId).then((data)=>{
                 if(data.status===200){
                     console.log('push new log')
+                    console.log(data.data)
                     deviceActions.pushTestLog(data.data);
                 }
             })
@@ -285,6 +286,7 @@ class TestWork extends Component {
                     </TestWindow>
                     <TestBox>
                         <TestToolBox 
+                        devName={selectedDevice.get('devName')}
                         setRef={this._setRef} 
                         renderVisibleBox={this._renderVisibleBox}
                         testLogList={selectedDevice.get('testLogList')}>

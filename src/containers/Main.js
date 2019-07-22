@@ -66,7 +66,26 @@ class Main extends Component {
             console.log('Connected: ' + frame);
             stompClient.subscribe(`/topic/keep-alive-${userState.getIn(['user', 'userId'])}`, this._showHubStateChange);
             stompClient.subscribe(`/topic/device-conn-${userState.getIn(['user', 'userId'])}`, this._showDeivceStateChange);
+            stompClient.subscribe(`/topic/test-finish-${userState.getIn(['user', 'userId'])}`, this._showDeivceTestStateChange);
         });
+    }
+
+    _showDeivceTestStateChange = (message) => {
+        const msg = JSON.parse(message.body)
+        const { deviceActions } = this.props;
+        deviceActions.updateTestLog({
+            testId:msg.testId,
+            finishedAt:msg.finishedAt,
+            durationAt:msg.duration,
+            status:msg.status
+        });
+
+        toast(this._generateToastMessage({
+            message: `#${msg.testId} 테스트가 종료되었습니다.`
+        }), {
+                className: 'toast',
+                bodyClassName: 'toast',
+            })
     }
 
     _showDeivceStateChange = (message) => {

@@ -13,6 +13,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import * as basicActions from 'store/modules/basic';
 import * as deviceActions from 'store/modules/device';
+import * as testActions from 'store/modules/test';
 import { ToastContainer, toast } from 'react-toastify';
 
 var copyTimeout = null;
@@ -77,8 +78,9 @@ class Device extends Component {
     }
 
     componentDidMount() {
-        const { deviceActions, location } = this.props;
+        const { deviceActions, location , testActions} = this.props;
         deviceActions.getConnectedDevInfo(location.state.dev.get('devId'))
+        testActions.testboxInit();
     }
 
     componentWillUnmount() {
@@ -176,6 +178,7 @@ export default withRouter(
         dispatch => ({
             basicActions: bindActionCreators(basicActions, dispatch),
             deviceActions: bindActionCreators(deviceActions, dispatch),
+            testActions: bindActionCreators(testActions, dispatch),
         })
     )(Device)
 )

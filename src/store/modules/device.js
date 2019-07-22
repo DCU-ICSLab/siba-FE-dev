@@ -62,6 +62,7 @@ const GET_CONNECTED_DEV_INFO = 'device/GET_CONNECTED_DEV_INFO'
 const PUSH_CONNECTED_DEV = 'device/PUSH_CONNECTED_DEV'
 const DELETE_CONNECTED_DEV = 'device/DELETE_CONNECTED_DEV'
 const PUSH_TEST_LOG = 'test/PUSH_TEST_LOG'
+const UPDATE_TEST_LOG = 'test/UPDATE_TEST_LOG'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -118,6 +119,7 @@ export const getConnectedDevInfo = createAction(GET_CONNECTED_DEV_INFO, DeviceAP
 export const pushConnectedDev = createAction(PUSH_CONNECTED_DEV)
 export const deleteConnectedDev = createAction(DELETE_CONNECTED_DEV)
 export const pushTestLog = createAction(PUSH_TEST_LOG)
+export const updateTestLog = createAction(UPDATE_TEST_LOG)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -184,9 +186,19 @@ const initialState = Map({
 /*--------reducer--------*/
 export default handleActions({
 
+    [UPDATE_TEST_LOG]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','testLogList']).findIndex(testLogList => testLogList.get('testId')===action.payload.testId)
+
+        return state.updateIn(['selectedDevice','testLogList', idx], log=>
+            log.set('testStatus',action.payload.status)
+            .set('finishedAt',action.payload.finishedAt)
+            .set('finishedAt',action.payload.finishedAt)
+        );
+    },
+
     [PUSH_TEST_LOG]: (state, action) => {
         return state.updateIn(['selectedDevice','testLogList'], testLogList=>
-            testLogList.unshift(Map(action.payload)));
+            testLogList.unshift(Map(action.payload.data)));
     },
 
     [DELETE_CONNECTED_DEV]: (state, action) => {

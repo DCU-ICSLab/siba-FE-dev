@@ -90,15 +90,29 @@
 }
 
 .pending{
-    border-left: 10px solid #E6DB48;
+    /* border-left: 10px solid #E6DB48; */
+    border-left: 10px solid #9B9B9B;
+}
+
+.pending .test-name{
+    /* color: #E6DB48; */
+    color: #9B9B9B;
 }
 
 .success{
     border-left: 10px solid #6DA65A;
 }
 
+.success .test-name{
+    color: #6DA65A;
+}
+
 .failure{
     border-left: 10px solid #B94A46;
+}
+
+.failure .test-name{
+    color: #B94A46;
 }
 
 #TestInfoCard >header{
