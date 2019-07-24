@@ -104,7 +104,8 @@ class Device extends Component {
 
         const sbPos = {
             default: 273,
-            change: 28
+            change: 28,
+            left:240
         }
 
         return (

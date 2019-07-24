@@ -232,7 +232,7 @@ class DeviceWork extends Component {
         const itemYHalf = 40;
 
         //실제 놓여야 하는 위치 계산
-        const translateX = e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - itemXHalf;
+        const translateX = e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+sbPos.left) + scrollX - itemXHalf;
         const translateY = e.clientY - 103 + scrollY - itemYHalf;
 
         return {
@@ -718,6 +718,33 @@ class DeviceWork extends Component {
             idx: idx,
             type: e.target.value
         })
+        this._typeChange(false)
+    }
+
+    _addonOpen = (arg) => {
+        const { deviceActions } = this.props;
+        if(arg) deviceActions.tpChange(false)
+        deviceActions.addonOpen(arg)
+    }
+
+    _setTempBtn = (btn) => {
+        const { deviceActions } = this.props;
+        deviceActions.setTempBtn(btn)
+    }
+    
+    _tempBtnClear = () => {
+        const { deviceActions } = this.props;
+        deviceActions.tempBtnClear();
+    }
+
+    _typeChange = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.tpChange(arg)
+    }
+
+    _findChild = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.findChild(arg)
     }
 
     componentDidMount() {
@@ -754,13 +781,18 @@ class DeviceWork extends Component {
             haveEntry,
             vHubId,
             devName,
-            page
+            page,
+            isAddOn,
+            tempButton,
+            isTypeChange,
+            childBox
         } = this.props;
 
         return (
             <Fragment>
                 <DeviceWorkBox vHubId={vHubId} devName={devName} pageSwitching={this._pageSwitching} page={page}>
                     {page === 1 && <DevicePallet
+                        findChild={this._findChild}
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
                         drop={this._drop}
@@ -776,12 +808,21 @@ class DeviceWork extends Component {
                         deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
                         modalChange={this._modalChange}
                         buttonTypeChange={this._buttonTypeChange}
+                        addonOpen={this._addonOpen}
+                        isAddOn={isAddOn}
+                        setTempBtn={this._setTempBtn}
+                        tempButton={tempButton}
+                        tempBtnClear={this._tempBtnClear}
+                        isTypeChange={isTypeChange}
+                        typeChange={this._typeChange}
+                        childBox={childBox}
                         >
 
                         <g>
                             {pallet.map((boxInfo, index) => {
                                 return (
                                     <TextBox
+                                        isSelect={false}
                                         boxInfo={boxInfo}
                                         key={boxInfo.get('id')}
                                         index={index}
@@ -848,6 +889,7 @@ export default withRouter(
         // props 로 넣어줄 스토어 상태값
         state => ({
             page: state.device.get('page'),
+            isAddOn: state.device.get('isAddOn'),
             selectedDevice: state.device.get('selectedDevice'),
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
             devId: state.device.getIn(['selectedDevice', 'devId']),
@@ -869,6 +911,9 @@ export default withRouter(
             linkerVisible: state.device.get('linkerVisible'),
             selectedLinkerTarget: state.device.get('selectedLinkerTarget'),
             haveEntry: state.device.getIn(['selectedDevice', 'haveEntry']),
+            tempButton: state.device.get('tempButton'),
+            isTypeChange: state.device.get('isTypeChange'),
+            childBox: state.device.get('childBox'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

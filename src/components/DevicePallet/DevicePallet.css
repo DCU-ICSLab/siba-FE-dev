@@ -9,8 +9,8 @@
     position: absolute;
     /* bottom: -10px;
     right: -10px; */
-    bottom: 32px;
-    right: 255px;
+    bottom: 10px;
+    right: 249px;
     width: 10px;
     height: 10px;
     position: fixed;
@@ -50,11 +50,274 @@
     position: absolute;
     top: 86px;
     z-index: 1;
-    left: 1px;
+    left: 241px;
     bottom: 0px;
     right: 240px;
     overflow: scroll;
     touch-action: none;
+    /* border-left: 1px solid #dadce0; */
+}
+
+#DevicePallet .btn-set{
+    position: absolute;
+    top: 86px;
+    z-index: 1;
+    left: 1px;
+    width: 240px;
+    bottom: 0px;
+    /* background-color: rgba(184, 198, 216, 0.8); */
+    background-color: #B8C6D8;
+    
+    /* background-color:#797E87; */
+    /* background-color:rgba(152, 162, 175, 1) */
+}
+
+#DevicePallet .temp-textbox{
+    position: relative;
+    background: linear-gradient(0deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px repeat padding-box border-box, linear-gradient(90deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px, linear-gradient(0deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, linear-gradient(90deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, #fff;
+    background-repeat: repeat;
+    border: 1px solid #dadce0;
+    border-radius: 2px;
+    margin: 5px 3px;
+    min-height: 144px;
+}
+
+#DevicePallet .temp-textbox-wrapper{
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+#DevicePallet .temp-textbox > div{
+    border-color: #fff;
+}
+
+#DevicePallet .btn-set-wrapper{
+    background-color: #fff;
+    border: 1px solid #dadce0;
+    position: absolute;
+    left: 0px;
+    right:0;
+    top: 00px;
+    bottom: 0px;
+}
+
+#DevicePallet .btn-set-wrapper > header{
+    padding: 4px 5px;
+    border-bottom: 1px solid #dadce0;
+    /* background-color: #B8C6D8; */
+}
+
+#DevicePallet .btn-set-wrapper > header > span {
+    background-color: #fff;
+    padding: 3px;
+    border-bottom: 3px solid #6B94D9;
+}
+
+#DevicePallet .btn-set-wrapper-body{
+    border: 1px solid #dadce0;
+    position: absolute;
+    padding-top: 5px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    background-color: #F1F1F1;
+}
+
+#DevicePallet .btn-obj{
+    border: 1px solid #dadce0;
+    border: 1px solid #555;
+    border-radius: 2px;
+    height: 55px;
+    margin: 10px 5px;
+    padding: 5px;
+    color: #fff;
+    width: auto;
+}
+
+#DevicePallet .btn-obj > span > span{
+    color: #242424;
+    font-weight: bold;
+}
+
+#DevicePallet .btn-obj-del{
+    float: right;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: #fff;
+    padding: 0;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    padding-top: 1px;
+}
+
+#DevicePallet .btn-obj-del:hover{
+    border-radius: 50%;
+    background-color: #fff;
+    color: #4994DB;
+}
+
+#DevicePallet .btn-obj-type{
+    background-color: #1F1F1F;
+    color: #dadce0;
+    padding: 2px 10px;
+    width: auto;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 200;
+}
+
+#DevicePallet .edit-btn{
+    float: right;
+    font-size: 11px;
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #dadce0;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+
+#DevicePallet .edit-btn:hover{
+    background-color: #fff;
+    color: #4994DB;
+}
+
+#DevicePallet .type-selector{
+    border: 1px solid #dadce0;
+    margin: 5px 5px;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+#DevicePallet .btn-adder{
+    /* display: inline-block; */
+    height: 32px;
+    width: 100%;
+    background-color: #333333;
+    color: #fff;
+    border-radius: 2px;
+    border: 1px solid #dadce0;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1.4;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+    padding: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+#DevicePallet .btn-adder:hover{
+    background-color: #565656;
+}
+
+#DevicePallet .btn-adder > span{
+    /* position: absolute; */
+}
+
+#DevicePallet .edit-addon{
+    position: absolute;
+    left: 245px;
+    top: 90px;
+    /* height: 200px; */
+    width: 240px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 9999;
+}
+
+#DevicePallet .edit-addon > header{
+    height: 20px;
+    border-bottom: 1px solid #dadce0;
+    padding: 5px 10px;
+    color: #6B94D9;
+    font-weight: bold;
+    position: relative;
+}
+
+#DevicePallet .edit-addon > header > span{
+    position: absolute;
+    height: 24px;
+    border-bottom: 3px solid #6B94D9;
+}
+
+#DevicePallet .edit-addon-close{
+    float: right;
+    border: 1px solid #dadce0;
+    border-radius: 5px;
+    color: #555;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#DevicePallet .edit-addon-close:hover{
+    background-color: #E3E3E3;
+}
+
+#DevicePallet .pallet-shadow{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    min-width: 1718px;
+    min-height: 1151px;
+    background-color: #333;
+    opacity: 0.3;
+}
+
+#DevicePallet .sec-row{
+    color: #333;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+#DevicePallet .sec-row > .sec-left{
+    display: block;
+    width: 30%;
+    text-align: left;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+#DevicePallet .sec-row > .sec-right{
+    display: block;
+    width: 70%;
+    text-align: right;
+    margin-right: 10px;
+}
+
+#DevicePallet .change-type-btn{
+    /* border: 1px solid #dadce0; */
+    margin-left: 10px;
+    padding: 2px 5px;
+    border: none;
+    font-size: 11px;
+    border-radius: 3px;
+    background-color: #6B94D9;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+}
+
+#DevicePallet .change-type-btn:not([disabled]):hover{
+    background-color: #91B1E3;
+}
+
+#DevicePallet .change-type-btn:disabled{
+    background-color: #6B94D9;
+    opacity: 0.5;
+    cursor: default;
 }
 
 #DevicePallet .background{
@@ -158,7 +421,18 @@
     font-weight: 400;
     border: none;
     background-color: transparent;
-    width: 113px;
+    width: 143px;
+    border-radius: 2px;
+    padding: 1px;
+    outline-color: #333;
+}
+
+#DevicePallet .ch-info{
+    background: linear-gradient(0deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px repeat padding-box border-box, linear-gradient(90deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px, linear-gradient(0deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, linear-gradient(90deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, #fff;
+    background-repeat: repeat;
+    border: 1px solid #dadce0;
+    min-height: 144px;
+    margin: 5px 4px;
 }
 
 #DevicePallet .btn-add{
@@ -187,12 +461,12 @@
 }
 
 #DevicePallet .btn-option > label{
-    position: relative;
     display: block;
+    position: relative;
 }
 
 #DevicePallet .btn-option > label > span{
-    position: absolute;
+    /* position: absolute; */
 }
 
 #DevicePallet .sensing-def{

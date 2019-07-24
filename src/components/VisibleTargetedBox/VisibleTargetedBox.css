@@ -1,0 +1,134 @@
+#VisibleTargetedBox{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    margin-left: 19px;
+
+    /* justify-content: center;
+    align-items: center; */
+}
+
+#VisibleTargetedBox .sender{
+    /* position: absolute; */
+    font-size: 11px;
+    font-weight: 400;
+}
+
+#VisibleTargetedBox .text-area{
+    border: 1px solid #333;
+    max-width: 175px;
+    position: relative;
+    margin-top: 5px;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+#VisibleTargetedBox .msg-time{
+    font-size: 10px;
+    color: #222;
+    position: absolute;
+    right: -47px;
+    bottom: 1px;
+}
+
+#VisibleTargetedBox .pretext{
+    margin-bottom: 18px;
+}
+
+#VisibleTargetedBox .posttext{
+    margin-top: 18px;
+}
+
+#VisibleTargetedBox .btn-list{
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+#VisibleTargetedBox .link-btn{
+    width: 22px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 50%;
+    border: none;
+    background-color: #F7E941;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    margin-right: 5px;
+}
+
+#VisibleTargetedBox .link-btn:hover{
+    background-color: #fff;
+    opacity: 0.5;
+}
+
+#VisibleTargetedBox .time-set-btn{
+    width: 173px;
+    height: auto;
+    padding: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #F3F4F8;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+
+#VisibleTargetedBox .time-set-btn:disabled{
+    cursor: default;
+}
+
+#VisibleTargetedBox .time-set-btn:hover:enabled{
+    background-color: #A0A0A0;
+    color: #fff;
+}
+
+#VisibleTargetedBox .lt{
+    position: absolute;
+    top: -3px;
+    left: -7px;
+    height: 10px;
+    width: 10px;
+    border-left: 2px solid #555;
+    border-top: 2px solid #555;
+}
+
+#VisibleTargetedBox .rt{
+    position: absolute;
+    top: -3px;
+    right: 12px;
+    height: 10px;
+    width: 10px;
+    border-right: 2px solid #555;
+    border-top: 2px solid #555;
+}
+
+#VisibleTargetedBox .lb{
+    position: absolute;
+    bottom: -7px;
+    left: -7px;
+    height: 10px;
+    width: 10px;
+    border-left: 2px solid #555;
+    border-bottom: 2px solid #555;
+}
+
+#VisibleTargetedBox .rb{
+    position: absolute;
+    bottom: -7px;
+    right: 12px;
+    height: 10px;
+    width: 10px;
+    border-right: 2px solid #555;
+    border-bottom: 2px solid #555;
+}

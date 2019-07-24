@@ -294,6 +294,7 @@ class TestWork extends Component {
                                 {pallet.map((boxInfo, index) => {
                                     return (
                                         <TextBox
+                                            isSelect={false}
                                             boxInfo={boxInfo}
                                             key={boxInfo.get('id')}
                                             index={index}

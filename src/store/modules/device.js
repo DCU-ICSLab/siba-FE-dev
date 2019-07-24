@@ -61,8 +61,15 @@ const DEV_PAGE_SWITCHING = 'device/DEV_PAGE_SWITCHING'
 const GET_CONNECTED_DEV_INFO = 'device/GET_CONNECTED_DEV_INFO'
 const PUSH_CONNECTED_DEV = 'device/PUSH_CONNECTED_DEV'
 const DELETE_CONNECTED_DEV = 'device/DELETE_CONNECTED_DEV'
-const PUSH_TEST_LOG = 'test/PUSH_TEST_LOG'
-const UPDATE_TEST_LOG = 'test/UPDATE_TEST_LOG'
+
+//test?
+const PUSH_TEST_LOG = 'device/PUSH_TEST_LOG'
+const UPDATE_TEST_LOG = 'device/UPDATE_TEST_LOG'
+const ADDON_OPEN = 'device/ADDON_OPEN'
+const SET_TEMP_BTN = 'device/SET_TEMP_BTN'
+const TEMP_BTN_CLEAR = 'device/TEMP_BTN_CLEAR'
+const TP_CHANGE = 'device/TP_CHANGE'
+const FIND_CHILD = 'device/FIND_CHILD'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -120,6 +127,11 @@ export const pushConnectedDev = createAction(PUSH_CONNECTED_DEV)
 export const deleteConnectedDev = createAction(DELETE_CONNECTED_DEV)
 export const pushTestLog = createAction(PUSH_TEST_LOG)
 export const updateTestLog = createAction(UPDATE_TEST_LOG)
+export const addonOpen = createAction(ADDON_OPEN)
+export const setTempBtn = createAction(SET_TEMP_BTN)
+export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
+export const tpChange = createAction(TP_CHANGE)
+export const findChild = createAction(FIND_CHILD)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -180,11 +192,50 @@ const initialState = Map({
         status: null
     }),
 
+    isAddOn: false,
+
+    tempButton: null,
+
+    isTypeChange: false,
+
+    childBox: null,
+
     connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [FIND_CHILD]: (state, action) => {
+        const idx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload)
+        if(idx){
+            return state.set('childBox', state.getIn(['selectedDevice', 'pallet', idx]))
+        }
+        else
+            return state.set('childBox', null);
+    },
+
+    [TP_CHANGE]: (state, action) => {
+        return state.set('isTypeChange', action.payload);
+    },
+
+    [TEMP_BTN_CLEAR]: (state, action) => {
+        return state.set('tempButton', null);
+    },
+
+    [SET_TEMP_BTN]: (state, action) => {
+        return state.set('tempButton', Map({
+            childId: action.payload.childId,
+            eventCode: action.payload.eventCode,
+            name: action.payload.name,
+            type: action.payload.type,
+            idx: action.payload.idx,
+        }));
+    },
+
+    [ADDON_OPEN]: (state, action) => {
+        return state.set('isAddOn', action.payload);
+    },
 
     [UPDATE_TEST_LOG]: (state, action) => {
         const idx = state.getIn(['selectedDevice','testLogList']).findIndex(testLogList => testLogList.get('testId')===action.payload.testId)
@@ -192,7 +243,7 @@ export default handleActions({
         return state.updateIn(['selectedDevice','testLogList', idx], log=>
             log.set('testStatus',action.payload.status)
             .set('finishedAt',action.payload.finishedAt)
-            .set('finishedAt',action.payload.finishedAt)
+            .set('durationAt',action.payload.durationAt)
         );
     },
 

@@ -1,12 +1,74 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
 import { DraggableTextBox, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
-import { MdAdd, MdBuild, MdSave, MdVerticalAlignTop, MdGetApp, MdBugReport } from 'react-icons/md'
+import {VisibleTargetedBox} from 'components';
+import {
+    MdAdd,
+    MdBuild,
+    MdSave,
+    MdVerticalAlignTop,
+    MdGetApp,
+    MdBugReport,
+    MdEdit,
+    MdClose,
+} from 'react-icons/md'
 import DraggableLinker from 'components/TextBox/DraggableLinker';
+import GetButtonType from 'utils/GetButtonType'
 import { BUTTON_TYPE } from 'constants/index';
+
+const TypeCheck = ({ label, value, text, tempButton, targetedBox, buttonTypeChange }) => {
+    return (
+        <label htmlFor={label}>
+            <input
+                id="ctrl"
+                type="radio"
+                name="option"
+                value={value}
+                checked={targetedBox.getIn(['block', 'info', 'buttons', tempButton.get('idx'), 'type']) === value}
+                onChange={(e) => buttonTypeChange(e, tempButton.get('idx'))}
+            ></input><span>{text}({value})</span>
+        </label>
+    )
+}
+
+const ButtonCard = ({ button, idx, addonOpen, setTempBtn, tempButton, findChild }) => {
+
+
+    return (
+        <div className="btn-obj" style={{
+            backgroundColor: tempButton && tempButton.get('idx') === idx ? '#F1DF26' : '#4994DB'
+        }}>
+            <span>{idx + 1}번 버튼 <span> (event code: {button.get('eventCode')})</span></span>
+            <button className="btn-obj-del">
+                <MdClose />
+            </button>
+            <div style={{
+                marginTop: 15
+            }}>
+                <span className="btn-obj-type">{GetButtonType(button.get('type'))} 버튼</span>
+                <button
+                    className="edit-btn"
+                    onClick={(e) => {
+                        findChild(button.getIn(['linker', 'childId']))
+                        addonOpen(true)
+                        setTempBtn({
+                            childId: button.getIn(['linker', 'childId']),
+                            eventCode: button.get('eventCode'),
+                            name: button.get('name'),
+                            type: button.get('type'),
+                            idx: idx,
+                        })
+                    }}><MdEdit style={{
+                        paddingTop: 2
+                    }} /> Edit</button>
+            </div>
+        </div>
+    )
+}
 
 const DevicePallet = ({
     children,
+    childBox,
     dragStart,
     dragOver,
     drop,
@@ -21,12 +83,21 @@ const DevicePallet = ({
     deployDeviceTextBoxGraph,
     modalChange,
     buttonTypeChange,
-    draggableLinkerEnd }) => {
+    draggableLinkerEnd,
+    isAddOn,
+    tempButton,
+    setTempBtn,
+    tempBtnClear,
+    isTypeChange,
+    typeChange,
+    findChild,
+    addonOpen }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
 
     return (
         <div id="DevicePallet">
+
             {/* side bar */}
             <div className="side">
                 <div className="side-title" style={{
@@ -248,63 +319,15 @@ const DevicePallet = ({
                                                             </tr>
                                                             <tr>
                                                                 <td>text</td>
-                                                                <td>
-                                                                    <input
-                                                                        className="btn-name-in"
-                                                                        style={{
-                                                                            imeMode: 'active' //default는 한글
-                                                                        }}
-                                                                        name="name"
-                                                                        value={button.get('name')}
-                                                                        onChange={(e) => {
-                                                                            devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), index)
-                                                                        }
-                                                                        } />
-                                                                </td>
+                                                                <td style={{
+                                                                    width: 145
+                                                                }}>{button.get('name')}</td>
                                                             </tr>
                                                             <tr>
                                                                 <td style={{
                                                                     // textDecoration: button.get('linker') ? 'line-through' : 'none'
                                                                 }}>type</td>
-                                                                <td>
-                                                                    <form className="btn-option">
-                                                                        <label htmlFor="ctrl">
-                                                                            <input
-                                                                            id="ctrl"
-                                                                            type="radio" 
-                                                                            name="option"
-                                                                            value="1"
-                                                                            checked={button.get('type')==='1'}
-                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
-                                                                            ></input><span>제어</span>
-                                                                        </label>
-                                                                        <label htmlFor="sensing">
-                                                                            <input
-                                                                            id="sensing"
-                                                                            type="radio" 
-                                                                            name="option"
-                                                                            value="2"
-                                                                            checked={button.get('type')==='2'}
-                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
-                                                                            ></input>
-                                                                            <span>센싱</span>
-                                                                            {
-                                                                                button.get('type')==='2' &&
-                                                                                <button className="sensing-def">센싱 정의</button>
-                                                                            }
-                                                                        </label>
-                                                                        <label htmlFor="reservation">
-                                                                            <input 
-                                                                            id="reservation"
-                                                                            type="radio" 
-                                                                            name="option"
-                                                                            value="3"
-                                                                            checked={button.get('type')==='3'}
-                                                                            onChange={(e)=>buttonTypeChange(e,button.get('idx'))}
-                                                                            ></input><span>예약</span>
-                                                                        </label>
-                                                                    </form>
-                                                                </td>
+                                                                <td>{GetButtonType(button.get('type'))} 버튼</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -316,12 +339,12 @@ const DevicePallet = ({
                                     })}
                                 </tbody>
                             </table>
-                            {targetedBox.getIn(['block', 'info', 'buttons']).size !== 9 &&
+                            {/* {targetedBox.getIn(['block', 'info', 'buttons']).size !== 9 &&
                                 <div style={{ width: '100%' }}>
                                     <button className="btn-add" onClick={(e) => { addBtnFuncSide(e, targetedBox.getIn(['block', 'id'])) }}>
                                         <MdAdd size={16} />
                                     </button>
-                                </div>}
+                                </div>} */}
                         </div>}
                 </div>
             </div>
@@ -387,8 +410,156 @@ const DevicePallet = ({
                     }}>
                     {children}
                 </svg>
+                {isAddOn && <div className="pallet-shadow">
+                </div>}
             </div>
 
+            {/* left */}
+            <div className="btn-set">
+                <div className="btn-set-wrapper">
+                    <header>
+                        <span>버튼 편집기</span>
+                    </header>
+                    <div className="temp-textbox">
+                        <div className="temp-textbox-wrapper">
+                        {targetedBox && 
+                        <VisibleTargetedBox
+                            preText={targetedBox.getIn(['block', 'preorder'])}
+                            postText={targetedBox.getIn(['block', 'postorder'])}
+                            buttons={targetedBox.getIn(['block', 'info','buttons'])}
+                            boxType={targetedBox.getIn(['block','type'])}
+                        />}
+                        </div>
+                    </div>
+                    <div className="btn-set-wrapper-body" style={{
+                        top: targetedBox ? 169+targetedBox.getIn(['block', 'info','buttons']).size*18 : 169
+                    }}>
+                        {
+                            targetedBox &&
+                            <Fragment>
+                                {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+                                    return (
+                                        <ButtonCard
+                                            findChild={findChild}
+                                            key={index}
+                                            button={button}
+                                            addonOpen={addonOpen}
+                                            setTempBtn={setTempBtn}
+                                            idx={index}
+                                            tempButton={tempButton} />
+                                    )
+                                })}
+                                {targetedBox.getIn(['block', 'info', 'buttons']).size !== 9 && <div style={{
+                                    margin: '10px 5px',
+                                }}>
+                                    <button className="btn-adder" onClick={(e) => { addBtnFuncSide(e, targetedBox.getIn(['block', 'id'])) }}>
+                                        <MdAdd size={18} /> <span>버튼 추가</span>
+                                    </button>
+                                </div>}
+                            </Fragment>
+                        }
+                    </div>
+                </div>
+            </div>
+            {isAddOn &&
+                <div className="edit-addon">
+                    <header>
+                        <span>{tempButton.get('idx') + 1}번 버튼</span>
+                        <button className="edit-addon-close"
+                            onClick={(e) => {
+                                addonOpen(false)
+                                tempBtnClear();
+                            }}>close</button>
+                    </header>
+                    <div>
+                        <div className="sec-row">
+                            <div className="sec-left">버튼 타입</div>
+                            <div className="sec-right">
+                                <span>{GetButtonType(tempButton.get('type'))} 버튼</span>
+                                <button
+                                    disabled={isTypeChange}
+                                    className="change-type-btn"
+                                    onClick={(e) => { typeChange(true) }}>
+                                    타입 변경
+                                </button>
+                            </div>
+                        </div>
+                        {isTypeChange && <div className="type-selector">
+                            <form className="btn-option">
+                                <TypeCheck
+                                    label="ctrl"
+                                    text="제어"
+                                    value="1"
+                                    targetedBox={targetedBox}
+                                    tempButton={tempButton}
+                                    buttonTypeChange={buttonTypeChange} />
+                                <TypeCheck
+                                    label="get-res"
+                                    text="조회-예약"
+                                    value="2"
+                                    targetedBox={targetedBox}
+                                    tempButton={tempButton}
+                                    buttonTypeChange={buttonTypeChange} />
+                                <TypeCheck
+                                    label="get-dt"
+                                    text="조회-센싱"
+                                    value="3"
+                                    targetedBox={targetedBox}
+                                    tempButton={tempButton}
+                                    buttonTypeChange={buttonTypeChange} />
+                                <TypeCheck
+                                    label="get-dev"
+                                    text="조회-디바이스"
+                                    value="4"
+                                    targetedBox={targetedBox}
+                                    tempButton={tempButton}
+                                    buttonTypeChange={buttonTypeChange} />
+                                <TypeCheck
+                                    label="res"
+                                    text="예약"
+                                    value="5"
+                                    targetedBox={targetedBox}
+                                    tempButton={tempButton}
+                                    buttonTypeChange={buttonTypeChange} />
+                                <div style={{
+                                    textAlign: 'right'
+                                }}>
+                                    <button className="change-type-btn"
+                                        onClick={(e) => { typeChange(false) }}>변경 취소</button>
+                                </div>
+                            </form>
+                        </div>}
+                        <div className="sec-row">
+                            <div className="sec-left">버튼 텍스트</div>
+                            <div className="sec-right">
+                                <input
+                                    className="btn-name-in"
+                                    style={{
+                                        imeMode: 'active', //default는 한글
+                                        border: '1px solid #dadce0'
+                                    }}
+                                    name="name"
+                                    value={targetedBox.getIn(['block', 'info', 'buttons', tempButton.get('idx'), 'name'])}
+                                    onChange={(e) => {
+                                        devBtnInfoChange(e, targetedBox.getIn(['block', 'id']), tempButton.get('idx'))
+                                    }
+                                    } />
+                            </div>
+                        </div>
+                        <div className="sec-row">
+                            <div className="sec-left">하위 박스</div>
+                            <div className="sec-right">{tempButton.get('childId') ? '#'+tempButton.get('childId') : 'child is not exist (End)'}</div>
+                        </div>
+                        <div className="ch-info">
+                        {tempButton.get('childId') && <VisibleTargetedBox
+                            preText={childBox.get('preorder')}
+                            postText={childBox.get('postorder')}
+                            buttons={childBox.getIn(['info','buttons'])}
+                            boxType={childBox.get('type')}
+                        />}
+                        </div>
+                    </div>
+                </div>}
         </div>
     )
 }
