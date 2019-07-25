@@ -91,6 +91,7 @@ const DevicePallet = ({
     isTypeChange,
     typeChange,
     findChild,
+    isSaveRes,
     addonOpen }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -390,6 +391,9 @@ const DevicePallet = ({
             {/* pallet */}
             <div className="overflow-trick"></div>
             <div className="pallet" onScroll={scrollFunc}>
+                {isSaveRes && <div className="alert-box">
+                    <span>텍스트 박스 그래프 저장이 성공적으로 수행되었습니다 :)</span>
+                </div>}
                 <div className="background"></div>
                 <svg
                     id="draggable"
@@ -399,7 +403,7 @@ const DevicePallet = ({
                     onDrop={drop}
                     style={{
                         left: 0,
-                        top: 0,
+                        top: isSaveRes ? 28: 0,
                         width: '100%',
                         height: '100%',
                         display: 'block',
@@ -424,6 +428,8 @@ const DevicePallet = ({
                         <div className="temp-textbox-wrapper">
                         {targetedBox && 
                         <VisibleTargetedBox
+                            headRows={targetedBox.getIn(['block', 'headRow'])}
+                            footRows={targetedBox.getIn(['block', 'footRow'])}
                             preText={targetedBox.getIn(['block', 'preorder'])}
                             postText={targetedBox.getIn(['block', 'postorder'])}
                             buttons={targetedBox.getIn(['block', 'info','buttons'])}
@@ -432,10 +438,12 @@ const DevicePallet = ({
                         </div>
                     </div>
                     <div className="btn-set-wrapper-body" style={{
-                        top: targetedBox ? 169+targetedBox.getIn(['block', 'info','buttons']).size*18 : 169
+                        top: targetedBox ? 
+                        149+targetedBox.getIn(['block', 'info','buttons']).size*18 + targetedBox.getIn(['block', 'headRow'])*20 + targetedBox.getIn(['block', 'footRow'])*20
+                        : 189
                     }}>
                         {
-                            targetedBox &&
+                            (targetedBox && (targetedBox.getIn(['block','type'])===1 || targetedBox.getIn(['block','type'])===5)) &&
                             <Fragment>
                                 {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                                     return (
@@ -552,6 +560,8 @@ const DevicePallet = ({
                         </div>
                         <div className="ch-info">
                         {tempButton.get('childId') && <VisibleTargetedBox
+                            headRows={childBox.get('headRow')}
+                            footRows={childBox.get('footRow')}
                             preText={childBox.get('preorder')}
                             postText={childBox.get('postorder')}
                             buttons={childBox.getIn(['info','buttons'])}

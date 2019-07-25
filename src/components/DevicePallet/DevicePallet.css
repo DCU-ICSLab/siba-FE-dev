@@ -222,6 +222,13 @@
     /* position: absolute; */
 }
 
+#DevicePallet .alert-box{
+    background-color: #81A35D;
+    color: #eee;
+    font-weight: 400;
+    padding: 5px 10px;
+}
+
 #DevicePallet .edit-addon{
     position: absolute;
     left: 245px;

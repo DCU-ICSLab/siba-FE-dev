@@ -24,6 +24,7 @@
     color: #333;
     border-bottom: 1px solid #dadce0;
     padding: 3px 7px;
+    border-right: 5px solid #F5F5F5;
 }
 
 #SendReceiveBox .test-sub-title{
@@ -33,4 +34,8 @@
 #SendReceiveBox .json-text{
     height: 266px;
     /* padding: 5px; */
+}
+
+#SendReceiveBox .json-text > pre{
+    border-right: 5px solid #F5F5F5;
 }

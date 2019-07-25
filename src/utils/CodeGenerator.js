@@ -4,10 +4,32 @@ const CodeGenerator = (selectedDevices)=>{
     let functionCalls ='';
 
     selectedDevices.get('pallet').map(box=>{
+
+        const boxType = box.get('type')
+        console.log(boxType)
+
+        //버튼 타입의 박스들에 대해서만 수행
+        if(boxType===1 || boxType===5){
+            
+
         const boxId=box.get('id')
         box.getIn(['info', 'buttons']).map(btn=>{
             const eventCode = btn.get('eventCode')
-            if(eventCode===null) return;
+
+            //함수 이름 필터링
+            let funcName 
+            switch(btn.get('type')){
+
+                case '1':
+                    funcName='action'
+                    break;
+
+                case '5':
+                    funcName='reservation'
+                    break;
+                default:
+                    break;
+            }
             functionDefines+=
 `
 /*
@@ -15,7 +37,7 @@ const CodeGenerator = (selectedDevices)=>{
 * button index: ${btn.get('idx')}
 * button event code: ${eventCode}
 */
-size_t command_code_e${eventCode}(size_t before) {
+size_t ${funcName}_${eventCode}(size_t before) {
     size_t result = 1;
     //define logic code in here
     
@@ -25,9 +47,12 @@ size_t command_code_e${eventCode}(size_t before) {
 
             functionCalls+=
 `   
-    siba.add_event(${eventCode}, command_code_e${eventCode});`
+    siba.add_event(${eventCode}, ${funcName}_${eventCode});`
         })
+    }
     })
+
+//-----------------------------------------------------------
 
     let codeString = 
 `#include <SIBA.h>
@@ -60,9 +85,18 @@ void add_sensing_group() {
 void setup() {
     Serial.begin(115200); //board's baud rate
 
+    /* put your other setup code here 
+    * ----------------------------------------------
+    */
+
+
+    
+    /* ---------------------------------------------*/
+
     add_ctrl_cmd_group(); //add all control command
 
     add_sensing_group(); //add all sensing event
+
 
     //connect SIBA IoT platform
     #if ENV
@@ -72,9 +106,6 @@ void setup() {
     siba.init(hw_auth_key);
 
     #endif
-
-    /* put your other setup code here */
-
 }
 
 void loop() {

@@ -37,7 +37,7 @@ const TestTextBox = ({
                     {boxType===3 && 
                     <button 
                     className="time-set-btn"
-                    onClick={changeTimeSetter}
+                    onClick={()=>changeTimeSetter(true, buttons.getIn([0,'cboxId']))}
                     disabled={!enable}>시간 설정</button>}
                     {postText!=='' && <div className="posttext">{postText}</div>}
                     <div className="msg-time">

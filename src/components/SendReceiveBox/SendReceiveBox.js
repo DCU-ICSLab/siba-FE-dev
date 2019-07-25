@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import './SendReceiveBox.css';
 import { SendJsonGenerator } from 'utils'
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { dark, idea } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { darcula, tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const SendReceiveBox = ({
     children,
@@ -21,8 +21,8 @@ const SendReceiveBox = ({
                         lineNumberStyle={{
                             color: '#888'
                         }}
-                        language='json'
-                        style={idea}
+                        language="json"
+                        style={tomorrow}
                         customStyle={{
                             margin: 0,
                             padding: '5px',

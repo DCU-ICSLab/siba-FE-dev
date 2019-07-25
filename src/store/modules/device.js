@@ -70,6 +70,7 @@ const SET_TEMP_BTN = 'device/SET_TEMP_BTN'
 const TEMP_BTN_CLEAR = 'device/TEMP_BTN_CLEAR'
 const TP_CHANGE = 'device/TP_CHANGE'
 const FIND_CHILD = 'device/FIND_CHILD'
+const SAVE_RES_CHANGE = 'device/SAVE_RES_CHANGE'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -132,6 +133,7 @@ export const setTempBtn = createAction(SET_TEMP_BTN)
 export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
 export const tpChange = createAction(TP_CHANGE)
 export const findChild = createAction(FIND_CHILD)
+export const saveResChange = createAction(SAVE_RES_CHANGE)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -192,6 +194,8 @@ const initialState = Map({
         status: null
     }),
 
+    //------------------temp data-----------
+
     isAddOn: false,
 
     tempButton: null,
@@ -200,11 +204,17 @@ const initialState = Map({
 
     childBox: null,
 
+    isSaveRes: false,
+
     connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [SAVE_RES_CHANGE]: (state, action) => {
+        return state.set('isSaveRes', action.payload);
+    },
 
     [FIND_CHILD]: (state, action) => {
         const idx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload)

@@ -3,6 +3,8 @@ import './VisibleTargetedBox.css';
 
 const VisibleTargetedBox = ({
     children,
+    headRows,
+    footRows,
     preText,
     postText,
     buttons,
@@ -12,7 +14,7 @@ const VisibleTargetedBox = ({
     return (
         <div id="VisibleTargetedBox">
             <div className="text-area">
-                <div className="pretext">{preText}</div>
+                <textarea className="pretext" disabled={true} rows={headRows} value={preText}></textarea>
                 {(boxType === 1 || boxType === 5) && <div>
                     {
                         buttons.map((btn, index) => {
@@ -26,7 +28,8 @@ const VisibleTargetedBox = ({
                     <button
                         className="time-set-btn"
                         disabled={true}>시간 설정</button>}
-                {postText !== '' && <div className="posttext">{postText}</div>}
+                <textarea className="posttext" disabled={true} rows={footRows} value={postText}></textarea>
+                {/* {postText !== '' && <div className="posttext">{postText}</div>} */}
             </div>
             <div className="lt"/>
             <div className="lb"/>

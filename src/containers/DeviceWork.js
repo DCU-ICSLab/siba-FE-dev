@@ -14,6 +14,8 @@ import TargetBox from 'components/TextBox/TargetBox';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
 
+const saveResTimer = null;
+
 class DeviceWork extends Component {
 
     //텍스트 박스 타입에 따른 부가적인 정보 반환하기 위함
@@ -433,7 +435,7 @@ class DeviceWork extends Component {
 
         //실제 놓여야 하는 위치 계산
         return {
-            x: e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - 3,
+            x: e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+ sbPos.left) + scrollX - 3,
             y: e.clientY - 123 + scrollY - 10
         }
     }
@@ -689,6 +691,7 @@ class DeviceWork extends Component {
     _saveDeviceTextBoxGraph = () => {
         const { deviceActions, selectedDevice, devId } = this.props;
         deviceActions.saveDeviceTextBoxGraph(devId, selectedDevice)
+        this._saveResChange(true)
     }
 
     _deployDeviceTextBoxGraph = () => {
@@ -708,7 +711,7 @@ class DeviceWork extends Component {
     }
 
     _buttonTypeChange = (e, idx) => {
-        const { deviceActions, targetedBox } = this.props;
+        const { deviceActions, targetedBox, tempButton } = this.props;
         deviceActions.devBtnSideTypeChange({
             idx: idx,
             id: targetedBox.getIn(['block', 'id']),
@@ -719,6 +722,15 @@ class DeviceWork extends Component {
             type: e.target.value
         })
         this._typeChange(false)
+        deviceActions.setTempBtn(
+            {
+                childId: tempButton.get('childId'),
+                eventCode: tempButton.get('eventCode'),
+                name: tempButton.get('name'),
+                type: e.target.value,
+                idx: tempButton.get('idx'),
+            }
+        )
     }
 
     _addonOpen = (arg) => {
@@ -747,6 +759,14 @@ class DeviceWork extends Component {
         deviceActions.findChild(arg)
     }
 
+    _saveResChange = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.saveResChange(arg)
+        if(arg){
+            setTimeout(()=>deviceActions.saveResChange(false), 4000)
+        }
+    }
+
     componentDidMount() {
         const { deviceActions, location } = this.props;
         deviceActions.pageSwitching({page: 1})
@@ -755,7 +775,7 @@ class DeviceWork extends Component {
     }
 
     componentWillUnmount() {
-
+        if(saveResTimer) clearTimeout(saveResTimer);
     }
 
     /*shouldComponentUpdate(nextProps, nextState) {
@@ -785,7 +805,8 @@ class DeviceWork extends Component {
             isAddOn,
             tempButton,
             isTypeChange,
-            childBox
+            childBox,
+            isSaveRes
         } = this.props;
 
         return (
@@ -816,6 +837,7 @@ class DeviceWork extends Component {
                         isTypeChange={isTypeChange}
                         typeChange={this._typeChange}
                         childBox={childBox}
+                        isSaveRes={isSaveRes}
                         >
 
                         <g>
@@ -914,6 +936,7 @@ export default withRouter(
             tempButton: state.device.get('tempButton'),
             isTypeChange: state.device.get('isTypeChange'),
             childBox: state.device.get('childBox'),
+            isSaveRes: state.device.get('isSaveRes'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

@@ -17,7 +17,7 @@ class VisibleBox extends Component {
         let y = boxInfo.getIn(['pos', 'y'])-3;
         let id = boxInfo.get('id');
         let type = boxInfo.get('type')
-        let additionalHeight = (type===1 || type===5) ? 32 : 0
+        let additionalHeight = (type===1 || type===5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker'])===null ? 0 : 16)
         let dynamicHeight = boxInfo.get('headRow') * 20 + boxInfo.get('footRow') * 20;
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
         let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight+3//base height + button counts*18

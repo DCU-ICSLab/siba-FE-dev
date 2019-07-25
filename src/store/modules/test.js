@@ -20,6 +20,8 @@ const SET_TEXTBOX_END = 'test/SET_TEXTBOX_END'
 const SEND_BUILDING_JSON = 'test/SEND_BUILDING_JSON'
 const SET_DUPLICATE = 'test/SET_DUPLICATE'
 const SET_SEND_STATE = 'test/SET_SEND_STATE'
+const SAVE_TEMP_ADDITIONAL_TYPE = 'test/SAVE_TEMP_ADDITIONAL_TYPE'
+const CLEAR_TIME_FORMAT = 'test/CLEAR_TIME_FORMAT'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -36,13 +38,18 @@ export const setTextboxEnd = createAction(SET_TEXTBOX_END)
 export const sendBuildingJson = createAction(SEND_BUILDING_JSON, TestAPI.sendBuildingJson)
 export const setDuplicate = createAction(SET_DUPLICATE)
 export const setSendState = createAction(SET_SEND_STATE)
+export const saveTempAdditionalType = createAction(SAVE_TEMP_ADDITIONAL_TYPE)
+export const clearTimeFormat = createAction(CLEAR_TIME_FORMAT)
 
 /*--------state definition--------*/
 const initialState = Map({
     testBoxList: List([]),
     userBoxList: List([]),
     cmdList: List([]),
-    timeSetter: false,
+    timeSetter: Map({
+        isOpen: false,
+        cboxId: null
+    }),
     timeFormat: Map({
         date: null,
         md: '',
@@ -63,6 +70,15 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CLEAR_TIME_FORMAT]: (state, action) => {
+        return state.set('timeFormat', Map({
+            date: null,
+            md: '',
+            h: '',
+            t: ''
+        }))
+    },
 
     [SET_SEND_STATE]: (state, action) => {
         return state.set('isSend', action.payload);
@@ -88,8 +104,18 @@ export default handleActions({
         );
     },
 
+    [SAVE_TEMP_ADDITIONAL_TYPE]: (state, action) => {
+        return state.updateIn(['cmdList', state.get('cmdList').size-1, 'additional'], additional=>
+        additional.push(Map(action.payload)));
+    },
+
     [TESTBOX_INIT]: (state, action) => {
-        return state.set('testBoxList', List([])).set('cmdList', List([])).set('isEnd',false).set('isSend', false)
+        return state.set('testBoxList', List([]))
+        .set('userBoxList', List([]))
+        .set('cmdList', List([]))
+        .set('isEnd',false)
+        .set('isSend', false)
+
     },
 
     [ADD_USER_TEXTBOX]: (state, action) => {
@@ -97,7 +123,7 @@ export default handleActions({
             boxes.push(
                 Map({
                     text: action.payload.text,
-                    time: new Date()
+                    time: Date.now()
                 })
             )
         );
@@ -108,7 +134,10 @@ export default handleActions({
     },
 
     [CHANGE_TIME_SETTER]: (state, action) => {
-        return state.set('timeSetter', !state.get('timeSetter'));
+        return state.set('timeSetter', Map({
+            isOpen: action.payload.isOpen,
+            cboxId: action.payload.cboxId
+        }));
     },
 
     [CHANGE_TIME_FORMAT]: (state, action) => {
@@ -138,7 +167,7 @@ export default handleActions({
                         postText: boxInfo.postText,
                         boxType: boxInfo.boxType,
                         enable: true,
-                        time: new Date(),
+                        time: Date.now(),
                         buttons: List(boxInfo.buttons.map(btn =>
                             Map(btn)
                         ))
@@ -162,7 +191,7 @@ export default handleActions({
                         postText: boxInfo.postText,
                         boxType: boxInfo.boxType,
                         enable: true,
-                        time: new Date(),
+                        time: Date.now(),
                         buttons: List(boxInfo.buttons.map(btn =>
                             Map(btn)
                         ))

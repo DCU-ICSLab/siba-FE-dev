@@ -1,12 +1,36 @@
 const makeCommand = (cmd) => {
+
+let additionalString='';
+
+cmd.get('additional').map((add,index)=>{
+    if(index!==0)
+        additionalString+=','
+    additionalString+=makeAdditional(add)
+})
+
+if(additionalString==='')
 return `{
             "btnType" : ${cmd.get('btnType')},
-            "eventCode": ${cmd.get('eventCode')},
-            "additional": []
+            "eventCode" : ${cmd.get('eventCode')},
+            "additional" : []
+        }`
+
+else
+return `{
+            "btnType" : ${cmd.get('btnType')},
+            "eventCode" : ${cmd.get('eventCode')},
+            "additional" : [
+                ${additionalString}
+            ]
         }`
 }
 
-const makeAdditional = () => {
+const makeAdditional = (additional) => {
+
+return `{
+                    "type" : ${additional.get('type')},
+                    "value" : ${additional.get('value')}
+                }`
 
 }
 

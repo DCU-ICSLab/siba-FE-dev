@@ -81,6 +81,8 @@ class Device extends Component {
         const { deviceActions, location , testActions} = this.props;
         deviceActions.getConnectedDevInfo(location.state.dev.get('devId'))
         testActions.testboxInit();
+        deviceActions.tempBtnClear();
+        deviceActions.addonOpen(false)
     }
 
     componentWillUnmount() {

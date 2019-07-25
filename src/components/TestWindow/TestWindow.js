@@ -30,7 +30,7 @@ const TestWindow = ({
             <article ref={setRef}>
                 {children}
             </article>
-            { timeSetter && 
+            { timeSetter.get('isOpen') && 
             <Fragment>
             <div className="time-setter-shadow"></div>
             <div className="time-setter">
@@ -38,7 +38,7 @@ const TestWindow = ({
                     <span>날짜/시간 선택</span>
                     <button 
                     className="close-time-setter"
-                    onClick={changeTimeSetter}>
+                    onClick={()=>changeTimeSetter(false, null)}>
                         <MdClose/>
                     </button>
                 </header>

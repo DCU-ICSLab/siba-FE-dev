@@ -32,6 +32,7 @@ class TestWork extends Component {
 
     _cancelTest = () => {
         const { testActions } = this.props
+        testActions.clearTimeFormat();
         testActions.testboxInit();
         testActions.setTextboxEnd(false);
         testActions.setSendState(false)
@@ -60,19 +61,40 @@ class TestWork extends Component {
     }
 
     _sendCommandWithTime = () => {
-        const { testActions, devId, timeFormat, testBoxList } = this.props;
-        const timeString = timeFormat.get('date').format('YYYY년 M월 D일 A HH:mm')
+        const { testActions, devId, timeFormat, testBoxList, timeSetter } = this.props;
+        const ts = timeFormat.get('date').format('YYYY년 M월 D일 A HH:mm')
 
-        testActions.textBoxEnableChange();
-        testActions.addUserTextbox({ text: timeString })
-        testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
-        testActions.changeTimeSetter();
+        //console.log(timeFormat.get('date'))
+        //console.log(timeString)
+
+        testActions.saveTempAdditionalType({
+            type: '1',
+            value: timeFormat.get('date').format('x'),
+        })
+
+        testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
+        testActions.addUserTextbox({ text: ts }) //사용자 답 텍스트 박스 추가
+
+        //자식요소가 있다면
+        if(timeSetter.get('cboxId') !== null)
+            testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
+
+        //없다면
+        else {
+            testActions.setTextboxEnd(true);
+        }
+
+        //close
+        testActions.changeTimeSetter({
+            isOpen: false,
+            cboxId: null,
+        });
         this._scrollToBottom()
     }
 
-    _changeTimeSetter = () => {
+    _changeTimeSetter = (isOpen, boxId) => {
         const { testActions, timeSetter } = this.props;
-        if (!timeSetter) {
+        if (isOpen) {
             const date = moment();
             const day = date.format('dddd');
             const hour = date.format('H');
@@ -86,7 +108,10 @@ class TestWork extends Component {
                 t: min
             })
         }
-        testActions.changeTimeSetter();
+        testActions.changeTimeSetter({
+            isOpen: isOpen,
+            cboxId: boxId,
+        });
     }
 
     _changeTimeValue = (name, isUp) => {
@@ -157,6 +182,7 @@ class TestWork extends Component {
         )
     }
 
+
     _saveTempType = (btnType, eventCode) => {
         const { testActions } = this.props
         testActions.saveTempType({
@@ -192,6 +218,7 @@ class TestWork extends Component {
         const rect = g.getBBox();
         this.svgArea.style.height = rect.height + rect.y + 20 + 'px';
         this.svgArea.style.width = rect.width + rect.x + 20 + 'px';
+        testActions.clearTimeFormat();
         //testActions.testboxInit();
     }
 

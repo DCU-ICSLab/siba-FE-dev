@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import { MdClose, MdSave } from 'react-icons/md'
 import './ModalWrapper.css';
 import Modal from 'react-modal';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { CodeGenerator } from 'utils'
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
@@ -23,8 +23,10 @@ const ModalWrapper = ({children, codeModal, closeModal, selectedDevice, copy, co
                 border: '1px solid #dadce0',
                 backgroundColor: '#F5F5F5',
                 top: '85px',
-                left: '70px',
-                right: '70px',
+                margin: '0 auto',
+                // left: '70px',
+                // right: '70px',
+                maxWidth: 840,
                 bottom: '85px',
             }
         }}>
@@ -65,8 +67,8 @@ const ModalWrapper = ({children, codeModal, closeModal, selectedDevice, copy, co
                         <div className="code-box-body">
                             {copy && <div className="copy-st">copied to clipboard success!</div>}
                             <SyntaxHighlighter 
-                            language='cpp' 
-                            style={github}
+                            language="cpp"
+                            style={darcula}
                             customStyle={{
                                 margin:0
                             }}

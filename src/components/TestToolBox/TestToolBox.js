@@ -4,8 +4,8 @@ import { MdAccessTime, MdCheckCircle } from 'react-icons/md'
 import { PacmanLoader} from 'react-spinners';
 import Moment from 'react-moment';
 
+//최적화 시켜야 함.
 const TestInfoCard = ({log, devName})=>{
-    console.log(log)
     const isPending = log.get('testStatus')==='2'
 
     let className='pending'
