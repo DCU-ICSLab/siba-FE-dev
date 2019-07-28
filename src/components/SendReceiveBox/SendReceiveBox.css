@@ -39,3 +39,19 @@
 #SendReceiveBox .json-text > pre{
     border-right: 5px solid #F5F5F5;
 }
+
+#SendReceiveBox .test-upper{
+    font-size: 11px;
+    color: #333;
+    border-bottom: 1px solid #dadce0;
+    padding: 3px 7px;
+    border-right: 5px solid #F5F5F5;
+    border-top: 5px solid #F5F5F5;
+}
+
+#SendReceiveBox .test-body{
+    border-right: 5px solid #F5F5F5;
+    height: 161px;
+    color: #333;
+    /* padding: 5px; */
+}

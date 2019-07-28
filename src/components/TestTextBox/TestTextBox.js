@@ -13,6 +13,8 @@ const TestTextBox = ({
     boxType,
     sendCommand,
     changeTimeSetter,
+    getReservationInfo,
+    cancelReservation,
     saveTempType,
 }) => {
 
@@ -55,7 +57,19 @@ const TestTextBox = ({
                             className="link-btn"
                             onClick={(e)=>{
                                 saveTempType(btn.get('btnType'), btn.get('evCode'))
-                                sendCommand(`${index+1}번`, btn.get('cboxId'))
+
+                                //예약 조회라면
+                                if(btn.get('btnType')==='2'){
+                                    getReservationInfo(`${index+1}번`)
+                                }
+
+                                //예약 취소라면
+                                else if(btn.get('btnType')==='6'){
+                                    cancelReservation(`${index+1}번`, btn.get('evCode'))
+                                }
+                                else{
+                                    sendCommand(`${index+1}번`, btn.get('cboxId'))
+                                }
                             }}>
                             {index+1}
                             </button>

@@ -27,6 +27,7 @@ class TestWork extends Component {
 
     _startTest = () => {
         const { testActions, devId } = this.props;
+        this._cancelTest();
         testActions.startTest(devId, 0);
     }
 
@@ -38,14 +39,31 @@ class TestWork extends Component {
         testActions.setSendState(false)
     }
 
-    _setRef = (ref) => {
-        this.elem = ref
-    }
-
     _scrollToBottom = () => {
+        console.log(this.chatScroll)
+        console.log(this.chatScroll.scrollTop)
+        console.log(this.chatScroll.scrollHeight)
+        console.log(this.chatScroll.clientHeight)
+        this.chatScroll.scrollTop = this.chatScroll.scrollHeight - this.chatScroll.clientHeight;
         //this.elem.scrollIntoView({ behavior: "smooth" });
         //this.elem.scrollTop = this.elem.scrollHeight
         //console.log(this.elem.scrollHeight)
+    }
+
+    //예약 조회인 경우
+    _getReservationInfo = (arg) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        testActions.setResState(true)
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({ text: arg })
+        testActions.getReservation(connectedDev.getIn([0,'devMac']),vHubId)
+    }
+
+    _cancelReservation = (arg, resId) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        
+        testActions.addUserTextbox({ text: arg })
+        testActions.cancelReservation(vHubId, resId);
     }
 
     _sendCommand = (arg, boxId) => {
@@ -69,7 +87,7 @@ class TestWork extends Component {
 
         testActions.saveTempAdditionalType({
             type: '1',
-            value: timeFormat.get('date').format('x'),
+            value: parseInt(timeFormat.get('date').format('x'),10),
         })
 
         testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
@@ -151,8 +169,12 @@ class TestWork extends Component {
         this.svgArea = ref
     }
 
+    _setRefScroll = (ref) => {
+        this.chatScroll = ref
+    }
+
     _renderVisibleBox = () => {
-        const { testBoxList, pallet, isSend } = this.props;
+        const { testBoxList, pallet, isSend, isRes } = this.props;
         if (testBoxList.size === 0) return;
 
         const boxId = testBoxList.getIn([testBoxList.size - 1, 'boxId'])
@@ -161,12 +183,12 @@ class TestWork extends Component {
 
         return (
             <Fragment>
-                {!isSend && <VisibleBox
+                {!isSend && !isRes && <VisibleBox
                     boxInfo={boxInfo}
                     key={boxInfo.get('id')}
                     isCurrent={true}
                     index={0} />}
-                {boxInfo.getIn(['info', 'buttons']).map((btn, index) => {
+                {!isSend && !isRes && boxInfo.getIn(['info', 'buttons']).map((btn, index) => {
                     if (btn.get('linker')) {
                         const cboxInfo = pallet.get(pallet.findIndex(box => btn.getIn(['linker', 'childId']) === box.get('id')))
                         return (
@@ -195,9 +217,7 @@ class TestWork extends Component {
     _sendCommandToHub = () => {
         const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice, deviceActions, userId } = this.props
         console.log('test send');
-        console.log(selectedDevice.toJS());
         if (connectedDev.size === 1){
-            console.log('send to hub');
             testActions.setSendState(true)
             testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId, userId).then((data)=>{
                 if(data.status===200){
@@ -226,6 +246,10 @@ class TestWork extends Component {
 
     }
 
+    componentDidUpdate(){
+        this._scrollToBottom()
+    }
+
     render() {
 
         const {
@@ -247,7 +271,7 @@ class TestWork extends Component {
             <Fragment>
                 <TestPallet>
                     <TestWindow
-                        setRef={this._setRef}
+                        setRef={this._setRefScroll}
                         startTest={this._startTest}
                         cancelTest={this._cancelTest}
                         changeTimeSetter={this._changeTimeSetter}
@@ -268,7 +292,9 @@ class TestWork extends Component {
                                             boxType={box.get('boxType')}
                                             sendCommand={this._sendCommand}
                                             changeTimeSetter={this._changeTimeSetter}
-                                            saveTempType={this._saveTempType}>
+                                            saveTempType={this._saveTempType}
+                                            getReservationInfo={this._getReservationInfo}
+                                            cancelReservation={this._cancelReservation}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
@@ -369,6 +395,7 @@ export default withRouter(
             cmdList: state.test.get('cmdList'),
             isEnd: state.test.get('isEnd'),
             isSend: state.test.get('isSend'),
+            isRes: state.test.get('isRes'),
             isDuplicate: state.test.get('isDuplicate'),
             connectedDev: state.device.get('connectedDev'),
             userId: state.auth.getIn(['userState', 'user', 'userId']), 

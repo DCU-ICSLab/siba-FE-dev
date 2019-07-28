@@ -22,6 +22,9 @@ const SET_DUPLICATE = 'test/SET_DUPLICATE'
 const SET_SEND_STATE = 'test/SET_SEND_STATE'
 const SAVE_TEMP_ADDITIONAL_TYPE = 'test/SAVE_TEMP_ADDITIONAL_TYPE'
 const CLEAR_TIME_FORMAT = 'test/CLEAR_TIME_FORMAT'
+const GET_RESERVATION = 'test/GET_RESERVATION'
+const CANCEL_RESERVATION = 'test/CANCEL_RESERVATION'
+const SET_RES_STATE = 'test/SET_RES_STATE'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -40,6 +43,9 @@ export const setDuplicate = createAction(SET_DUPLICATE)
 export const setSendState = createAction(SET_SEND_STATE)
 export const saveTempAdditionalType = createAction(SAVE_TEMP_ADDITIONAL_TYPE)
 export const clearTimeFormat = createAction(CLEAR_TIME_FORMAT)
+export const getReservation = createAction(GET_RESERVATION, TestAPI.getReservation)
+export const cancelReservation= createAction(CANCEL_RESERVATION,TestAPI.cancelReservation)
+export const setResState = createAction(SET_RES_STATE)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -59,6 +65,7 @@ const initialState = Map({
 
     isEnd: false,
     isSend: false,
+    isRes: false,
 
     testResult: Map({
         msg: '',
@@ -82,6 +89,10 @@ export default handleActions({
 
     [SET_SEND_STATE]: (state, action) => {
         return state.set('isSend', action.payload);
+    },
+
+    [SET_RES_STATE]: (state, action) => {
+        return state.set('isRes', action.payload);
     },
 
     [SET_DUPLICATE]: (state, action) => {
@@ -115,7 +126,7 @@ export default handleActions({
         .set('cmdList', List([]))
         .set('isEnd',false)
         .set('isSend', false)
-
+        .set('isRes', false)
     },
 
     [ADD_USER_TEXTBOX]: (state, action) => {
@@ -214,9 +225,52 @@ export default handleActions({
         onFailure: (state, action) => {
 
             return state.set('testResult', Map({
-                msg: action.payload.msg,
-                status: action.payload.status
+                msg: action.payload.data.msg,
+                status: action.payload.data.status
             }));
+        },
+    }),
+
+    ...pender({
+        type: GET_RESERVATION,
+        onSuccess: (state, action) => {
+            const boxInfo = action.payload.data.data;
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: boxInfo.boxId,
+                        preText: boxInfo.preText,
+                        postText: boxInfo.postText,
+                        boxType: boxInfo.boxType,
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List(boxInfo.buttons.map(btn =>
+                            Map(btn)
+                        ))
+                    })
+                )
+            );
+        },
+    }),
+
+    ...pender({
+        type: CANCEL_RESERVATION,
+        onSuccess: (state, action) => {
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: -2,
+                        preText: action.payload.data.msg,
+                        postText: null,
+                        boxType: '1',
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List([])
+                    })
+                )
+            );
         },
     }),
 

@@ -37,7 +37,10 @@ class Main extends Component {
             const { authActions } = this.props;
             axios.defaults.headers.common.Authorization = 'Bearer ' + tokenValue;
             authActions.kakaoAuth().then(() => {
-                this._stompConnection(tokenValue);
+
+                //연결이 안된 경우에만 수행
+                if(stompClient===null)
+                    this._stompConnection(tokenValue);
             })
             authActions.setToken(tokenValue);
             return;

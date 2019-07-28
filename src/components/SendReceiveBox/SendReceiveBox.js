@@ -40,11 +40,49 @@ const SendReceiveBox = ({
                 <div className="test-title">
                     <span>응답 데이터</span>
                 </div>
-                <div className="test-title">
-                    <span>전송 시간</span>
+
+                <div id="TestInfoCard">
+                    <header>
+                        <span className="test-name"><strong></strong></span>
+                        <span className="test-code"># </span>
+                    </header>
+                    <div className="test-card-body">
+                        <div className="duration">
+                        </div>
+                        <div className="finished">
+                        </div>
+                    </div>
                 </div>
-                <div className="json-text">
-                    
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row'
+                }}>
+                    <div style={{
+                        width: '50%'
+                    }}>
+                        <div className="test-upper">
+                            <span>SIBA IoT hub</span>
+                        </div>
+                        <div className="test-body">
+                            <div>
+                                <span>Http status</span>
+                                <span>200</span>
+                            </div>
+                            <div>
+                                <span>message</span>
+                                <span>12234ff</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{
+                        width: '50%'
+                    }}>
+                        <div className="test-upper">
+                            <span>target device</span>
+                        </div>
+                        <div className="test-body">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

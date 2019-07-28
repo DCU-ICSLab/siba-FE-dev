@@ -11,7 +11,7 @@ export default function configureStore(history) {
     compose(
       applyMiddleware(
         routerMiddleware(history), // for dispatching history actions
-        //createLogger(),
+        createLogger(),
         penderMiddleware()) //미들웨어 적용
     )
   );
