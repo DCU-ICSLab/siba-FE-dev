@@ -16,6 +16,7 @@ const TestTextBox = ({
     getReservationInfo,
     cancelReservation,
     saveTempType,
+    sendCommandWithTimeWithInterval
 }) => {
 
     return (
@@ -50,13 +51,13 @@ const TestTextBox = ({
                 <div className="btn-list">
                 {(boxType===1 || boxType===5) && 
                     buttons.map((btn, index)=>{
-                        console.log(btn.get('cboxId'))
                         return(
                             <button 
                             key={index} 
                             className="link-btn"
                             onClick={(e)=>{
-                                saveTempType(btn.get('btnType'), btn.get('evCode'))
+                                if(btn.get('btnType')!=='7')
+                                    saveTempType(btn.get('btnType'), btn.get('evCode'))
 
                                 //예약 조회라면
                                 if(btn.get('btnType')==='2'){
@@ -67,6 +68,12 @@ const TestTextBox = ({
                                 else if(btn.get('btnType')==='6'){
                                     cancelReservation(`${index+1}번`, btn.get('evCode'))
                                 }
+
+                                //주기 설정 이라면
+                                else if(btn.get('btnType')==='7'){
+                                    sendCommandWithTimeWithInterval(`${index+1}`)
+                                }
+
                                 else{
                                     sendCommand(`${index+1}번`, btn.get('cboxId'))
                                 }

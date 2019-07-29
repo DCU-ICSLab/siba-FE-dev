@@ -25,6 +25,9 @@ const CLEAR_TIME_FORMAT = 'test/CLEAR_TIME_FORMAT'
 const GET_RESERVATION = 'test/GET_RESERVATION'
 const CANCEL_RESERVATION = 'test/CANCEL_RESERVATION'
 const SET_RES_STATE = 'test/SET_RES_STATE'
+const CHANGE_TEMP_MSG = 'test/CHANGE_TEMP_MSG'
+const CHANGE_INTERVAL_SET = 'test/CHANGE_INTERVAL_SET'
+const ADD_INTERVAL_SET_BOX = 'test/ADD_INTERVAL_SET_BOX'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -44,8 +47,11 @@ export const setSendState = createAction(SET_SEND_STATE)
 export const saveTempAdditionalType = createAction(SAVE_TEMP_ADDITIONAL_TYPE)
 export const clearTimeFormat = createAction(CLEAR_TIME_FORMAT)
 export const getReservation = createAction(GET_RESERVATION, TestAPI.getReservation)
-export const cancelReservation= createAction(CANCEL_RESERVATION,TestAPI.cancelReservation)
+export const cancelReservation = createAction(CANCEL_RESERVATION, TestAPI.cancelReservation)
 export const setResState = createAction(SET_RES_STATE)
+export const changeTempMsg = createAction(CHANGE_TEMP_MSG)
+export const changeIntervalSet = createAction(CHANGE_INTERVAL_SET)
+export const addIntervalSetBox = createAction(ADD_INTERVAL_SET_BOX)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -65,7 +71,12 @@ const initialState = Map({
 
     isEnd: false,
     isSend: false,
+    isIntervalSet: Map({
+        devId: null,
+        cboxId: null
+    }),
     isRes: false,
+    tempMessage: '',
 
     testResult: Map({
         msg: '',
@@ -77,6 +88,49 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [ADD_INTERVAL_SET_BOX]: (state, action) => {
+        return state.update('testBoxList', boxes =>
+            boxes.push(
+                Map({
+                    boxId: -3,
+                    preText: '명령 실행 주기를 설정해주세요.',
+                    postText: '버튼을 선택해주세요.',
+                    boxType: 1,
+                    enable: true,
+                    time: Date.now(),
+                    buttons: List([
+                        Map({
+                            btnType: '7',
+                            btnName: '1회',
+                            evCode: null,
+                            cboxId: null
+                        }),
+                        Map({
+                            btnType: '7',
+                            btnName: '매일',
+                            evCode: null,
+                            cboxId: null
+                        }),
+                        Map({
+                            btnType: '7',
+                            btnName: '매주',
+                            evCode: null,
+                            cboxId: null
+                        }),
+                    ])
+                })
+            )
+        );
+    },
+
+    [CHANGE_INTERVAL_SET]: (state, action) => {
+        return state.set('isIntervalSet', Map(action.payload))
+    },
+
+    [CHANGE_TEMP_MSG]: (state, action) => {
+        return state.set('tempMessage', action.payload)
+    },
 
     [CLEAR_TIME_FORMAT]: (state, action) => {
         return state.set('timeFormat', Map({
@@ -116,17 +170,21 @@ export default handleActions({
     },
 
     [SAVE_TEMP_ADDITIONAL_TYPE]: (state, action) => {
-        return state.updateIn(['cmdList', state.get('cmdList').size-1, 'additional'], additional=>
-        additional.push(Map(action.payload)));
+        return state.updateIn(['cmdList', state.get('cmdList').size - 1, 'additional'], additional =>
+            additional.push(Map(action.payload)));
     },
 
     [TESTBOX_INIT]: (state, action) => {
         return state.set('testBoxList', List([]))
-        .set('userBoxList', List([]))
-        .set('cmdList', List([]))
-        .set('isEnd',false)
-        .set('isSend', false)
-        .set('isRes', false)
+            .set('userBoxList', List([]))
+            .set('cmdList', List([]))
+            .set('isEnd', false)
+            .set('isSend', false)
+            .set('isRes', false)
+            .set('isIntervalSet', Map({
+                devId: null,
+                cboxId: null
+            }))
     },
 
     [ADD_USER_TEXTBOX]: (state, action) => {

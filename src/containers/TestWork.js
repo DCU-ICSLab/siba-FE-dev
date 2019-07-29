@@ -40,10 +40,6 @@ class TestWork extends Component {
     }
 
     _scrollToBottom = () => {
-        console.log(this.chatScroll)
-        console.log(this.chatScroll.scrollTop)
-        console.log(this.chatScroll.scrollHeight)
-        console.log(this.chatScroll.clientHeight)
         this.chatScroll.scrollTop = this.chatScroll.scrollHeight - this.chatScroll.clientHeight;
         //this.elem.scrollIntoView({ behavior: "smooth" });
         //this.elem.scrollTop = this.elem.scrollHeight
@@ -61,7 +57,7 @@ class TestWork extends Component {
 
     _cancelReservation = (arg, resId) => {
         const { testActions, devId, connectedDev, vHubId } = this.props;
-        
+        testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
         testActions.cancelReservation(vHubId, resId);
     }
@@ -76,6 +72,32 @@ class TestWork extends Component {
             testActions.setTextboxEnd(true);
         }
         this._scrollToBottom()
+    }
+
+    _sendCommandWithDynamic = () => {
+        const { testActions, tempMessage, testBoxList, devId} = this.props;
+
+        testActions.saveTempAdditionalType({
+            type: '2',
+            value: parseInt(tempMessage,10),
+        })
+
+        testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
+        testActions.addUserTextbox({ text: tempMessage }) //사용자 답 텍스트 박스 추가
+
+        testActions.changeTempMsg('')
+
+        const cboxId = testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId'])
+
+        //자식요소가 있다면
+        if(cboxId !== null)
+            testActions.sendCommand(devId, cboxId)
+
+        //없다면
+        else {
+            testActions.setTextboxEnd(true);
+        }
+
     }
 
     _sendCommandWithTime = () => {
@@ -94,12 +116,21 @@ class TestWork extends Component {
         testActions.addUserTextbox({ text: ts }) //사용자 답 텍스트 박스 추가
 
         //자식요소가 있다면
-        if(timeSetter.get('cboxId') !== null)
-            testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
-
+        if(timeSetter.get('cboxId') !== null){
+            //testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
+            //testActions.setTextboxEnd(true);
+            testActions.changeIntervalSet({
+                devId: devId,
+                cboxId: testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId'])
+            })
+        }
         //없다면
         else {
-            testActions.setTextboxEnd(true);
+            //testActions.setTextboxEnd(true);
+            testActions.changeIntervalSet({
+                devId: devId,
+                cboxId: null
+            })
         }
 
         //close
@@ -107,7 +138,46 @@ class TestWork extends Component {
             isOpen: false,
             cboxId: null,
         });
+
+        testActions.addIntervalSetBox()
+
         this._scrollToBottom()
+    }
+
+    _sendCommandWithTimeWithInterval = (arg) => {
+        const { testActions, isIntervalSet } = this.props;
+
+        testActions.textBoxEnableChange();
+        testActions.saveTempAdditionalType({
+            type: '4',
+            value: arg,
+        })
+
+        let userText = '';
+        switch(arg){
+            case '1':
+                userText = '1회 실행'
+                break;
+            case '2':
+                userText = '매일 실행'
+                break;
+            case '3':
+                userText = '매주 실행'
+                break;
+            default:
+                break;
+        }
+
+        testActions.addUserTextbox({ text: userText }) //사용자 답 텍스트 박스 추가
+
+        //자식요소가 있다면
+        if(isIntervalSet.get('cboxId') !== null){
+            testActions.sendCommand(isIntervalSet.get('devId'), isIntervalSet.get('cboxId'))
+        }
+        //없다면
+        else {
+            testActions.setTextboxEnd(true);
+        }
     }
 
     _changeTimeSetter = (isOpen, boxId) => {
@@ -173,6 +243,10 @@ class TestWork extends Component {
         this.chatScroll = ref
     }
 
+    _setGraphRef= (ref) => {
+        this.graphDiv = ref
+    }
+
     _renderVisibleBox = () => {
         const { testBoxList, pallet, isSend, isRes } = this.props;
         if (testBoxList.size === 0) return;
@@ -232,6 +306,34 @@ class TestWork extends Component {
         }
     }
 
+    _changeTempMsg = (e) => {
+        const { testActions } = this.props
+        testActions.changeTempMsg(e.target.value)
+    }
+
+    _moveTestMap = () => {
+        const { testBoxList, pallet, isSend, isRes } = this.props;
+        if (testBoxList.size === 0) return;
+
+        const boxId = testBoxList.getIn([testBoxList.size - 1, 'boxId'])
+
+        const boxInfo = pallet.get(pallet.findIndex((box) => box.get('id') === boxId));
+
+        let x = boxInfo.getIn(['pos', 'x']) + 20 -3;
+        let y = boxInfo.getIn(['pos', 'y'])-3;
+        let id = boxInfo.get('id');
+        let type = boxInfo.get('type')
+        let additionalHeight = (type===1 || type===5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker'])===null ? 0 : 16)
+        let dynamicHeight = boxInfo.get('headRow') * 20 + boxInfo.get('footRow') * 20;
+        let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
+        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight+3//base height + button counts*18
+        let EntrySt = type===5 ? 10 : 0
+
+        
+        this.graphDiv.scrollTop = y-EntrySt-10
+        this.graphDiv.scrollLeft = x-10
+    }
+
     componentDidMount() {
         const { testActions } = this.props
         const g = this.svgArea.childNodes[0]
@@ -248,6 +350,7 @@ class TestWork extends Component {
 
     componentDidUpdate(){
         this._scrollToBottom()
+        this._moveTestMap()
     }
 
     render() {
@@ -264,13 +367,17 @@ class TestWork extends Component {
             isDuplicate,
             connectedDev,
             selectedDevice,
-            isSend
+            isSend,
+            tempMessage
         } = this.props;
+
+        console.log(connectedDev.toJS())
 
         return (
             <Fragment>
                 <TestPallet>
                     <TestWindow
+                        connectedDev={connectedDev}
                         setRef={this._setRefScroll}
                         startTest={this._startTest}
                         cancelTest={this._cancelTest}
@@ -278,7 +385,12 @@ class TestWork extends Component {
                         timeSetter={timeSetter}
                         timeFormat={timeFormat}
                         changeTimeValue={this._changeTimeValue}
-                        sendCommand={this._sendCommandWithTime}>
+                        sendCommand={this._sendCommandWithTime}
+                        testBoxList={testBoxList}
+                        changeTempMsg={this._changeTempMsg}
+                        tempMessage={tempMessage}
+                        sendCommandWithDynamic={this._sendCommandWithDynamic}
+                        isEnd={isEnd}>
                         {
                             testBoxList.map((box, index) => {
                                 return (
@@ -294,7 +406,8 @@ class TestWork extends Component {
                                             changeTimeSetter={this._changeTimeSetter}
                                             saveTempType={this._saveTempType}
                                             getReservationInfo={this._getReservationInfo}
-                                            cancelReservation={this._cancelReservation}>
+                                            cancelReservation={this._cancelReservation}
+                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
@@ -317,7 +430,7 @@ class TestWork extends Component {
                         {
                             isDuplicate &&
                             <TestTextBox
-                                preText={'연결된 디바이스가 여러개 존재합니다.'}
+                                preText={'연결된 동일 종류의 디바이스가 여러개 존재합니다.'}
                                 postText={'명령을 보낼 디바이스를 선택하세요.'}
                                 time={new Date()}
                                 enable={null}
@@ -340,6 +453,7 @@ class TestWork extends Component {
                     <TestBox>
                         <TestToolBox 
                         devName={selectedDevice.get('devName')}
+                        setGraphRef={this._setGraphRef}
                         setRef={this._setRef} 
                         renderVisibleBox={this._renderVisibleBox}
                         testLogList={selectedDevice.get('testLogList')}>
@@ -396,6 +510,8 @@ export default withRouter(
             isEnd: state.test.get('isEnd'),
             isSend: state.test.get('isSend'),
             isRes: state.test.get('isRes'),
+            isIntervalSet: state.test.get('isIntervalSet'),
+            tempMessage: state.test.get('tempMessage'),
             isDuplicate: state.test.get('isDuplicate'),
             connectedDev: state.device.get('connectedDev'),
             userId: state.auth.getIn(['userState', 'user', 'userId']), 

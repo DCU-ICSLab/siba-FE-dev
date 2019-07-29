@@ -13,11 +13,20 @@ const TestWindow = ({
     changeTimeValue,
     sendCommand,
     setRef,
+    testBoxList,
+    changeTempMsg,
+    sendCommandWithDynamic,
+    tempMessage,
     testClear,
+    connectedDev,
+    isEnd
 }) => {
 
     return (
         <div id="TestWindow">
+            {connectedDev.size===0 && <div className="testwindow-shadow">
+                <div>디바이스가 연결되지 않았습니다.</div>
+            </div>}
             <header>
                 <div className="header-wrapper">
                 <img src={siba} width="53" height="50" className="siba-img"/>
@@ -86,11 +95,11 @@ const TestWindow = ({
                     <span>취소</span>
                 </button>
             </div>
-            <div className="footer-shadow"></div>
+            {((testBoxList.size===0 || testBoxList.getIn([testBoxList.size-1,'boxType'])!==2) || isEnd) && <div className="footer-shadow"></div>}
             <footer>
-                <textarea placeholder="동적 텍스트 박스인 경우 메시지를 입력해주세요.">
+                <textarea placeholder="동적 텍스트 박스인 경우 메시지를 입력해주세요." onChange={e=>changeTempMsg(e)} value={tempMessage}>
                 </textarea>
-                <button className="text-send-btn">전송</button>
+                <button className="text-send-btn" onClick={sendCommandWithDynamic}>전송</button>
             </footer>
         </div>
     )

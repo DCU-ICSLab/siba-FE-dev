@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import './TestToolBox.css';
 import { MdAccessTime, MdCheckCircle } from 'react-icons/md'
-import { PacmanLoader} from 'react-spinners';
 import Moment from 'react-moment';
 
 //최적화 시켜야 함.
@@ -43,21 +42,6 @@ const TestInfoCard = ({log, devName})=>{
             <div className="add-on">
 
             </div>
-            {/* {isPending && 
-            <div className="pender">
-                <PacmanLoader
-                    css={{
-                        display: 'block',
-                        margin: '0 auto',
-                        marginTop: '20px'
-                    }}
-                    sizeUnit={"px"}
-                    size={20}
-                    // color={'#87D5B7'}
-                    color={'#CDC53C'}
-                    loading={isPending}
-                />
-            </div>} */}
             <div className="additional">
 
             </div>
@@ -70,7 +54,8 @@ const TestToolBox = ({
     setRef,
     renderVisibleBox,
     testLogList,
-    devName
+    devName,
+    setGraphRef,
 }) => {
     return (
         <div id="TestToolBox">
@@ -90,7 +75,7 @@ const TestToolBox = ({
                         }
                     </div>
                 </div>
-                <div className="graph-area">
+                <div className="graph-area" ref={setGraphRef}>
                     <svg className="graph" ref={setRef}>
                         <g className="graph-inner">
                             {children}

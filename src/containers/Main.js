@@ -92,21 +92,31 @@ class Main extends Component {
     }
 
     _showDeivceStateChange = (message) => {
-        const { deviceActions } = this.props;
+        const { deviceActions, selectedDevice } = this.props;
         const msg = JSON.parse(message.body)
         const isDeviceConnect = msg.msgType === 1;
 
         const outputMessage = isDeviceConnect ? `디바이스가 연결되었습니다. \n ${msg.mac}` : `디바이스가 제거되었습니다. \n ${msg.mac}`
 
         if(isDeviceConnect){
-            deviceActions.pushConnectedDev({
-                devMac: msg.mac
-            })
+
+            //현재 디바이스 개발 페이지에 진입해 있고 개발하는 디바이스가 연결된 디바이스랑 일치한다면
+            if(selectedDevice && selectedDevice.get('vHubId')===msg.devId){
+                console.log('create specific')
+                deviceActions.pushConnectedDev({
+                    devMac: msg.mac
+                })
+            }
         }
         else{
-            deviceActions.deleteConnectedDev({
-                devMac: msg.mac
-            })
+
+            //현재 디바이스 개발 페이지에 진입해 있고 개발하는 디바이스가 연결이 끊긴 디바이스랑 일치한다면
+            if(selectedDevice && selectedDevice.get('devId')===msg.devId){
+                console.log('delete specific')
+                deviceActions.deleteConnectedDev({
+                    devMac: msg.mac
+                })
+            }
         }
 
         this.props.hubActions.pushHubClog({
@@ -124,10 +134,19 @@ class Main extends Component {
 
     _showHubStateChange = (message) => {
 
-        const { authActions, deviceActions } = this.props;
+        const { authActions, deviceActions, selectedDevice } = this.props;
 
         const msg = JSON.parse(message.body)
         const isHubConnect = msg.msgType === 1;
+
+        //허브 연결이 끊기면
+        if(!isHubConnect){
+            selectedDevice && console.log(selectedDevice.toJS())
+            if(selectedDevice && selectedDevice.get('vHubId')===msg.hubId){
+                console.log('clear all')
+                deviceActions.connectedDevAllClear();
+            }
+        }
 
         const outputMessage = isHubConnect ? `${msg.hubName} 허브가 연결되었습니다.` : `${msg.hubName} 허브 연결이 제거 되었습니다.`
         authActions.updateHubStatus({
@@ -146,10 +165,6 @@ class Main extends Component {
                 bodyClassName: 'toast',
             })
         console.log(message)
-
-        if(!isHubConnect){
-            
-        }
     }
 
     _generateToastMessage = ({ message }) => {
@@ -438,6 +453,7 @@ export default withRouter(
             hubModal: state.basic.getIn(['frameState', 'hubModal']),
             deviceInfo: state.auth.getIn(['userState', 'deviceInfo']),
             tempDevRepo: state.auth.get('tempDevRepo'),
+            selectedDevice: state.device.get('selectedDevice'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

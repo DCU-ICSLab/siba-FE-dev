@@ -71,6 +71,7 @@ const TEMP_BTN_CLEAR = 'device/TEMP_BTN_CLEAR'
 const TP_CHANGE = 'device/TP_CHANGE'
 const FIND_CHILD = 'device/FIND_CHILD'
 const SAVE_RES_CHANGE = 'device/SAVE_RES_CHANGE'
+const CONNECTED_DEV_ALL_CLEAR = 'device/CONNECTED_DEV_ALL_CLEAR'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -134,6 +135,7 @@ export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
 export const tpChange = createAction(TP_CHANGE)
 export const findChild = createAction(FIND_CHILD)
 export const saveResChange = createAction(SAVE_RES_CHANGE)
+export const connectedDevAllClear = createAction(CONNECTED_DEV_ALL_CLEAR)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -211,6 +213,10 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CONNECTED_DEV_ALL_CLEAR]: (state, action) => {
+        return state.set('connectedDev', List([]));
+    },
 
     [SAVE_RES_CHANGE]: (state, action) => {
         return state.set('isSaveRes', action.payload);

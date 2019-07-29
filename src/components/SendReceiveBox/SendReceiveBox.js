@@ -3,6 +3,7 @@ import './SendReceiveBox.css';
 import { SendJsonGenerator } from 'utils'
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula, tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { PacmanLoader} from 'react-spinners';
 
 const SendReceiveBox = ({
     children,
@@ -83,6 +84,21 @@ const SendReceiveBox = ({
                         <div className="test-body">
                         </div>
                     </div>
+                    {/* {isPending && 
+            <div className="pender">
+                <PacmanLoader
+                    css={{
+                        display: 'block',
+                        margin: '0 auto',
+                        marginTop: '20px'
+                    }}
+                    sizeUnit={"px"}
+                    size={20}
+                    // color={'#87D5B7'}
+                    color={'#CDC53C'}
+                    loading={isPending}
+                />
+            </div>} */}
                 </div>
             </div>
         </div>
