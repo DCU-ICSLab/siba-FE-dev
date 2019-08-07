@@ -29,7 +29,7 @@ const TestInfoCard = ({log, devName})=>{
             </header>
             <div className="test-card-body">
                 <div className="duration">
-                    <MdAccessTime/> Duration: {log.get('durationAt') ? <span>{log.get('durationAt') !==null} sec</span> : '-'} 
+                    <MdAccessTime/> Duration: {log.get('durationAt') ? <span>{log.get('durationAt')} sec</span> : '-'} 
                 </div>
                 <div className="finished">
                     <MdCheckCircle/><span> Finished: </span>
@@ -56,17 +56,43 @@ const TestToolBox = ({
     testLogList,
     devName,
     setGraphRef,
+    tab,
+    changeSideTab,
+    addonTab,
+    changeAddonTab
 }) => {
     return (
         <div id="TestToolBox">
             <div className="tool-main">
                 <div className="tool-upper"></div>
+                <div className="tool-side-addon">
+                    <button 
+                    disabled={addonTab==='1'}
+                    className={addonTab==='1' ? 'selected' : ''}
+                    onClick={()=>changeAddonTab('1')}
+                    style={{
+                        top: 44
+                    }}>test&nbsp;&nbsp; list</button>
+                    <button 
+                    disabled={addonTab==='2'}
+                    className={addonTab==='2' ? 'selected' : ''}
+                    onClick={()=>changeAddonTab('2')}
+                    style={{
+                        top: 144
+                    }}>command&nbsp;&nbsp; list</button>
+                </div>
                 <div className="tool-side">
+                    {addonTab==='1' && 
+                    <Fragment>
                     <header>
-                        <span>수행 테스트 목록</span>
+                        <div>수행 테스트 목록</div>
+                        <div className="tool-side-tab">
+                            <button disabled={tab==='1'} onClick={(e)=>changeSideTab('1')} className={tab==='1' ? 'selected' : ''}>command list</button>
+                            <button disabled={tab==='2'} onClick={(e)=>changeSideTab('2')} className={tab==='2' ? 'selected' : ''}>reservation list</button>
+                        </div>
                     </header>
                     <div className="test-list">
-                        {
+                        { tab === '1' &&
                             testLogList.map((log,index)=>{
                                 return(
                                     <TestInfoCard key={index} log={log} devName={devName}/>
@@ -74,6 +100,8 @@ const TestToolBox = ({
                             })
                         }
                     </div>
+                    </Fragment>
+                    }
                 </div>
                 <div className="graph-area" ref={setGraphRef}>
                     <svg className="graph" ref={setRef}>

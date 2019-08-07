@@ -19,12 +19,20 @@ const TestWindow = ({
     tempMessage,
     testClear,
     connectedDev,
-    isEnd
+    isEnd,
+    selectedDevice
 }) => {
+
+    console.log(selectedDevice.get('vHubId'))
+    console.log(connectedDev.size===0)
 
     return (
         <div id="TestWindow">
-            {connectedDev.size===0 && <div className="testwindow-shadow">
+            {!selectedDevice.get('vHubId') && <div className="testwindow-shadow">
+                <div>연결된 개발용 허브가 없습니다.</div>
+                <div>허브를 먼저 연결해주세요.</div>
+            </div>}
+            {(selectedDevice.get('vHubId') && connectedDev.size===0) && <div className="testwindow-shadow">
                 <div>디바이스가 연결되지 않았습니다.</div>
             </div>}
             <header>

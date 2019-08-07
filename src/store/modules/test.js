@@ -28,6 +28,8 @@ const SET_RES_STATE = 'test/SET_RES_STATE'
 const CHANGE_TEMP_MSG = 'test/CHANGE_TEMP_MSG'
 const CHANGE_INTERVAL_SET = 'test/CHANGE_INTERVAL_SET'
 const ADD_INTERVAL_SET_BOX = 'test/ADD_INTERVAL_SET_BOX'
+const CHANGE_SIDE_TAB = 'test/CHANGE_SIDE_TAB'
+const CHANGE_ADDON_TAB = 'test/CHANGE_ADDON_TAB'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -52,6 +54,8 @@ export const setResState = createAction(SET_RES_STATE)
 export const changeTempMsg = createAction(CHANGE_TEMP_MSG)
 export const changeIntervalSet = createAction(CHANGE_INTERVAL_SET)
 export const addIntervalSetBox = createAction(ADD_INTERVAL_SET_BOX)
+export const changeSideTab = createAction(CHANGE_SIDE_TAB)
+export const changeAddonTab = createAction(CHANGE_ADDON_TAB)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -83,11 +87,21 @@ const initialState = Map({
         status: false
     }),
 
-    isDuplicate: false
+    isDuplicate: false,
+    tab: '1',
+    addonTab: '1'
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CHANGE_ADDON_TAB]: (state, action) => {
+        return state.set('addonTab', action.payload)
+    },
+
+    [CHANGE_SIDE_TAB]: (state, action) => {
+        return state.set('tab', action.payload)
+    },
 
     [ADD_INTERVAL_SET_BOX]: (state, action) => {
         return state.update('testBoxList', boxes =>

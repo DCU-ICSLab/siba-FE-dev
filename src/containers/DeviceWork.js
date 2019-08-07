@@ -13,6 +13,7 @@ import FocusBox from 'components/TextBox/FocusBox';
 import TargetBox from 'components/TextBox/TargetBox';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
+import DataModelerWork from './DataModelerWork';
 
 const saveResTimer = null;
 
@@ -770,7 +771,9 @@ class DeviceWork extends Component {
     componentDidMount() {
         const { deviceActions, location } = this.props;
         deviceActions.pageSwitching({page: 1})
-        deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        if(location.state.dev){
+            deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        }
         //deviceActions.setSaveGraph({graph: this.props.selectedDevice})
     }
 
@@ -894,9 +897,7 @@ class DeviceWork extends Component {
                                 draggableLinkerStart={this._draggableLinkerStart} />}
                     </DevicePallet>}
 
-                    {page === 2 && 
-                    <SensingPallet></SensingPallet>
-                    }
+                    {page === 2 && <DataModelerWork></DataModelerWork>}
 
                     {page ===3 && <TestWork></TestWork>}
                 </DeviceWorkBox>

@@ -85,12 +85,14 @@
 #TestWindow .testwindow-shadow{
     position: absolute;
     /* border-top: 1px solid #dadce0; */
+    top:0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: #fff;
-    color: #333;
-    height: 80px;
+    color: #f1f1f1;
+    font-size: 14px;
+    /* height: 80px; */
     border-radius: 0px 0px 8px 8px;
     padding: 6px 6px;
     background-color: #555;

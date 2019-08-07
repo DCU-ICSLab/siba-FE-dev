@@ -311,6 +311,16 @@ class TestWork extends Component {
         testActions.changeTempMsg(e.target.value)
     }
 
+    _changeSideTab = (tab) => {
+        const { testActions } = this.props
+        testActions.changeSideTab(tab)
+    }
+
+    _changeAddonTab = (tab) => {
+        const { testActions } = this.props
+        testActions.changeAddonTab(tab)
+    }
+
     _moveTestMap = () => {
         const { testBoxList, pallet, isSend, isRes } = this.props;
         if (testBoxList.size === 0) return;
@@ -335,12 +345,13 @@ class TestWork extends Component {
     }
 
     componentDidMount() {
-        const { testActions } = this.props
+        const { testActions, deviceActions, selectedDevice } = this.props
         const g = this.svgArea.childNodes[0]
         const rect = g.getBBox();
         this.svgArea.style.height = rect.height + rect.y + 20 + 'px';
         this.svgArea.style.width = rect.width + rect.x + 20 + 'px';
         testActions.clearTimeFormat();
+        deviceActions.getConnectedDevInfo(selectedDevice.get('devId'))
         //testActions.testboxInit();
     }
 
@@ -368,14 +379,17 @@ class TestWork extends Component {
             connectedDev,
             selectedDevice,
             isSend,
-            tempMessage
+            tempMessage,
+            tab,
+            addonTab
         } = this.props;
 
         console.log(connectedDev.toJS())
 
         return (
             <Fragment>
-                <TestPallet>
+                <TestPallet
+                    connectedDev={connectedDev}>
                     <TestWindow
                         connectedDev={connectedDev}
                         setRef={this._setRefScroll}
@@ -390,6 +404,7 @@ class TestWork extends Component {
                         changeTempMsg={this._changeTempMsg}
                         tempMessage={tempMessage}
                         sendCommandWithDynamic={this._sendCommandWithDynamic}
+                        selectedDevice={selectedDevice}
                         isEnd={isEnd}>
                         {
                             testBoxList.map((box, index) => {
@@ -452,6 +467,10 @@ class TestWork extends Component {
                     </TestWindow>
                     <TestBox>
                         <TestToolBox 
+                        addonTab={addonTab}
+                        changeAddonTab={this._changeAddonTab}
+                        tab={tab}
+                        changeSideTab={this._changeSideTab}
                         devName={selectedDevice.get('devName')}
                         setGraphRef={this._setGraphRef}
                         setRef={this._setRef} 
@@ -510,6 +529,8 @@ export default withRouter(
             isEnd: state.test.get('isEnd'),
             isSend: state.test.get('isSend'),
             isRes: state.test.get('isRes'),
+            tab: state.test.get('tab'),
+            addonTab: state.test.get('addonTab'),
             isIntervalSet: state.test.get('isIntervalSet'),
             tempMessage: state.test.get('tempMessage'),
             isDuplicate: state.test.get('isDuplicate'),

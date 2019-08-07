@@ -215,7 +215,12 @@ const initialState = Map({
 export default handleActions({
 
     [CONNECTED_DEV_ALL_CLEAR]: (state, action) => {
-        return state.set('connectedDev', List([]));
+        if(state.getIn(['selectedDevice','vHubId'])===action.payload){
+            return state.set('connectedDev', List([]));
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
     },
 
     [SAVE_RES_CHANGE]: (state, action) => {
@@ -270,15 +275,21 @@ export default handleActions({
 
     [DELETE_CONNECTED_DEV]: (state, action) => {
 
-        const idx = state.get('connectedDev').findIndex(connectedDev => connectedDev.get('devMac')===action.payload.devMac)
+        if(state.getIn(['selectedDevice','devId'])===action.payload.devId){
+            const idx = state.get('connectedDev').findIndex(connectedDev => connectedDev.get('devMac')===action.payload.devMac)
 
-        return state.update('connectedDev', connectedDev =>
-            connectedDev.delete(idx)
-        );
+            return state.update('connectedDev', connectedDev =>
+                connectedDev.delete(idx)
+            );
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
     },
 
     [PUSH_CONNECTED_DEV]: (state, action) => {
-        return state.update('connectedDev', connectedDev =>
+        if(state.getIn(['selectedDevice','devId'])===action.payload.devId){
+            return state.update('connectedDev', connectedDev =>
             connectedDev.push(
                 Map({
                     devMac: action.payload.devMac,
@@ -286,6 +297,10 @@ export default handleActions({
                 })
             )
         );
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
     },
 
     [DEV_SELECT]: (state, action) => {
@@ -706,7 +721,7 @@ export default handleActions({
 
             return state.merge({
                 selectedDevice: dataset,
-                graph: dataset
+                graph: dataset,
             });
         },
     }),

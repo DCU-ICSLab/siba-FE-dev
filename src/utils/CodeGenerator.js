@@ -6,18 +6,17 @@ const CodeGenerator = (selectedDevices)=>{
     selectedDevices.get('pallet').map(box=>{
 
         const boxType = box.get('type')
-        console.log(boxType)
 
         //버튼 타입의 박스들에 대해서만 수행
         if(boxType===1 || boxType===5){
-            
+            console.log(boxType)
 
         const boxId=box.get('id')
         box.getIn(['info', 'buttons']).map(btn=>{
             const eventCode = btn.get('eventCode')
 
             //함수 이름 필터링
-            let funcName 
+            let funcName = null 
             switch(btn.get('type')){
 
                 case '1':
@@ -30,6 +29,8 @@ const CodeGenerator = (selectedDevices)=>{
                 default:
                     break;
             }
+
+            if(funcName){
             functionDefines+=
 `
 /*
@@ -48,6 +49,7 @@ size_t ${funcName}_${eventCode}(size_t before, sb_dataset data[2], size_t data_l
             functionCalls+=
 `   
     siba.add_event(${eventCode}, ${funcName}_${eventCode});`
+}
         })
     }
     })
@@ -72,6 +74,10 @@ const char* pwd = "your SIBA hub password";
 
 //your device's key for authentication
 const char* hw_auth_key = "${selectedDevices.get('devAuthKey')}";
+
+//your device's name (this name will be bluetooth alias)
+const char* dev_name = "${selectedDevices.get('devName')}";
+
 ${functionDefines}
 
 void add_ctrl_cmd_group() {
@@ -103,7 +109,7 @@ void setup() {
     siba.init(ssid, pwd, hw_auth_key);
 
     #else
-    siba.init(hw_auth_key);
+    siba.init(hw_auth_key, dev_name);
 
     #endif
 }
