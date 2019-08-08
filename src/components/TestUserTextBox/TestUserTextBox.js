@@ -3,7 +3,8 @@ import './TestUserTextBox.css';
 import Moment from 'react-moment';
 
 const TestUserTextBox = ({
-    children
+    children,
+    time
 }) => {
 
     return (
@@ -11,7 +12,7 @@ const TestUserTextBox = ({
             <div className="text-body">
                 {children}
                 <div className="msg-time">
-                    <Moment date={new Date} format="A HH:mm"></Moment>
+                    <Moment date={time} format="A HH:mm"></Moment>
                 </div>
             </div>
         </div>

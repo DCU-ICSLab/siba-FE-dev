@@ -12,9 +12,9 @@ class ButtonTextBox extends Component {
     }
 
     render() {
-        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent } = this.props;
-        let x = boxInfo.getIn(['pos', 'x']) + 20;
-        let y = boxInfo.getIn(['pos', 'y']) + 20;
+        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent, isSelect } = this.props;
+        let x = !isSelect ? boxInfo.getIn(['pos', 'x']) + 20 : 10;
+        let y = !isSelect ? boxInfo.getIn(['pos', 'y']) + 20 : 10;
         let id = boxInfo.get('id');
         //let dynamicHeight = boxInfo.get('height')
         let dynamicHeight = boxInfo.get('headRow')*20 + boxInfo.get('footRow')*20;
@@ -31,7 +31,7 @@ class ButtonTextBox extends Component {
                     className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">
-                        <rect x={x} y={y} width={175} height={height} style={{
+                        <rect rx={10}  ry={10} x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',
                             strokeWidth: 0.3,
                             strokeDasharray: isDragging ? '5 5' : 'none',

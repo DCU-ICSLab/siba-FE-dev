@@ -17,18 +17,21 @@ class VisibleBox extends Component {
         let y = boxInfo.getIn(['pos', 'y'])-3;
         let id = boxInfo.get('id');
         let type = boxInfo.get('type')
-        let additionalHeight = (type===1 || type===5) ? 32 : 0
+        let additionalHeight = (type===1 || type===5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker'])===null ? 0 : 16)
         let dynamicHeight = boxInfo.get('headRow') * 20 + boxInfo.get('footRow') * 20;
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
         let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight+3//base height + button counts*18
+        let EntrySt = type===5 ? 10 : 0
 
         return (
             <Fragment>
                 <g className="visible-box">
-                    <rect x={x} y={y} width={181} height={height} style={{
-                        stroke: isCurrent ? 'red' : 'blue',
-                        strokeWidth: 0.8,
-                        fill: 'none'
+                    <rect x={x} y={y-EntrySt} width={181} height={height+EntrySt} 
+                    rx="10" ry="10"
+                    style={{
+                        stroke: isCurrent ? '#3367D7' : '#555',
+                        strokeWidth: 1.8,
+                        fill: 'rgba(33,33,33,0.2)'
                         // strokeDasharray: isDragging ? '5 5' : 'none',
                         // fill: isDragging ? 'none' : '#fff',
                         // pointerEvents: 'all',

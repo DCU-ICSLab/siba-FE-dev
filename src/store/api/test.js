@@ -27,18 +27,36 @@ export const cancelTest = (authKey) =>{
 }
 
 //명령 전송
-export const sendBuildingJson = (cmdList, devMac, vhubId, devId) =>{
+export const sendBuildingJson = (cmdList, devMac, vhubId, devId, userId) =>{
 
     const baseURL = `${API_BASE_URL}/test/${devMac}`
-
-    console.log('dfdfdfdfd')
-    console.log(vhubId)
 
     return axios.post(baseURL, {
         cmdList: cmdList,
         vhubId: vhubId,
-        devId:devId
+        devId:devId,
+        userId: userId
     })
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}
+
+export const getReservation = (devMac, vHubId) => {
+    const baseURL = `${API_BASE_URL}/test/${vHubId}/reservation/${devMac}`
+
+    return axios.get(baseURL)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}
+
+export const cancelReservation = (vHubId, resId) => {
+    const baseURL = `${API_BASE_URL}/test/${vHubId}/reservation/${resId}`
+
+    return axios.post(baseURL)
     .then(res=> {
         console.log(res);
         return res;

@@ -13,6 +13,9 @@ import FocusBox from 'components/TextBox/FocusBox';
 import TargetBox from 'components/TextBox/TargetBox';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
+import DataModelerWork from './DataModelerWork';
+
+const saveResTimer = null;
 
 class DeviceWork extends Component {
 
@@ -32,7 +35,7 @@ class DeviceWork extends Component {
                             linker: null,
                             isSpread: false,
                             idx: 0,
-                            type: 1,
+                            type: '1',
                             eventCode: eventCodeIdCounter
                         }),
                     ])
@@ -47,7 +50,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
-                            type: 0,
+                            type: '0',
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -63,7 +66,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
-                            type: 0,
+                            type: '0',
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -81,6 +84,7 @@ class DeviceWork extends Component {
                             idx: 0,
                             type: 1,
                             linker: null,
+                            type: '1',
                             isSpread: false,
                             eventCode: eventCodeIdCounter
                         }),
@@ -232,7 +236,7 @@ class DeviceWork extends Component {
         const itemYHalf = 40;
 
         //실제 놓여야 하는 위치 계산
-        const translateX = e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - itemXHalf;
+        const translateX = e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+sbPos.left) + scrollX - itemXHalf;
         const translateY = e.clientY - 103 + scrollY - itemYHalf;
 
         return {
@@ -433,7 +437,7 @@ class DeviceWork extends Component {
 
         //실제 놓여야 하는 위치 계산
         return {
-            x: e.clientX - (sb ? sbPos.default+1 : sbPos.change+1) + scrollX - 3,
+            x: e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+ sbPos.left) + scrollX - 3,
             y: e.clientY - 123 + scrollY - 10
         }
     }
@@ -689,6 +693,7 @@ class DeviceWork extends Component {
     _saveDeviceTextBoxGraph = () => {
         const { deviceActions, selectedDevice, devId } = this.props;
         deviceActions.saveDeviceTextBoxGraph(devId, selectedDevice)
+        this._saveResChange(true)
     }
 
     _deployDeviceTextBoxGraph = () => {
@@ -708,7 +713,7 @@ class DeviceWork extends Component {
     }
 
     _buttonTypeChange = (e, idx) => {
-        const { deviceActions, targetedBox } = this.props;
+        const { deviceActions, targetedBox, tempButton } = this.props;
         deviceActions.devBtnSideTypeChange({
             idx: idx,
             id: targetedBox.getIn(['block', 'id']),
@@ -718,17 +723,63 @@ class DeviceWork extends Component {
             idx: idx,
             type: e.target.value
         })
+        this._typeChange(false)
+        deviceActions.setTempBtn(
+            {
+                childId: tempButton.get('childId'),
+                eventCode: tempButton.get('eventCode'),
+                name: tempButton.get('name'),
+                type: e.target.value,
+                idx: tempButton.get('idx'),
+            }
+        )
+    }
+
+    _addonOpen = (arg) => {
+        const { deviceActions } = this.props;
+        if(arg) deviceActions.tpChange(false)
+        deviceActions.addonOpen(arg)
+    }
+
+    _setTempBtn = (btn) => {
+        const { deviceActions } = this.props;
+        deviceActions.setTempBtn(btn)
+    }
+    
+    _tempBtnClear = () => {
+        const { deviceActions } = this.props;
+        deviceActions.tempBtnClear();
+    }
+
+    _typeChange = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.tpChange(arg)
+    }
+
+    _findChild = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.findChild(arg)
+    }
+
+    _saveResChange = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.saveResChange(arg)
+        if(arg){
+            setTimeout(()=>deviceActions.saveResChange(false), 4000)
+        }
     }
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
         deviceActions.pageSwitching({page: 1})
-        deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        if(location.state.dev){
+            deviceActions.getDeviceInfo(location.state.dev.get('devId'));
+        }
         //deviceActions.setSaveGraph({graph: this.props.selectedDevice})
     }
 
     componentWillUnmount() {
-
+        if(saveResTimer) clearTimeout(saveResTimer);
     }
 
     /*shouldComponentUpdate(nextProps, nextState) {
@@ -754,13 +805,19 @@ class DeviceWork extends Component {
             haveEntry,
             vHubId,
             devName,
-            page
+            page,
+            isAddOn,
+            tempButton,
+            isTypeChange,
+            childBox,
+            isSaveRes
         } = this.props;
 
         return (
             <Fragment>
                 <DeviceWorkBox vHubId={vHubId} devName={devName} pageSwitching={this._pageSwitching} page={page}>
                     {page === 1 && <DevicePallet
+                        findChild={this._findChild}
                         dragStart={this._drag}
                         dragOver={this._dragEnter}
                         drop={this._drop}
@@ -776,12 +833,22 @@ class DeviceWork extends Component {
                         deployDeviceTextBoxGraph={this._deployDeviceTextBoxGraph}
                         modalChange={this._modalChange}
                         buttonTypeChange={this._buttonTypeChange}
+                        addonOpen={this._addonOpen}
+                        isAddOn={isAddOn}
+                        setTempBtn={this._setTempBtn}
+                        tempButton={tempButton}
+                        tempBtnClear={this._tempBtnClear}
+                        isTypeChange={isTypeChange}
+                        typeChange={this._typeChange}
+                        childBox={childBox}
+                        isSaveRes={isSaveRes}
                         >
 
                         <g>
                             {pallet.map((boxInfo, index) => {
                                 return (
                                     <TextBox
+                                        isSelect={false}
                                         boxInfo={boxInfo}
                                         key={boxInfo.get('id')}
                                         index={index}
@@ -831,9 +898,7 @@ class DeviceWork extends Component {
                                 draggableLinkerStart={this._draggableLinkerStart} />}
                     </DevicePallet>}
 
-                    {page === 2 && 
-                    <SensingPallet></SensingPallet>
-                    }
+                    {page === 2 && <DataModelerWork></DataModelerWork>}
 
                     {page ===3 && <TestWork></TestWork>}
                 </DeviceWorkBox>
@@ -848,6 +913,7 @@ export default withRouter(
         // props 로 넣어줄 스토어 상태값
         state => ({
             page: state.device.get('page'),
+            isAddOn: state.device.get('isAddOn'),
             selectedDevice: state.device.get('selectedDevice'),
             devAuthKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
             devId: state.device.getIn(['selectedDevice', 'devId']),
@@ -869,6 +935,10 @@ export default withRouter(
             linkerVisible: state.device.get('linkerVisible'),
             selectedLinkerTarget: state.device.get('selectedLinkerTarget'),
             haveEntry: state.device.getIn(['selectedDevice', 'haveEntry']),
+            tempButton: state.device.get('tempButton'),
+            isTypeChange: state.device.get('isTypeChange'),
+            childBox: state.device.get('childBox'),
+            isSaveRes: state.device.get('isSaveRes'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

@@ -26,6 +26,8 @@ import HubAddModalWrapper from './HubAddModalWrapper/HubAddModalWrapper';
 import DeviceListModal from './DeviceListModal/DeviceListModal';
 import AdminPallet from './AdminPallet/AdminPallet';
 import TestEndBox from './TestEndBox/TestEndBox';
+import VisibleTargetedBox from './VisibleTargetedBox/VisibleTargetedBox';
+import DataModalWrapper from './DataModalWrapper/DataModalWrapper';
 
 export {
     DeviceListModal,
@@ -55,5 +57,7 @@ export {
     SendReceiveBox,
     TestToolBox,
     HubAddModalWrapper,
-    AdminPallet
+    AdminPallet,
+    VisibleTargetedBox,
+    DataModalWrapper
 }

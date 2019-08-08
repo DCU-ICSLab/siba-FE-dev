@@ -41,9 +41,50 @@
     position: absolute;
     top: 10px;
     width: 253px;
-    right: 0;
+    right: 16px;
     bottom: 7px;
     background-color: #F5F5F5;
+}
+
+#TestToolBox .tool-side-addon{
+    position: absolute;
+    top: 10px;
+    width: 15px;
+    right: 0;
+    bottom: 7px;
+    z-index: 9999;
+}
+
+#TestToolBox .tool-side-addon .selected{
+    background-color: #3267D4;
+    color: #fff;
+}
+
+#TestToolBox .tool-side-addon button{
+    position: absolute;
+    right: -41px;
+    /* left: -80px; */
+    font-size: 11px;
+    /* font-style: italic; */
+    font-weight: 500;
+    color: #282C2F;
+    /* background-color: #fff; */
+    outline: none;
+    /* border: 1px solid #dadce0; */
+    border: none;
+    cursor: pointer;
+    width:100px; 
+    height:15px; 
+    -webkit-transform: rotate(90deg); 
+    -ms-transform: rotate(90deg); 
+}
+
+#TestToolBox .tool-side-addon button:disabled{
+    cursor: default;
+}
+
+#TestToolBox .tool-side-addon button:not([disabled]):hover{
+    background-color: #dadce0;
 }
 
 #TestToolBox .tool-side > header{
@@ -55,33 +96,91 @@
     padding: 5px;
 }
 
+#TestToolBox .tool-side-tab .selected{
+    border-bottom: 3px solid #7B94D7;
+}
+
+#TestToolBox .tool-side-tab button{
+    width: 50%;
+    outline: none;
+    border: none;
+    padding: 4px;
+    margin-top: 3px;
+    border-top: 1px solid #dadce0;
+    cursor: pointer;
+    /* background-color: #dadce0; */
+    background-color: #fff;
+    font-size: 12px;
+}
+
+#TestToolBox .tool-side-tab button:disabled{
+    cursor: default;
+}
+
+#TestToolBox .tool-side-tab button:not([disabled]):hover{
+    color: #3267D4;
+    font-weight: bold;
+    /* background-color: #e1e1e1; */
+}
+
 /* #TestToolBox .tool-side > header > span{
     color: #3EAAAF;
 } */
 
 #TestToolBox .test-list{
+    position: absolute;
+    top: 55px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     overflow: auto;
 }
 
 #TestInfoCard{
-    border: 1px solid #dadce0;
-    border-left: 10px solid #9C9C9C;
+    border-top: 1px solid #dadce0;
+    border-right: 1px solid #dadce0;
+    border-bottom: 1px solid #dadce0;
+    /* border-left: 10px solid #9C9C9C; */
     height: 74px;
     margin-top: 6px;
     padding: 5px 7px;
     background-color: #fff;
+    position: relative;
 }
 
-#TestInfoCard .pending{
-    border-left: 10px solid #CDC53C;
+#TestInfoCard .add-on{
+    /* position: absolute;
+    width: 430px;
+    height: 170px;
+    left: 430px;
+    top: 0;
+    border: 1px solid #dadce0; */
 }
 
-#TestInfoCard .success{
+.pending{
+    /* border-left: 10px solid #E6DB48; */
+    border-left: 10px solid #9B9B9B;
+}
+
+.pending .test-name{
+    /* color: #E6DB48; */
+    color: #9B9B9B;
+}
+
+.success{
     border-left: 10px solid #6DA65A;
 }
 
-#TestInfoCard .failure{
+.success .test-name{
+    color: #6DA65A;
+}
+
+.failure{
     border-left: 10px solid #B94A46;
+}
+
+.failure .test-name{
+    color: #B94A46;
 }
 
 #TestInfoCard >header{
@@ -104,14 +203,23 @@
     padding-bottom: 3px;
 }
 
+#TestInfoCard .pender{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(33, 33, 33, 0.4);
+}
+
 #TestToolBox .graph-area{
     border: 1px solid #dadce0;
     position: absolute;
     top: 10px;
     left: 0;
-    right: 253px;
+    right: 273px;
     bottom: 7px;
-    overflow: auto;
+    overflow: scroll;
 
     background: linear-gradient(0deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px repeat padding-box border-box, linear-gradient(90deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px, linear-gradient(0deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, linear-gradient(90deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, #fff;
     background-repeat: repeat;

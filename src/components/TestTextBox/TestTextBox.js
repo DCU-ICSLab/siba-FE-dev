@@ -13,7 +13,10 @@ const TestTextBox = ({
     boxType,
     sendCommand,
     changeTimeSetter,
+    getReservationInfo,
+    cancelReservation,
     saveTempType,
+    sendCommandWithTimeWithInterval
 }) => {
 
     return (
@@ -37,7 +40,7 @@ const TestTextBox = ({
                     {boxType===3 && 
                     <button 
                     className="time-set-btn"
-                    onClick={changeTimeSetter}
+                    onClick={()=>changeTimeSetter(true, buttons.getIn([0,'cboxId']))}
                     disabled={!enable}>시간 설정</button>}
                     {postText!=='' && <div className="posttext">{postText}</div>}
                     <div className="msg-time">
@@ -48,14 +51,32 @@ const TestTextBox = ({
                 <div className="btn-list">
                 {(boxType===1 || boxType===5) && 
                     buttons.map((btn, index)=>{
-                        console.log(btn.get('cboxId'))
                         return(
                             <button 
                             key={index} 
                             className="link-btn"
                             onClick={(e)=>{
-                                saveTempType(btn.get('btnType'), btn.get('evCode'))
-                                sendCommand(`${index+1}번`, btn.get('cboxId'))
+                                if(btn.get('btnType')!=='7')
+                                    saveTempType(btn.get('btnType'), btn.get('evCode'))
+
+                                //예약 조회라면
+                                if(btn.get('btnType')==='2'){
+                                    getReservationInfo(`${index+1}번`)
+                                }
+
+                                //예약 취소라면
+                                else if(btn.get('btnType')==='6'){
+                                    cancelReservation(`${index+1}번`, btn.get('evCode'))
+                                }
+
+                                //주기 설정 이라면
+                                else if(btn.get('btnType')==='7'){
+                                    sendCommandWithTimeWithInterval(`${index+1}`)
+                                }
+
+                                else{
+                                    sendCommand(`${index+1}번`, btn.get('cboxId'))
+                                }
                             }}>
                             {index+1}
                             </button>

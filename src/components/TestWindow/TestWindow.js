@@ -13,11 +13,28 @@ const TestWindow = ({
     changeTimeValue,
     sendCommand,
     setRef,
+    testBoxList,
+    changeTempMsg,
+    sendCommandWithDynamic,
+    tempMessage,
     testClear,
+    connectedDev,
+    isEnd,
+    selectedDevice
 }) => {
+
+    console.log(selectedDevice.get('vHubId'))
+    console.log(connectedDev.size===0)
 
     return (
         <div id="TestWindow">
+            {!selectedDevice.get('vHubId') && <div className="testwindow-shadow">
+                <div>연결된 개발용 허브가 없습니다.</div>
+                <div>허브를 먼저 연결해주세요.</div>
+            </div>}
+            {(selectedDevice.get('vHubId') && connectedDev.size===0) && <div className="testwindow-shadow">
+                <div>디바이스가 연결되지 않았습니다.</div>
+            </div>}
             <header>
                 <div className="header-wrapper">
                 <img src={siba} width="53" height="50" className="siba-img"/>
@@ -30,7 +47,7 @@ const TestWindow = ({
             <article ref={setRef}>
                 {children}
             </article>
-            { timeSetter && 
+            { timeSetter.get('isOpen') && 
             <Fragment>
             <div className="time-setter-shadow"></div>
             <div className="time-setter">
@@ -38,7 +55,7 @@ const TestWindow = ({
                     <span>날짜/시간 선택</span>
                     <button 
                     className="close-time-setter"
-                    onClick={changeTimeSetter}>
+                    onClick={()=>changeTimeSetter(false, null)}>
                         <MdClose/>
                     </button>
                 </header>
@@ -86,11 +103,11 @@ const TestWindow = ({
                     <span>취소</span>
                 </button>
             </div>
-            <div className="footer-shadow"></div>
+            {((testBoxList.size===0 || testBoxList.getIn([testBoxList.size-1,'boxType'])!==2) || isEnd) && <div className="footer-shadow"></div>}
             <footer>
-                <textarea placeholder="동적 텍스트 박스인 경우 메시지를 입력해주세요.">
+                <textarea placeholder="동적 텍스트 박스인 경우 메시지를 입력해주세요." onChange={e=>changeTempMsg(e)} value={tempMessage}>
                 </textarea>
-                <button className="text-send-btn">전송</button>
+                <button className="text-send-btn" onClick={sendCommandWithDynamic}>전송</button>
             </footer>
         </div>
     )

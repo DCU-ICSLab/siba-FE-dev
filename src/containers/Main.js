@@ -37,7 +37,10 @@ class Main extends Component {
             const { authActions } = this.props;
             axios.defaults.headers.common.Authorization = 'Bearer ' + tokenValue;
             authActions.kakaoAuth().then(() => {
-                this._stompConnection(tokenValue);
+
+                //연결이 안된 경우에만 수행
+                if(stompClient===null)
+                    this._stompConnection(tokenValue);
             })
             authActions.setToken(tokenValue);
             return;
@@ -66,7 +69,26 @@ class Main extends Component {
             console.log('Connected: ' + frame);
             stompClient.subscribe(`/topic/keep-alive-${userState.getIn(['user', 'userId'])}`, this._showHubStateChange);
             stompClient.subscribe(`/topic/device-conn-${userState.getIn(['user', 'userId'])}`, this._showDeivceStateChange);
+            stompClient.subscribe(`/topic/test-finish-${userState.getIn(['user', 'userId'])}`, this._showDeivceTestStateChange);
         });
+    }
+
+    _showDeivceTestStateChange = (message) => {
+        const msg = JSON.parse(message.body)
+        const { deviceActions } = this.props;
+        deviceActions.updateTestLog({
+            testId:msg.testId,
+            finishedAt:msg.finishedAt,
+            durationAt:msg.duration,
+            status:msg.status
+        });
+
+        toast(this._generateToastMessage({
+            message: `#${msg.testId} 테스트가 종료되었습니다.`
+        }), {
+                className: 'toast',
+                bodyClassName: 'toast',
+            })
     }
 
     _showDeivceStateChange = (message) => {
@@ -77,13 +99,17 @@ class Main extends Component {
         const outputMessage = isDeviceConnect ? `디바이스가 연결되었습니다. \n ${msg.mac}` : `디바이스가 제거되었습니다. \n ${msg.mac}`
 
         if(isDeviceConnect){
+            console.log('create specific')
             deviceActions.pushConnectedDev({
-                devMac: msg.mac
+                devMac: msg.mac,
+                devId: msg.devId,
             })
         }
         else{
+            console.log('delete specific')
             deviceActions.deleteConnectedDev({
-                devMac: msg.mac
+                devMac: msg.mac,
+                devId: msg.devId,
             })
         }
 
@@ -102,10 +128,16 @@ class Main extends Component {
 
     _showHubStateChange = (message) => {
 
-        const { authActions } = this.props;
+        const { authActions, deviceActions } = this.props;
 
         const msg = JSON.parse(message.body)
         const isHubConnect = msg.msgType === 1;
+
+        //허브 연결이 끊기면
+        if(!isHubConnect){
+            console.log('clear all')
+            deviceActions.connectedDevAllClear(msg.hubId);
+        }
 
         const outputMessage = isHubConnect ? `${msg.hubName} 허브가 연결되었습니다.` : `${msg.hubName} 허브 연결이 제거 되었습니다.`
         authActions.updateHubStatus({
@@ -223,10 +255,11 @@ class Main extends Component {
     }
 
     _createDevice = () => {
-        const { authActions, regInput, deviceModal } = this.props;
+        const { authActions, regInput } = this.props;
         //디바이스 생성 요청 전송 이전에 validation 해야
-        authActions.createDevice(regInput);
-        basicActions.changeDeviceAddModal(!deviceModal);
+        authActions.createDevice(regInput).then(()=>{
+            this._deviceAddModalChange()
+        });
     }
 
     _linkDevicePage = (devId, dev) => {
@@ -412,6 +445,7 @@ export default withRouter(
             hubModal: state.basic.getIn(['frameState', 'hubModal']),
             deviceInfo: state.auth.getIn(['userState', 'deviceInfo']),
             tempDevRepo: state.auth.get('tempDevRepo'),
+            selectedDevice: state.device.get('selectedDevice'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

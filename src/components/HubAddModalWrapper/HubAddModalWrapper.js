@@ -18,6 +18,7 @@ const HubAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAddMo
             style={{
                 overlay: {
                     zIndex: 9999,
+                    backgroundColor: 'rgba(33,33,33,0.2)'
                 },
                 content: {
                     padding: 0,

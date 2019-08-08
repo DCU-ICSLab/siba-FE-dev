@@ -1,0 +1,167 @@
+#DataModalWrapper{
+    /* position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid #555; */
+}
+
+#DataModalWrapper > header{
+    color: #fff;
+    background-color: #555555;
+    height: 25px;
+
+
+}
+
+#DataModalWrapper > header > span{
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+#DataModalWrapper > header > button{
+    float: right;
+    outline: none;
+    border: none;
+    height: 100%;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+#DataModalWrapper > header > button:hover{
+    color: #333;
+}
+
+#DataModalWrapper .model-data-area{
+    margin: 0 auto;
+    margin-top: 15px;
+    border: 1px solid #dadce0;
+    width: 360px;
+    background-color: #F5F5F5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+#DataModalWrapper .modeler-upper{
+    display: block;
+    font-size: 14px;
+    width: 350px;
+    border: 1px solid #dadce0;
+    background-color: #fff;
+}
+
+#DataModalWrapper .modeler-editor{
+    margin-top: 2px;
+    display: block;
+    font-size: 14px;
+    width: 350px;
+    height: 23px;
+    border: 1px solid #dadce0;
+    background-color: #fff;
+}
+
+#DataModalWrapper .modeler-upper > div{
+    display: inline-block;
+    text-align: center;
+    height: 20px;
+}
+
+#DataModalWrapper .modeler-editor > div{
+    display: inline-block;
+    text-align: center;
+    height: 23px;
+}
+
+#DataModalWrapper .modeler-editor .key > input{
+    padding: 0px;
+    width: 145px;
+    border: none;
+    outline-color: #333;
+    height: 19px;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    text-align: center;
+}
+
+#DataModalWrapper .key{
+    position: relative;
+    width: 150px;
+    height: 100%;
+    border-right: 1px solid #dadce0;
+}
+
+#DataModalWrapper .dt{
+    width: 99px;
+    border-right: 1px solid #dadce0;
+    height: 100%;
+    position: relative;
+}
+
+#DataModalWrapper .dt > select{
+    position: absolute;
+    width: 95px;
+    left: 2px;
+    top: 3px;
+    border: none;
+    cursor: pointer;
+    outline-color: #333;
+}
+
+#DataModalWrapper .event{
+    width: 98px;
+    position: relative;
+}
+
+#DataModalWrapper #event-en{
+    /* display: block;
+    position: absolute;
+    left: 5px;
+    top: -3px; */
+    margin-top: 6px;
+    margin-left: 20px;
+    float: left;
+}
+
+#DataModalWrapper #event-dis-en{
+    /* display: block;
+    position: absolute;
+    left: 5px;
+    top: -3px; */
+    margin-top: 6px;
+    margin-left: 10px;
+    float: left;
+}
+
+#DataModalWrapper label{
+    margin-top: 3px;
+    float: left;
+}
+
+#DataModalWrapper .desc{
+    margin: 5px 20px;
+    font-size: 12px;
+}
+
+#DataModalWrapper .desc::before{
+    font-size: 1px;
+    color: #555;
+    /* border-radius: 50%; */
+    content: '●';
+    margin-right: 5px;
+}
+
+#DataModalWrapper .model-add{
+    margin-top: 10px;
+    border: 1px solid #555;
+    background-color: transparent;
+    border-radius: 2px;
+    margin-right: 20px;
+    padding: 1px 10px;
+    float: right;
+}

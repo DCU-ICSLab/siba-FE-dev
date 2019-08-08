@@ -27,24 +27,39 @@ class TestWork extends Component {
 
     _startTest = () => {
         const { testActions, devId } = this.props;
+        this._cancelTest();
         testActions.startTest(devId, 0);
     }
 
     _cancelTest = () => {
         const { testActions } = this.props
+        testActions.clearTimeFormat();
         testActions.testboxInit();
         testActions.setTextboxEnd(false);
         testActions.setSendState(false)
     }
 
-    _setRef = (ref) => {
-        this.elem = ref
-    }
-
     _scrollToBottom = () => {
+        this.chatScroll.scrollTop = this.chatScroll.scrollHeight - this.chatScroll.clientHeight;
         //this.elem.scrollIntoView({ behavior: "smooth" });
         //this.elem.scrollTop = this.elem.scrollHeight
         //console.log(this.elem.scrollHeight)
+    }
+
+    //예약 조회인 경우
+    _getReservationInfo = (arg) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        testActions.setResState(true)
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({ text: arg })
+        testActions.getReservation(connectedDev.getIn([0,'devMac']),vHubId)
+    }
+
+    _cancelReservation = (arg, resId) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({ text: arg })
+        testActions.cancelReservation(vHubId, resId);
     }
 
     _sendCommand = (arg, boxId) => {
@@ -59,20 +74,115 @@ class TestWork extends Component {
         this._scrollToBottom()
     }
 
-    _sendCommandWithTime = () => {
-        const { testActions, devId, timeFormat, testBoxList } = this.props;
-        const timeString = timeFormat.get('date').format('YYYY년 M월 D일 A HH:mm')
+    _sendCommandWithDynamic = () => {
+        const { testActions, tempMessage, testBoxList, devId} = this.props;
 
-        testActions.textBoxEnableChange();
-        testActions.addUserTextbox({ text: timeString })
-        testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
-        testActions.changeTimeSetter();
+        testActions.saveTempAdditionalType({
+            type: '2',
+            value: parseInt(tempMessage,10),
+        })
+
+        testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
+        testActions.addUserTextbox({ text: tempMessage }) //사용자 답 텍스트 박스 추가
+
+        testActions.changeTempMsg('')
+
+        const cboxId = testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId'])
+
+        //자식요소가 있다면
+        if(cboxId !== null)
+            testActions.sendCommand(devId, cboxId)
+
+        //없다면
+        else {
+            testActions.setTextboxEnd(true);
+        }
+
+    }
+
+    _sendCommandWithTime = () => {
+        const { testActions, devId, timeFormat, testBoxList, timeSetter } = this.props;
+        const ts = timeFormat.get('date').format('YYYY년 M월 D일 A HH:mm')
+
+        //console.log(timeFormat.get('date'))
+        //console.log(timeString)
+
+        testActions.saveTempAdditionalType({
+            type: '1',
+            value: parseInt(timeFormat.get('date').format('x'),10),
+        })
+
+        testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
+        testActions.addUserTextbox({ text: ts }) //사용자 답 텍스트 박스 추가
+
+        //자식요소가 있다면
+        if(timeSetter.get('cboxId') !== null){
+            //testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
+            //testActions.setTextboxEnd(true);
+            testActions.changeIntervalSet({
+                devId: devId,
+                cboxId: testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId'])
+            })
+        }
+        //없다면
+        else {
+            //testActions.setTextboxEnd(true);
+            testActions.changeIntervalSet({
+                devId: devId,
+                cboxId: null
+            })
+        }
+
+        //close
+        testActions.changeTimeSetter({
+            isOpen: false,
+            cboxId: null,
+        });
+
+        testActions.addIntervalSetBox()
+
         this._scrollToBottom()
     }
 
-    _changeTimeSetter = () => {
+    _sendCommandWithTimeWithInterval = (arg) => {
+        const { testActions, isIntervalSet } = this.props;
+
+        testActions.textBoxEnableChange();
+        testActions.saveTempAdditionalType({
+            type: '4',
+            value: arg,
+        })
+
+        let userText = '';
+        switch(arg){
+            case '1':
+                userText = '1회 실행'
+                break;
+            case '2':
+                userText = '매일 실행'
+                break;
+            case '3':
+                userText = '매주 실행'
+                break;
+            default:
+                break;
+        }
+
+        testActions.addUserTextbox({ text: userText }) //사용자 답 텍스트 박스 추가
+
+        //자식요소가 있다면
+        if(isIntervalSet.get('cboxId') !== null){
+            testActions.sendCommand(isIntervalSet.get('devId'), isIntervalSet.get('cboxId'))
+        }
+        //없다면
+        else {
+            testActions.setTextboxEnd(true);
+        }
+    }
+
+    _changeTimeSetter = (isOpen, boxId) => {
         const { testActions, timeSetter } = this.props;
-        if (!timeSetter) {
+        if (isOpen) {
             const date = moment();
             const day = date.format('dddd');
             const hour = date.format('H');
@@ -86,7 +196,10 @@ class TestWork extends Component {
                 t: min
             })
         }
-        testActions.changeTimeSetter();
+        testActions.changeTimeSetter({
+            isOpen: isOpen,
+            cboxId: boxId,
+        });
     }
 
     _changeTimeValue = (name, isUp) => {
@@ -126,8 +239,16 @@ class TestWork extends Component {
         this.svgArea = ref
     }
 
+    _setRefScroll = (ref) => {
+        this.chatScroll = ref
+    }
+
+    _setGraphRef= (ref) => {
+        this.graphDiv = ref
+    }
+
     _renderVisibleBox = () => {
-        const { testBoxList, pallet, isSend } = this.props;
+        const { testBoxList, pallet, isSend, isRes } = this.props;
         if (testBoxList.size === 0) return;
 
         const boxId = testBoxList.getIn([testBoxList.size - 1, 'boxId'])
@@ -136,12 +257,12 @@ class TestWork extends Component {
 
         return (
             <Fragment>
-                {!isSend && <VisibleBox
+                {!isSend && !isRes && <VisibleBox
                     boxInfo={boxInfo}
                     key={boxInfo.get('id')}
                     isCurrent={true}
                     index={0} />}
-                {boxInfo.getIn(['info', 'buttons']).map((btn, index) => {
+                {!isSend && !isRes && boxInfo.getIn(['info', 'buttons']).map((btn, index) => {
                     if (btn.get('linker')) {
                         const cboxInfo = pallet.get(pallet.findIndex(box => btn.getIn(['linker', 'childId']) === box.get('id')))
                         return (
@@ -157,6 +278,7 @@ class TestWork extends Component {
         )
     }
 
+
     _saveTempType = (btnType, eventCode) => {
         const { testActions } = this.props
         testActions.saveTempType({
@@ -167,30 +289,79 @@ class TestWork extends Component {
     }
 
     _sendCommandToHub = () => {
-        const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice } = this.props
+        const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice, deviceActions, userId } = this.props
         console.log('test send');
-        console.log(selectedDevice.toJS());
         if (connectedDev.size === 1){
-            console.log('send to hub');
             testActions.setSendState(true)
-            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId)
+            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId, userId).then((data)=>{
+                if(data.status===200){
+                    console.log('push new log')
+                    console.log(data.data)
+                    deviceActions.pushTestLog(data.data);
+                }
+            })
         }
         else {
             testActions.setDuplicate(true)
         }
     }
 
-    componentDidMount() {
+    _changeTempMsg = (e) => {
         const { testActions } = this.props
+        testActions.changeTempMsg(e.target.value)
+    }
+
+    _changeSideTab = (tab) => {
+        const { testActions } = this.props
+        testActions.changeSideTab(tab)
+    }
+
+    _changeAddonTab = (tab) => {
+        const { testActions } = this.props
+        testActions.changeAddonTab(tab)
+    }
+
+    _moveTestMap = () => {
+        const { testBoxList, pallet, isSend, isRes } = this.props;
+        if (testBoxList.size === 0) return;
+
+        const boxId = testBoxList.getIn([testBoxList.size - 1, 'boxId'])
+
+        const boxInfo = pallet.get(pallet.findIndex((box) => box.get('id') === boxId));
+
+        let x = boxInfo.getIn(['pos', 'x']) + 20 -3;
+        let y = boxInfo.getIn(['pos', 'y'])-3;
+        let id = boxInfo.get('id');
+        let type = boxInfo.get('type')
+        let additionalHeight = (type===1 || type===5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker'])===null ? 0 : 16)
+        let dynamicHeight = boxInfo.get('headRow') * 20 + boxInfo.get('footRow') * 20;
+        let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
+        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight+3//base height + button counts*18
+        let EntrySt = type===5 ? 10 : 0
+
+        
+        this.graphDiv.scrollTop = y-EntrySt-10
+        this.graphDiv.scrollLeft = x-10
+    }
+
+    componentDidMount() {
+        const { testActions, deviceActions, selectedDevice } = this.props
         const g = this.svgArea.childNodes[0]
         const rect = g.getBBox();
         this.svgArea.style.height = rect.height + rect.y + 20 + 'px';
         this.svgArea.style.width = rect.width + rect.x + 20 + 'px';
+        testActions.clearTimeFormat();
+        deviceActions.getConnectedDevInfo(selectedDevice.get('devId'))
         //testActions.testboxInit();
     }
 
     componentWillUnmount() {
 
+    }
+
+    componentDidUpdate(){
+        this._scrollToBottom()
+        this._moveTestMap()
     }
 
     render() {
@@ -206,21 +377,35 @@ class TestWork extends Component {
             isEnd,
             isDuplicate,
             connectedDev,
-            isSend
+            selectedDevice,
+            isSend,
+            tempMessage,
+            tab,
+            addonTab
         } = this.props;
+
+        console.log(connectedDev.toJS())
 
         return (
             <Fragment>
-                <TestPallet>
+                <TestPallet
+                    connectedDev={connectedDev}>
                     <TestWindow
-                        setRef={this._setRef}
+                        connectedDev={connectedDev}
+                        setRef={this._setRefScroll}
                         startTest={this._startTest}
                         cancelTest={this._cancelTest}
                         changeTimeSetter={this._changeTimeSetter}
                         timeSetter={timeSetter}
                         timeFormat={timeFormat}
                         changeTimeValue={this._changeTimeValue}
-                        sendCommand={this._sendCommandWithTime}>
+                        sendCommand={this._sendCommandWithTime}
+                        testBoxList={testBoxList}
+                        changeTempMsg={this._changeTempMsg}
+                        tempMessage={tempMessage}
+                        sendCommandWithDynamic={this._sendCommandWithDynamic}
+                        selectedDevice={selectedDevice}
+                        isEnd={isEnd}>
                         {
                             testBoxList.map((box, index) => {
                                 return (
@@ -234,7 +419,10 @@ class TestWork extends Component {
                                             boxType={box.get('boxType')}
                                             sendCommand={this._sendCommand}
                                             changeTimeSetter={this._changeTimeSetter}
-                                            saveTempType={this._saveTempType}>
+                                            saveTempType={this._saveTempType}
+                                            getReservationInfo={this._getReservationInfo}
+                                            cancelReservation={this._cancelReservation}
+                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
@@ -257,7 +445,7 @@ class TestWork extends Component {
                         {
                             isDuplicate &&
                             <TestTextBox
-                                preText={'연결된 디바이스가 여러개 존재합니다.'}
+                                preText={'연결된 동일 종류의 디바이스가 여러개 존재합니다.'}
                                 postText={'명령을 보낼 디바이스를 선택하세요.'}
                                 time={new Date()}
                                 enable={null}
@@ -278,11 +466,21 @@ class TestWork extends Component {
                         }
                     </TestWindow>
                     <TestBox>
-                        <TestToolBox setRef={this._setRef} renderVisibleBox={this._renderVisibleBox}>
+                        <TestToolBox 
+                        addonTab={addonTab}
+                        changeAddonTab={this._changeAddonTab}
+                        tab={tab}
+                        changeSideTab={this._changeSideTab}
+                        devName={selectedDevice.get('devName')}
+                        setGraphRef={this._setGraphRef}
+                        setRef={this._setRef} 
+                        renderVisibleBox={this._renderVisibleBox}
+                        testLogList={selectedDevice.get('testLogList')}>
                             <g>
                                 {pallet.map((boxInfo, index) => {
                                     return (
                                         <TextBox
+                                            isSelect={false}
                                             boxInfo={boxInfo}
                                             key={boxInfo.get('id')}
                                             index={index}
@@ -330,8 +528,14 @@ export default withRouter(
             cmdList: state.test.get('cmdList'),
             isEnd: state.test.get('isEnd'),
             isSend: state.test.get('isSend'),
+            isRes: state.test.get('isRes'),
+            tab: state.test.get('tab'),
+            addonTab: state.test.get('addonTab'),
+            isIntervalSet: state.test.get('isIntervalSet'),
+            tempMessage: state.test.get('tempMessage'),
             isDuplicate: state.test.get('isDuplicate'),
-            connectedDev: state.device.get('connectedDev')
+            connectedDev: state.device.get('connectedDev'),
+            userId: state.auth.getIn(['userState', 'user', 'userId']), 
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

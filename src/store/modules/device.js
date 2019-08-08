@@ -62,6 +62,17 @@ const GET_CONNECTED_DEV_INFO = 'device/GET_CONNECTED_DEV_INFO'
 const PUSH_CONNECTED_DEV = 'device/PUSH_CONNECTED_DEV'
 const DELETE_CONNECTED_DEV = 'device/DELETE_CONNECTED_DEV'
 
+//test?
+const PUSH_TEST_LOG = 'device/PUSH_TEST_LOG'
+const UPDATE_TEST_LOG = 'device/UPDATE_TEST_LOG'
+const ADDON_OPEN = 'device/ADDON_OPEN'
+const SET_TEMP_BTN = 'device/SET_TEMP_BTN'
+const TEMP_BTN_CLEAR = 'device/TEMP_BTN_CLEAR'
+const TP_CHANGE = 'device/TP_CHANGE'
+const FIND_CHILD = 'device/FIND_CHILD'
+const SAVE_RES_CHANGE = 'device/SAVE_RES_CHANGE'
+const CONNECTED_DEV_ALL_CLEAR = 'device/CONNECTED_DEV_ALL_CLEAR'
+
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
@@ -116,6 +127,15 @@ export const pageSwitching = createAction(DEV_PAGE_SWITCHING)
 export const getConnectedDevInfo = createAction(GET_CONNECTED_DEV_INFO, DeviceAPI.getConnectedDevInfo)
 export const pushConnectedDev = createAction(PUSH_CONNECTED_DEV)
 export const deleteConnectedDev = createAction(DELETE_CONNECTED_DEV)
+export const pushTestLog = createAction(PUSH_TEST_LOG)
+export const updateTestLog = createAction(UPDATE_TEST_LOG)
+export const addonOpen = createAction(ADDON_OPEN)
+export const setTempBtn = createAction(SET_TEMP_BTN)
+export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
+export const tpChange = createAction(TP_CHANGE)
+export const findChild = createAction(FIND_CHILD)
+export const saveResChange = createAction(SAVE_RES_CHANGE)
+export const connectedDevAllClear = createAction(CONNECTED_DEV_ALL_CLEAR)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -140,6 +160,7 @@ const initialState = Map({
         eventCodeIdCounter: 0,
 
         haveEntry: false,
+        testLogList:List([])
     }),
 
     graph: null,
@@ -175,23 +196,100 @@ const initialState = Map({
         status: null
     }),
 
+    //------------------temp data-----------
+
+    isAddOn: false,
+
+    tempButton: null,
+
+    isTypeChange: false,
+
+    childBox: null,
+
+    isSaveRes: false,
+
     connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
 
-    [DELETE_CONNECTED_DEV]: (state, action) => {
+    [CONNECTED_DEV_ALL_CLEAR]: (state, action) => {
+        if(state.getIn(['selectedDevice','vHubId'])===action.payload){
+            return state.set('connectedDev', List([]));
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
+    },
 
-        const idx = state.get('connectedDev').findIndex(connectedDev => connectedDev.get('devMac')===action.payload.devMac)
+    [SAVE_RES_CHANGE]: (state, action) => {
+        return state.set('isSaveRes', action.payload);
+    },
 
-        return state.update('connectedDev', connectedDev =>
-            connectedDev.delete(idx)
+    [FIND_CHILD]: (state, action) => {
+        const idx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload)
+        if(idx){
+            return state.set('childBox', state.getIn(['selectedDevice', 'pallet', idx]))
+        }
+        else
+            return state.set('childBox', null);
+    },
+
+    [TP_CHANGE]: (state, action) => {
+        return state.set('isTypeChange', action.payload);
+    },
+
+    [TEMP_BTN_CLEAR]: (state, action) => {
+        return state.set('tempButton', null);
+    },
+
+    [SET_TEMP_BTN]: (state, action) => {
+        return state.set('tempButton', Map({
+            childId: action.payload.childId,
+            eventCode: action.payload.eventCode,
+            name: action.payload.name,
+            type: action.payload.type,
+            idx: action.payload.idx,
+        }));
+    },
+
+    [ADDON_OPEN]: (state, action) => {
+        return state.set('isAddOn', action.payload);
+    },
+
+    [UPDATE_TEST_LOG]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','testLogList']).findIndex(testLogList => testLogList.get('testId')===action.payload.testId)
+
+        return state.updateIn(['selectedDevice','testLogList', idx], log=>
+            log.set('testStatus',action.payload.status)
+            .set('finishedAt',action.payload.finishedAt)
+            .set('durationAt',action.payload.durationAt)
         );
     },
 
+    [PUSH_TEST_LOG]: (state, action) => {
+        return state.updateIn(['selectedDevice','testLogList'], testLogList=>
+            testLogList.unshift(Map(action.payload.data)));
+    },
+
+    [DELETE_CONNECTED_DEV]: (state, action) => {
+
+        if(state.getIn(['selectedDevice','devId'])===action.payload.devId){
+            const idx = state.get('connectedDev').findIndex(connectedDev => connectedDev.get('devMac')===action.payload.devMac)
+
+            return state.update('connectedDev', connectedDev =>
+                connectedDev.delete(idx)
+            );
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
+    },
+
     [PUSH_CONNECTED_DEV]: (state, action) => {
-        return state.update('connectedDev', connectedDev =>
+        if(state.getIn(['selectedDevice','devId'])===action.payload.devId){
+            return state.update('connectedDev', connectedDev =>
             connectedDev.push(
                 Map({
                     devMac: action.payload.devMac,
@@ -199,6 +297,10 @@ export default handleActions({
                 })
             )
         );
+        }
+        else{
+            return state.update('connectedDev', connectedDev=>connectedDev);
+        }
     },
 
     [DEV_SELECT]: (state, action) => {
@@ -571,6 +673,7 @@ export default handleActions({
                 codeIdCounter: action.payload.data.data.codeIdCounter,
                 haveEntry: action.payload.data.data.haveEntry,
                 eventCodeIdCounter: action.payload.data.data.eventCodeIdCounter,
+                testLogList: List(action.payload.data.data.testLogList.map(log=>Map(log))),
                 pallet: List(
                     action.payload.data.data.pallet.map(box=>{
                         return Map({
@@ -618,7 +721,7 @@ export default handleActions({
 
             return state.merge({
                 selectedDevice: dataset,
-                graph: dataset
+                graph: dataset,
             });
         },
     }),
