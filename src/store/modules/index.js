@@ -7,6 +7,7 @@ import device from './device';
 import auth from './auth';
 import test from './test';
 import hub from './hub';
+import modeler from './modeler';
 
 export default (history) => combineReducers({
     router: connectRouter(history),
@@ -15,5 +16,6 @@ export default (history) => combineReducers({
     auth,
     test,
     hub,
+    modeler,
     pender: penderReducer, //pender 리듀서 추가
 });

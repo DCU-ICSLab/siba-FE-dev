@@ -255,10 +255,11 @@ class Main extends Component {
     }
 
     _createDevice = () => {
-        const { authActions, regInput, deviceModal } = this.props;
+        const { authActions, regInput } = this.props;
         //디바이스 생성 요청 전송 이전에 validation 해야
-        authActions.createDevice(regInput);
-        basicActions.changeDeviceAddModal(!deviceModal);
+        authActions.createDevice(regInput).then(()=>{
+            this._deviceAddModalChange()
+        });
     }
 
     _linkDevicePage = (devId, dev) => {

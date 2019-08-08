@@ -154,6 +154,7 @@
     height: 50%;
     width: 100%;
     margin-top: 0px;
+    position: relative;
 }
 
 #SensingPallet .button-set{
@@ -179,24 +180,22 @@
 }
 
 #SensingPallet .button-set-div{
+    padding-top: 5px;
     height: 18px;
     border-bottom: 1px solid #dadce0;
     background-color: #F5F5F5;
 }
 
-#SensingPallet .selected{
-    background-color: #fff !important;
-}
-
 #SensingPallet .btn-area{
     position: absolute;
     border: 1px solid #dadce0;
-    top: 68px;
+    top: 71px;
     left: 4px;
     right: 4px;
     bottom: 4px;
     background-color: #F5F5F5;
     overflow: auto;
+    padding-top: 5px;
 }
 
 #SensingPallet .button-set-div > button{
@@ -206,11 +205,13 @@
     font-size: 11px;
     position: absolute;
     left: 0;
-    cursor: pointer;
+    cursor: default;
     background-color: #E4E4E4;
+    color: #333;
 }
 
-#SensingPallet .button-set-div > button:hover{
+#SensingPallet .button-set-div > button:not([disabled]):hover{
+    cursor: pointer;
     background-color: #fff;
 }
 
@@ -284,4 +285,71 @@
     padding-bottom: 2px;
     color: #7C95D8;
     border-bottom: 3px solid #7C95D8;
+}
+
+#SensingPallet .event-area{
+
+}
+
+#SensingPallet .event-helper{
+    position: absolute;
+    width: 250px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid #dadce0;
+}
+
+#SensingPallet .btn-obj{
+    border: 1px solid #dadce0;
+    border: 1px solid #555;
+    border-radius: 2px;
+    height: 55px;
+    margin: 5px 5px 5px 5px;
+    padding: 5px;
+    color: #fff;
+    width: 210px;
+    display: inline-block;
+}
+
+#SensingPallet .btn-obj > span > span{
+    color: #242424;
+    font-weight: bold;
+}
+
+#SensingPallet .btn-obj-del{
+    float: right;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: #fff;
+    padding: 0;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    padding-top: 1px;
+}
+
+#SensingPallet .btn-obj-del:hover{
+    border-radius: 50%;
+    background-color: #fff;
+    color: #4994DB;
+}
+
+#SensingPallet .btn-obj-type{
+    background-color: #1F1F1F;
+    color: #dadce0;
+    padding: 2px 10px;
+    width: auto;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 200;
+}
+
+#SensingPallet .req-body-title{
+    border-top: 1px solid #dadce0;
+    margin-top: 10px;
+    padding-top: 3px;
+    padding-left: 10px;
+    margin-bottom: 3px;
 }

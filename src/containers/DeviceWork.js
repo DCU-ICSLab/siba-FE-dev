@@ -35,7 +35,7 @@ class DeviceWork extends Component {
                             linker: null,
                             isSpread: false,
                             idx: 0,
-                            type: 1,
+                            type: '1',
                             eventCode: eventCodeIdCounter
                         }),
                     ])
@@ -50,7 +50,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
-                            type: 0,
+                            type: '0',
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -66,7 +66,7 @@ class DeviceWork extends Component {
                             code: codeIdCounter,
                             name: '',
                             idx: 0,
-                            type: 0,
+                            type: '0',
                             linker: null,
                             isSpread: true,
                             eventCode: null
@@ -84,6 +84,7 @@ class DeviceWork extends Component {
                             idx: 0,
                             type: 1,
                             linker: null,
+                            type: '1',
                             isSpread: false,
                             eventCode: eventCodeIdCounter
                         }),
