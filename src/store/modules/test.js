@@ -30,6 +30,7 @@ const CHANGE_INTERVAL_SET = 'test/CHANGE_INTERVAL_SET'
 const ADD_INTERVAL_SET_BOX = 'test/ADD_INTERVAL_SET_BOX'
 const CHANGE_SIDE_TAB = 'test/CHANGE_SIDE_TAB'
 const CHANGE_ADDON_TAB = 'test/CHANGE_ADDON_TAB'
+const GET_DEVICE_STATE  = 'test/GET_DEVICE_STATE'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -56,6 +57,7 @@ export const changeIntervalSet = createAction(CHANGE_INTERVAL_SET)
 export const addIntervalSetBox = createAction(ADD_INTERVAL_SET_BOX)
 export const changeSideTab = createAction(CHANGE_SIDE_TAB)
 export const changeAddonTab = createAction(CHANGE_ADDON_TAB)
+export const getDeviceState = createAction(GET_DEVICE_STATE, TestAPI.getDeviceState)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -340,6 +342,48 @@ export default handleActions({
                         enable: true,
                         time: Date.now(),
                         buttons: List([])
+                    })
+                )
+            );
+        },
+    }),
+
+    ...pender({
+        type: GET_DEVICE_STATE,
+        onSuccess: (state, action) => {
+            const boxInfo = action.payload.data.data;
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: boxInfo.boxId,
+                        preText: boxInfo.preText,
+                        postText: boxInfo.postText,
+                        boxType: boxInfo.boxType,
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List(boxInfo.buttons.map(btn =>
+                            Map(btn)
+                        ))
+                    })
+                )
+            );
+        },
+        onFailure: (state, action) => {
+            const boxInfo = action.payload.data.data;
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: boxInfo.boxId,
+                        preText: boxInfo.preText,
+                        postText: boxInfo.postText,
+                        boxType: boxInfo.boxType,
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List(boxInfo.buttons.map(btn =>
+                            Map(btn)
+                        ))
                     })
                 )
             );

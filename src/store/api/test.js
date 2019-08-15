@@ -62,3 +62,16 @@ export const cancelReservation = (vHubId, resId) => {
         return res;
     });
 }
+
+export const getDeviceState = (devMac, vHubId, devId, boxId) => {
+    const baseURL = `${API_BASE_URL}/test/${vHubId}/state/${devMac}`
+
+    return axios.post(baseURL,{
+        devId: devId,
+        boxId: boxId
+    })
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

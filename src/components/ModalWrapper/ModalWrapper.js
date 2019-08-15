@@ -40,7 +40,7 @@ const ModalWrapper = ({children, codeModal, closeModal, selectedDevice, copy, co
                 <article>
                     <section className="code-box">
                         <div className="code-box-head">
-                            <button className="category-btn">Arduino</button>
+                            <button className="category-btn">Arduino(NodeMCU)</button>
                             <button className="category-btn disabled">atmega</button>
                             <button className="category-btn disabled">ARM(linux)</button>
                             <button className="category-btn disabled">raspberry</button>
@@ -63,6 +63,15 @@ const ModalWrapper = ({children, codeModal, closeModal, selectedDevice, copy, co
                                 <span style={{ marginLeft: 13 }}>복사</span>
                             </button>
                             </CopyToClipboard>
+                            <div style={{
+                                float: 'right',
+                                marginRight: 10,
+                                marginTop: 3,
+                                fontSize: 12,
+                                color: '#555'
+                            }}>
+                            [{codeString.length}] words
+                            </div>
                         </div>
                         <div className="code-box-body">
                             {copy && <div className="copy-st">copied to clipboard success!</div>}

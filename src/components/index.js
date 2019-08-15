@@ -28,6 +28,7 @@ import AdminPallet from './AdminPallet/AdminPallet';
 import TestEndBox from './TestEndBox/TestEndBox';
 import VisibleTargetedBox from './VisibleTargetedBox/VisibleTargetedBox';
 import DataModalWrapper from './DataModalWrapper/DataModalWrapper';
+import RuleModalWrapper from './RuleModalWrapper/RuleModalWrapper';
 
 export {
     DeviceListModal,
@@ -59,5 +60,6 @@ export {
     HubAddModalWrapper,
     AdminPallet,
     VisibleTargetedBox,
-    DataModalWrapper
+    DataModalWrapper,
+    RuleModalWrapper
 }

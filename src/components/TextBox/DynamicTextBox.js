@@ -20,6 +20,7 @@ class DynamicTextBox extends Component{
         let height = 30 + dynamicHeight;
         let preorder = boxInfo.get('preorder');
         let postorder = boxInfo.get('postorder');
+        const type = boxInfo.get('type');
         return (
             <Fragment>
                 <g onMouseEnter={isEvent ? (e)=>focus(e, x,y, id) : undefined}
@@ -36,7 +37,7 @@ class DynamicTextBox extends Component{
                     </g>
                     <DynamicTextBoxInner x={x} y={y} preorder={preorder} postorder={postorder}/>}
                 </g>
-                {(isEvent || boxInfo.getIn(['info', 'buttons', 0, 'linker'])) && <TextBoxButton
+                {type!==6 && (isEvent || boxInfo.getIn(['info', 'buttons', 0, 'linker'])) && <TextBoxButton
                     x={x}
                     y={y}
                     type={0}

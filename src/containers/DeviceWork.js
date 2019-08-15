@@ -41,7 +41,7 @@ class DeviceWork extends Component {
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
-                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter + 1);
                 break;
             case 2: //dynamic
                 additionalInfo = {
@@ -91,7 +91,32 @@ class DeviceWork extends Component {
                     ])
                 }
                 deviceActions.devCodeIdCnt(codeIdCounter + 1);
-                deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+                deviceActions.devEventCodeIdCnt(eventCodeIdCounter + 1);
+                break;
+            case 6: //select
+                additionalInfo = {
+                    buttons: List([
+                        Map({
+                            code: codeIdCounter,
+                            name: '',
+                            idx: 0,
+                            type: '0',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                        Map({
+                            code: codeIdCounter+1,
+                            name: '',
+                            idx: 1,
+                            type: '0',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                    ])
+                }
+                deviceActions.devCodeIdCnt(codeIdCounter + 2);
                 break;
             default:
         }
@@ -132,7 +157,7 @@ class DeviceWork extends Component {
         deviceActions.devAddTextBox({
             y: pos.translateY,
             x: pos.translateX,
-            id: id, 
+            id: id,
             type: dragType,
             preorder: info.headText,
             postorder: info.footText,
@@ -236,7 +261,7 @@ class DeviceWork extends Component {
         const itemYHalf = 40;
 
         //실제 놓여야 하는 위치 계산
-        const translateX = e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+sbPos.left) + scrollX - itemXHalf;
+        const translateX = e.clientX - (sb ? sbPos.default + 1 + sbPos.left : sbPos.change + 1 + sbPos.left) + scrollX - itemXHalf;
         const translateY = e.clientY - 103 + scrollY - itemYHalf;
 
         return {
@@ -261,7 +286,7 @@ class DeviceWork extends Component {
             eventCode: eventCodeIdCounter
         })
 
-        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter + 1);
 
         deviceActions.devCopyBtn({ code: codeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
@@ -271,7 +296,7 @@ class DeviceWork extends Component {
     _addBtnFuncSide = (e, id) => {
         e.stopPropagation();
         const { deviceActions, codeIdCounter, targetedBox, pallet, eventCodeIdCounter } = this.props;
-        console.log('eventcode:',eventCodeIdCounter)
+        console.log('eventcode:', eventCodeIdCounter)
         deviceActions.devAddBtnSide({
             id: id,
             code: codeIdCounter,
@@ -291,7 +316,7 @@ class DeviceWork extends Component {
 
         deviceActions.devCopyBtn({ code: codeIdCounter, eventCode: eventCodeIdCounter });
         deviceActions.devCodeIdCnt(codeIdCounter + 1);
-        deviceActions.devEventCodeIdCnt(eventCodeIdCounter+1);
+        deviceActions.devEventCodeIdCnt(eventCodeIdCounter + 1);
 
         const pos = pallet.getIn([pallet.findIndex(box => box.get('id') === id), 'pos'])
 
@@ -364,7 +389,7 @@ class DeviceWork extends Component {
         //링크의 좌우 대각선이 길어지면 놓여지는 지점에 path랑 마우스가 오버랩됨
         //이를 방지하기 위해 가감하여 계산
         deviceActions.devSelectLinkerChange({
-            x: x < pos.x ? pos.x-5 : pos.x+5,
+            x: x < pos.x ? pos.x - 5 : pos.x + 5,
             y: y < pos.y ? pos.y - 5 : pos.y + 5
         });
     }
@@ -393,9 +418,9 @@ class DeviceWork extends Component {
                     code: selectedLinker.get('code'),
                     childId: selectedLinkerTarget ? selectedLinkerTarget.get('blockId') : null,
                 }
-    
+
                 deviceActions.devAddLinker(linker)
-    
+
                 deviceActions.devLinkerDockingSrc({
                     id: selectedLinker.get('parentId'),
                     code: selectedLinker.get('code'),
@@ -437,7 +462,7 @@ class DeviceWork extends Component {
 
         //실제 놓여야 하는 위치 계산
         return {
-            x: e.clientX - (sb ? sbPos.default+1+sbPos.left : sbPos.change+1+ sbPos.left) + scrollX - 3,
+            x: e.clientX - (sb ? sbPos.default + 1 + sbPos.left : sbPos.change + 1 + sbPos.left) + scrollX - 3,
             y: e.clientY - 123 + scrollY - 10
         }
     }
@@ -447,7 +472,7 @@ class DeviceWork extends Component {
         e.stopPropagation(); // 상위 DOM에 이벤트 전파 방지
         e.preventDefault(); //기본 동작 수행 방지
         const { deviceActions } = this.props;
-        console.log('focus change:'+id)
+        console.log('focus change:' + id)
         deviceActions.devBoxFocus({
             id: id,
             x: x - 20,
@@ -486,11 +511,13 @@ class DeviceWork extends Component {
 
             this._select(selectedBox);
 
-            //버튼에서 연결하는 linker가 있다면
-            this._changeLinkerSrc({
-                x: pos.translateX,
-                y: pos.translateY,
-            }, selectedBox)
+            //버튼에서 연결하는 linker가 있다면(select가 아닌 경우)
+            //if(selectedBox.get('type')!==6){
+                this._changeLinkerSrc({
+                    x: pos.translateX,
+                    y: pos.translateY,
+                }, selectedBox)
+            //}
 
             //연결되어진 linker가 있다면
             this._changeLinkerDest({
@@ -523,9 +550,9 @@ class DeviceWork extends Component {
         const buttons = box.getIn(['block', 'info', 'buttons'])
         const type = box.getIn(['block', 'type']);
         const sz = buttons.size
-        const dynamicHeight = box.getIn(['block', 'footRow'])*20 + box.getIn(['block', 'headRow'])*20
+        const dynamicHeight = box.getIn(['block', 'footRow']) * 20 + box.getIn(['block', 'headRow']) * 20
         //버튼 박스, 엔트리 박스인 경우
-        if(type==1 || type ==5){
+        if (type == 1 || type == 5) {
             buttons.map((button, index) => {
                 button.get('linker') && deviceActions.devLinkerSrcChange({
                     code: button.get('code'),
@@ -536,8 +563,8 @@ class DeviceWork extends Component {
                 })
             })
         }
-        else{
-            const button = box.getIn(['block', 'info', 'buttons',0])
+        else {
+            const button = box.getIn(['block', 'info', 'buttons', 0])
             button.get('linker') && deviceActions.devLinkerSrcChange({
                 code: button.get('code'),
                 m: {
@@ -565,25 +592,25 @@ class DeviceWork extends Component {
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
     _changeTextBoxInfo = (e, id, name, location, row) => {
         //if (this._validationTextBox(e.target.value)) {
-            this._resize_height(e, id, name, location, row);
+        this._resize_height(e, id, name, location, row);
         //}
     }
 
     _resize_height = (event, id, key, location, row) => {
         const { deviceActions, targetedBox, selectedBox } = this.props;
         const textareaLineHeight = 20;
-        const minRows=1
-        const maxRows=4
-        
+        const minRows = 1
+        const maxRows = 4
+
         const previousRows = event.target.rows;
         event.target.rows = minRows; // reset number of rows in textarea 
-          
+
         const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
-      
+
         if (currentRows === previousRows) {
-          event.target.rows = currentRows;
+            event.target.rows = currentRows;
         }
-          
+
         if (currentRows > maxRows) {
             event.target.rows = maxRows;
             event.target.scrollTop = event.target.scrollHeight;
@@ -596,31 +623,31 @@ class DeviceWork extends Component {
 
         //사본 변경
         deviceActions.devInputChange({ key: event.target.name, text: event.target.value });
-        deviceActions.devInputRowChange({ key: location, row:  changeRow});
+        deviceActions.devInputRowChange({ key: location, row: changeRow });
 
         //원본 변경
-        deviceActions.devInputTargetChange({ 
-            key: event.target.name, 
-            text: event.target.value, 
+        deviceActions.devInputTargetChange({
+            key: event.target.name,
+            text: event.target.value,
             id: id,
             rowName: location,
             row: changeRow
         });
 
         //row값이 변경되었다면 linker m position 변경
-        if(row!=currentRows){
+        if (row != currentRows) {
 
             //focus 박스가 존재한다면
-            if(selectedBox){
+            if (selectedBox) {
                 deviceActions.devInputSelectedRowChange({
-                    key: location, 
+                    key: location,
                     row: changeRow
                 })
             }
             //버튼에서 연결하는 linker가 있다면
             this._changeLinkerSrc({
-                x: targetedBox.get('x')+20,
-                y: targetedBox.get('y')+(row< currentRows ? 40 : 0)
+                x: targetedBox.get('x') + 20,
+                y: targetedBox.get('y') + (row < currentRows ? 40 : 0)
             }, targetedBox)
         }
     }
@@ -709,11 +736,22 @@ class DeviceWork extends Component {
 
     _pageSwitching = (page) => {
         const { deviceActions } = this.props;
-        deviceActions.pageSwitching({page: page})
+        deviceActions.pageSwitching({ page: page })
     }
 
     _buttonTypeChange = (e, idx) => {
         const { deviceActions, targetedBox, tempButton } = this.props;
+
+        //기존 버튼이 조회-디바이스 또는 조회-센싱이였다면
+        if (tempButton.get('type') === '3' || tempButton.get('type') === '4') {
+            //조회-디바이스 또는 조회-센싱으로 변경한다면
+            if (!(e.target.value === '3' || e.target.value === '4')) {
+
+                //childBox가 있는지 검사
+
+            }
+        }
+
         deviceActions.devBtnSideTypeChange({
             idx: idx,
             id: targetedBox.getIn(['block', 'id']),
@@ -737,7 +775,7 @@ class DeviceWork extends Component {
 
     _addonOpen = (arg) => {
         const { deviceActions } = this.props;
-        if(arg) deviceActions.tpChange(false)
+        if (arg) deviceActions.tpChange(false)
         deviceActions.addonOpen(arg)
     }
 
@@ -745,7 +783,7 @@ class DeviceWork extends Component {
         const { deviceActions } = this.props;
         deviceActions.setTempBtn(btn)
     }
-    
+
     _tempBtnClear = () => {
         const { deviceActions } = this.props;
         deviceActions.tempBtnClear();
@@ -764,22 +802,22 @@ class DeviceWork extends Component {
     _saveResChange = (arg) => {
         const { deviceActions } = this.props;
         deviceActions.saveResChange(arg)
-        if(arg){
-            setTimeout(()=>deviceActions.saveResChange(false), 4000)
+        if (arg) {
+            setTimeout(() => deviceActions.saveResChange(false), 4000)
         }
     }
 
     componentDidMount() {
         const { deviceActions, location } = this.props;
-        deviceActions.pageSwitching({page: 1})
-        if(location.state.dev){
+        deviceActions.pageSwitching({ page: 1 })
+        if (location.state.dev) {
             deviceActions.getDeviceInfo(location.state.dev.get('devId'));
         }
         //deviceActions.setSaveGraph({graph: this.props.selectedDevice})
     }
 
     componentWillUnmount() {
-        if(saveResTimer) clearTimeout(saveResTimer);
+        if (saveResTimer) clearTimeout(saveResTimer);
     }
 
     /*shouldComponentUpdate(nextProps, nextState) {
@@ -842,7 +880,7 @@ class DeviceWork extends Component {
                         typeChange={this._typeChange}
                         childBox={childBox}
                         isSaveRes={isSaveRes}
-                        >
+                    >
 
                         <g>
                             {pallet.map((boxInfo, index) => {
@@ -853,8 +891,8 @@ class DeviceWork extends Component {
                                         key={boxInfo.get('id')}
                                         index={index}
                                         addBtnFunc={this._addBtnFunc}
-                                        focus={this._focus} 
-                                        isEvent={true}/>)
+                                        focus={this._focus}
+                                        isEvent={true} />)
                             })}
                         </g>
 
@@ -900,7 +938,7 @@ class DeviceWork extends Component {
 
                     {page === 2 && <DataModelerWork></DataModelerWork>}
 
-                    {page ===3 && <TestWork></TestWork>}
+                    {page === 3 && <TestWork></TestWork>}
                 </DeviceWorkBox>
             </Fragment>
         )

@@ -32,7 +32,7 @@ export const DraggableTextBox = ({ dragStart, dragOver, type, option }) => {
                         y="5"
                         width="37"
                         height="19"
-                        fill={type === 5 || type === 6 ? '#FFEB33' : '#fff'}
+                        fill={type === 5 ? '#FFEB33' : '#fff'}
                         stroke="#000"
                         pointerEvents="all"></rect>
                         :
@@ -71,7 +71,7 @@ export const DraggableTextBox = ({ dragStart, dragOver, type, option }) => {
             {type === 3 && <span>time</span>}
             {type === 4 && <span>linker</span>}
             {type === 5 && <span><strong>Entry</strong></span>}
-            {type === 6 && <span><strong>End</strong></span>}
+            {type === 6 && <span>select</span>}
         </a>
     )
 }

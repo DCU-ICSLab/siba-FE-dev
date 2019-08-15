@@ -65,6 +65,17 @@ class TextBox extends Component {
                 addBtnFunc={addBtnFunc}
                 focus={focus}
                 isEvent={isEvent}/>}
+                {type === 6 && 
+                <DynamicTextBox
+                isSelect={isSelect}
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}
+                isEvent={isEvent}/>}
                 {/* {type === 6 && 
                 <EndBox
                 boxInfo={boxInfo}

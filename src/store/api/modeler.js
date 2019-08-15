@@ -23,3 +23,14 @@ export const addDataModel = (devId, dataModel) =>{
         return res;
     });
 }
+
+export const addNewRule = (stateRule, devId) =>{
+
+    const baseURL = `${API_BASE_URL}/rule/${devId}`
+
+    return axios.post(baseURL, stateRule)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

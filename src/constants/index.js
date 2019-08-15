@@ -34,7 +34,7 @@ export const BUTTON_TYPE = [{
 },
 {
     type: 6,
-    name: 'end',
-    headText: 'none',
-    footText: 'none'
+    name: 'select',
+    headText: '조회 박스 입니다.',
+    footText: ''
 }];

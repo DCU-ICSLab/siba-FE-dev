@@ -119,6 +119,7 @@ const DevicePallet = ({
                             <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={3} />
                             {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={4} /> */}
                             <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={5} option={haveEntry} />
+                            <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} />
                             {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} /> */}
                         </div>
                     </div>

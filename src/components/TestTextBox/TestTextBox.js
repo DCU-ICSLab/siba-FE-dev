@@ -16,7 +16,8 @@ const TestTextBox = ({
     getReservationInfo,
     cancelReservation,
     saveTempType,
-    sendCommandWithTimeWithInterval
+    sendCommandWithTimeWithInterval,
+    getDeviceState
 }) => {
 
     return (
@@ -72,6 +73,11 @@ const TestTextBox = ({
                                 //주기 설정 이라면
                                 else if(btn.get('btnType')==='7'){
                                     sendCommandWithTimeWithInterval(`${index+1}`)
+                                }
+
+                                //디바이스 상태 조회 라면
+                                else if(btn.get('btnType')==='4'){
+                                    getDeviceState(`${index+1}번`, btn.get('cboxId'))
                                 }
 
                                 else{

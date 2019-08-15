@@ -149,6 +149,7 @@ const initialState = Map({
         //텍스트 블록을 담기 위한 배열
         pallet: List([]),
         linkers: List([]),
+        resultBoxes: List([]),
 
         //블록 아이디를 발급해주기 위함
         blockIdCounter: 1,
@@ -704,7 +705,8 @@ export default handleActions({
                                         z: Map(btn.linker.z)
                                     }) : null
                                 })))
-                            })
+                            }),
+                            rules: box.rules
                         })
                     })
                 ),
@@ -716,7 +718,7 @@ export default handleActions({
                         m: Map(linker.m),
                         z: Map(linker.z)
                     }))
-                ),        
+                ),  
             })
 
             return state.merge({

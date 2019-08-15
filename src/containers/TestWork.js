@@ -344,6 +344,14 @@ class TestWork extends Component {
         this.graphDiv.scrollLeft = x-10
     }
 
+    _getDeviceState = (arg, boxId) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        testActions.setResState(true)
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({ text: arg })
+        testActions.getDeviceState(connectedDev.getIn([0,'devMac']),vHubId, devId, boxId)
+    }
+
     componentDidMount() {
         const { testActions, deviceActions, selectedDevice } = this.props
         const g = this.svgArea.childNodes[0]
@@ -422,7 +430,8 @@ class TestWork extends Component {
                                             saveTempType={this._saveTempType}
                                             getReservationInfo={this._getReservationInfo}
                                             cancelReservation={this._cancelReservation}
-                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}>
+                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}
+                                            getDeviceState={this._getDeviceState}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
