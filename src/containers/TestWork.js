@@ -29,6 +29,14 @@ class TestWork extends Component {
         const { testActions, devId } = this.props;
         this._cancelTest();
         testActions.startTest(devId, 0);
+        this._setHubResult({
+            msg:'',
+            status:''
+        })
+        this._setDevResult({
+            msg:'',
+            status:''
+        })
     }
 
     _cancelTest = () => {
@@ -37,6 +45,14 @@ class TestWork extends Component {
         testActions.testboxInit();
         testActions.setTextboxEnd(false);
         testActions.setSendState(false)
+        this._setHubResult({
+            msg:'',
+            status:''
+        })
+        this._setDevResult({
+            msg:'',
+            status:''
+        })
     }
 
     _scrollToBottom = () => {
@@ -288,6 +304,16 @@ class TestWork extends Component {
         })
     }
 
+    _setHubResult = (arg) =>{
+        const { testActions } = this.props;
+        testActions.setHubResult(arg);
+    }
+
+    _setDevResult = (arg) =>{
+        const { testActions } = this.props;
+        testActions.setDevResult(arg);
+    }
+
     _sendCommandToHub = () => {
         const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice, deviceActions, userId } = this.props
         console.log('test send');
@@ -298,6 +324,16 @@ class TestWork extends Component {
                     console.log('push new log')
                     console.log(data.data)
                     deviceActions.pushTestLog(data.data);
+                    this._setHubResult({
+                        msg:'명령이 허브까지 도달하였습니다.',
+                        status:'HttpStatus.OK (200)'
+                    })
+                }
+                else{
+                    this._setHubResult({
+                        msg:'명령이 허브까지 도달 못하였거나, 허브내에서 오류가 발생하였습니다.',
+                        status:'HttpStatus.INTERNAL_SERVER_ERROR (500)'
+                    })
                 }
             })
         }
@@ -389,7 +425,9 @@ class TestWork extends Component {
             isSend,
             tempMessage,
             tab,
-            addonTab
+            addonTab,
+            hubResult,
+            deviceResult
         } = this.props;
 
         console.log(connectedDev.toJS())
@@ -508,6 +546,8 @@ class TestWork extends Component {
                                 })}
                         </TestToolBox>
                         <SendReceiveBox
+                            hubResult={hubResult}
+                            deviceResult={deviceResult}
                             cmdList={cmdList}
                         >
 
@@ -542,6 +582,8 @@ export default withRouter(
             addonTab: state.test.get('addonTab'),
             isIntervalSet: state.test.get('isIntervalSet'),
             tempMessage: state.test.get('tempMessage'),
+            hubResult: state.test.get('hubResult'),
+            deviceResult: state.test.get('deviceResult'),
             isDuplicate: state.test.get('isDuplicate'),
             connectedDev: state.device.get('connectedDev'),
             userId: state.auth.getIn(['userState', 'user', 'userId']), 

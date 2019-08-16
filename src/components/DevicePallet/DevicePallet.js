@@ -92,6 +92,7 @@ const DevicePallet = ({
     typeChange,
     findChild,
     isSaveRes,
+    isDeployRes,
     addonOpen }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
@@ -392,9 +393,6 @@ const DevicePallet = ({
             {/* pallet */}
             <div className="overflow-trick"></div>
             <div className="pallet" onScroll={scrollFunc}>
-                {isSaveRes && <div className="alert-box">
-                    <span>텍스트 박스 그래프 저장이 성공적으로 수행되었습니다 :)</span>
-                </div>}
                 <div className="background"></div>
                 <svg
                     id="draggable"
@@ -404,7 +402,7 @@ const DevicePallet = ({
                     onDrop={drop}
                     style={{
                         left: 0,
-                        top: isSaveRes ? 28: 0,
+                        top: 0,
                         width: '100%',
                         height: '100%',
                         display: 'block',
@@ -571,6 +569,24 @@ const DevicePallet = ({
                         </div>
                     </div>
                 </div>}
+
+                {
+                isSaveRes && 
+                //true && 
+                <div className="alert-box">
+                    <span>텍스트 박스 그래프 저장이 성공적으로 수행되었습니다 :)</span>
+                </div>
+                }
+
+                {
+                isDeployRes && 
+                //true && 
+                <div className="alert-box" style={{
+                    width: 380
+                }}>
+                    <span>스킬 서버로 텍스트 박스 그래프 배포가 성공적으로 수행되었습니다. :)</span>
+                </div>
+                }
         </div>
     )
 }

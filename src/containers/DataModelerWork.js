@@ -8,22 +8,28 @@ import * as testActions from 'store/modules/test';
 import * as deviceActions from 'store/modules/device';
 import * as modelerActions from 'store/modules/modeler';
 import {
-    TestPallet,
-    TestBox,
-    TestTextBox,
-    TestUserTextBox,
-    TestWindow,
-    SendReceiveBox,
-    TestToolBox,
-    TestEndBox,
     SensingPallet,
     DataModalWrapper,
-    RuleModalWrapper
+    RuleModalWrapper,
+    EventModalWrapper
 } from 'components';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
 
 class DataModelerWork extends Component {
+
+    _deleteRule = (modId, boxId, idx) => {
+        const {modelerActions, deviceActions} = this.props
+        modelerActions.deleteRule(modId, boxId, idx).then(arg=>{
+            console.log(arg)
+            if(arg.status === 200){
+                deviceActions.deleteRule({
+                    idx: arg.data.data.idx,
+                    boxId: arg.data.data.boxId,
+                })
+            }
+        })
+    }
 
     _buttonSelect = (item) => {
         const {modelerActions} = this.props
@@ -47,6 +53,11 @@ class DataModelerWork extends Component {
     _initModelAdd = () => {
         const {modelerActions} = this.props
         modelerActions.initModelAdd();
+    }
+
+    _initEventAdd = () => {
+        const {modelerActions} = this.props
+        modelerActions.initEventAdd();
     }
 
     _initRuleAdd = () => {
@@ -104,7 +115,7 @@ class DataModelerWork extends Component {
     }
 
     _addStateRule = () => {
-        const {modelerActions, ruleAdd, devId, selectedBox} = this.props
+        const {modelerActions, deviceActions, ruleAdd, devId, selectedBox} = this.props
         modelerActions.addStateRule({
             modId: null,
             devId: devId,
@@ -114,7 +125,16 @@ class DataModelerWork extends Component {
             ruleType: ruleAdd.get('type'),
             ruleValue: ruleAdd.get('fixValue'),
             mapVal: ruleAdd.get('convert'),
-        }, devId)
+        }, devId).then(arg=>{
+            console.log(arg)
+            if(arg.status === 200){
+                console.log(arg.data.data)
+                deviceActions.addRule({
+                    boxId: selectedBox.get('boxId'),
+                    rule: arg.data.data
+                })
+            }
+        })
     }
 
     _changeDataModal = (isOpen, modType) => {
@@ -133,6 +153,14 @@ class DataModelerWork extends Component {
         modelerActions.changeRuleModal(arg)
         if(arg){
             this._initRuleAdd()
+        }
+    }
+
+    _changeEventModal = (arg) => {
+        const {modelerActions} = this.props
+        modelerActions.changeEventModal(arg)
+        if(arg){
+            this._initEventAdd()
         }
     }
 
@@ -182,6 +210,8 @@ class DataModelerWork extends Component {
                 buttonSelect={this._buttonSelect}
                 selectedBox={selectedBox}
                 changeRuleModal={this._changeRuleModal}
+                changeEventModal={this._changeEventModal}
+                deleteRule={this._deleteRule}
                 >
                 </SensingPallet>
                 <DataModalWrapper
@@ -201,6 +231,15 @@ class DataModelerWork extends Component {
                     modelerInfo={modelerInfo}
                 >
                 </RuleModalWrapper>
+                <EventModalWrapper
+                    dataModal={modelerTemp.get('eventModal')}
+                    changeDataModal={this._changeEventModal}
+                    changeModelAdd={this._changeRuleAdd}
+                    ruleAdd={ruleAdd}
+                    addStateRule={this._addStateRule}
+                    modelerInfo={modelerInfo}
+                >
+                </EventModalWrapper>
             </Fragment>
         )
     }

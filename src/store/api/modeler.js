@@ -34,3 +34,14 @@ export const addNewRule = (stateRule, devId) =>{
         return res;
     });
 }
+
+export const deleteRule = (modId, boxId, idx) =>{
+
+    const baseURL = `${API_BASE_URL}/rule/${modId}/box/${boxId}/idx/${idx}`
+
+    return axios.post(baseURL)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}

@@ -9,6 +9,8 @@ import {
     MdBugReport,
     MdEdit,
     MdClose,
+    MdClear,
+    MdCreate
 } from 'react-icons/md'
 import {VisibleTargetedBox} from 'components';
 import { Progress } from 'react-sweet-progress';
@@ -40,28 +42,34 @@ const DataModelRecord = ({ item, index, isNull }) => {
     }
 
     return (
-        <Fragment>
+        <div id="record">
             <div style={{
                 width: 26,
-                borderRight: '1px solid #888',
-                backgroundColor: '#CEDDED'
+                // backgroundColor: '#CEDDED'
             }}>{isNull ? '-' : index + 1}</div>
             <div style={{
                 width: 108,
-                borderRight: '1px solid #888',
             }}>{isNull ?  '-' : item.get('dataKey')}</div>
             <div style={{
                 width: 109,
-                borderRight: '1px solid #888',
             }}>{isNull ? '-' : dataType}</div>
-            <div style={{
-                width: 60
-            }}></div>
-        </Fragment>
+            <div className="record-editable">
+            {
+                !isNull && <Fragment>
+                    <button className="model-edit">
+                        <MdCreate/>
+                    </button>
+                    <button className="model-del">
+                        <MdClear/>
+                    </button>
+                </Fragment>
+            }
+            </div>
+        </div>
     )
 }
 
-const ButtonCard = ({ item, buttonSelect, selectedBox }) => {
+const ButtonCard = ({ item, buttonSelect, selectedBox}) => {
 
     if (selectedBox)
         console.log(selectedBox.toJS())
@@ -76,7 +84,7 @@ const ButtonCard = ({ item, buttonSelect, selectedBox }) => {
             <div style={{
                 marginTop: 15
             }}>
-                <span className="btn-obj-type">정의규칙 갯수: {3}</span>
+                <span className="btn-obj-type">정의규칙 갯수: {item.get('rules').size}</span>
                 <button
                     className="edit-btn"
                     onClick={() => buttonSelect(item)}>
@@ -96,7 +104,9 @@ const SensingPallet = ({
     changeDataModal,
     buttonSelect,
     selectedBox,
-    changeRuleModal
+    changeRuleModal,
+    deleteRule,
+    changeEventModal
 }) => {
 
     return (
@@ -139,7 +149,7 @@ const SensingPallet = ({
                                 }}>DATA TYPE</div>
                                 <div style={{
                                     width: '25%'
-                                }}>USE</div>
+                                }}></div>
                             </header>
                             <div className="model-table-body">
                                 <div className="data-model">
@@ -192,7 +202,7 @@ const SensingPallet = ({
                                 }}>DATA TYPE</div>
                                 <div style={{
                                     width: '25%'
-                                }}>USE</div>
+                                }}></div>
                             </header>
                             <div className="model-table-body">
                                 <div className="data-model">
@@ -217,7 +227,7 @@ const SensingPallet = ({
                             <header>
                                 <span>조회 박스 집합</span>
                             </header>
-                            <div className="button-set-div">
+                            {/* <div className="button-set-div">
                                 <button
                                     disabled={page === '1'}
                                     onClick={() => {
@@ -237,7 +247,7 @@ const SensingPallet = ({
                                         left: 100,
                                         backgroundColor: page === '2' ? '#fff' : '#E4E4E4'
                                     }}>조회-센싱</button>
-                            </div>
+                            </div> */}
                             <span>select box count: {modelerInfo && modelerInfo.get('boxRules').size}</span>
                             <div className="btn-area">
                                 {
@@ -254,7 +264,7 @@ const SensingPallet = ({
                             </div>
                         </div>
                         <div className="req-text">
-                            {!selectedBox && <div className="req-text-shadow"></div>}
+                            {/* {!selectedBox && <div className="req-text-shadow"></div>} */}
                             <header>
                                 <span>조회 박스 세부정보</span>
                             </header>
@@ -275,9 +285,14 @@ const SensingPallet = ({
                                 <div className="req-body-title">텍스트박스 적용 규칙</div>
                                 <div className="link-model-table">
                                     <header>
+                                        <div className="m-order" style={{
+                                            backgroundColor: '#DBDCE0',
+                                            borderRight: '1px solid #DBDCE0'
+                                        }}>순위</div>
                                         <div className="m-key">KEY</div>
                                         <div className="m-op">OP</div>
                                         <div className="m-value">VALUE</div>
+                                        <div className="m-edit"></div>
                                     </header>
                                         <Fragment>
                                             {
@@ -304,9 +319,20 @@ const SensingPallet = ({
                                                     }
                                                     return(
                                                         <div className="rule" key={index}>
+                                                            <div className="m-order">{index+1}</div>
                                                             <div className="m-key">{item.get('dataKey')}</div>
                                                             <div className="m-op">{rule}</div>
                                                             <div className="m-value">{rule==='-' ? '-' : item.get('RuleValue')}</div>
+                                                            <div className="m-edit">
+                                                                <button className="model-edit">
+                                                                    <MdCreate/>
+                                                                </button>
+                                                                <button 
+                                                                className="model-del"
+                                                                onClick={()=>deleteRule(item.get('modId'), item.get('boxId'), index)}>
+                                                                    <MdClear/>
+                                                                </button>                                   
+                                                            </div>
                                                         </div>
                                                     )
                                                 })
@@ -314,17 +340,30 @@ const SensingPallet = ({
                                             {
                                                 selectedBox && selectedBox.get('rules').size===0 &&
                                                 <div className="rule">
+                                                    <div className="m-order">-</div>
                                                     <div className="m-key">-</div>
                                                     <div className="m-op">-</div>
                                                     <div className="m-value">-</div>
+                                                    <div className="m-edit">-</div>
+                                                </div>
+                                            }
+                                            {
+                                                !selectedBox &&
+                                                <div className="rule">
+                                                    <div className="m-order">-</div>
+                                                    <div className="m-key">-</div>
+                                                    <div className="m-op">-</div>
+                                                    <div className="m-value">-</div>
+                                                    <div className="m-edit">-</div>
                                                 </div>
                                             }
                                         </Fragment>
-                                    {selectedBox && <button
-                                        className="add-rule"
-                                        onClick={() => changeRuleModal(true)}>규칙 추가</button>
-                                    }
                                 </div>
+                                {selectedBox && 
+                                <button
+                                    className="add-rule"
+                                    onClick={() => changeRuleModal(true)}>규칙 추가</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -332,7 +371,9 @@ const SensingPallet = ({
                     <div className="down-editor">
                         <header>
                             <span>이벤트 정의기</span>
-                            <button className="event-adder">이벤트 추가</button>
+                            <button 
+                            className="event-adder"
+                            onClick={()=>{changeEventModal(true)}}>이벤트 추가</button>
                         </header>
                         <div className="event-area">
                             <div className="event-list">

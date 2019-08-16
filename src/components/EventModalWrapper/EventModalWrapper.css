@@ -1,4 +1,4 @@
-#DataModalWrapper{
+#EventModalWrapper{
     /* position: absolute;
     top: 0;
     left: 0;
@@ -7,18 +7,18 @@
     border: 1px solid #555; */
 }
 
-#DataModalWrapper > header{
+#EventModalWrapper > header{
     color: #fff;
     background-color: #555555;
     height: 25px;
 }
 
-#DataModalWrapper > header > span{
+#EventModalWrapper > header > span{
     font-size: 12px;
     margin-left: 10px;
 }
 
-#DataModalWrapper > header > button{
+#EventModalWrapper > header > button{
     float: right;
     outline: none;
     border: none;
@@ -28,15 +28,15 @@
     cursor: pointer;
 }
 
-#DataModalWrapper > header > button:hover{
+#EventModalWrapper > header > button:hover{
     color: #333;
 }
 
-#DataModalWrapper .model-data-area{
+#EventModalWrapper .model-data-area{
     margin: 0 auto;
     margin-top: 15px;
     border: 1px solid #dadce0;
-    width: 360px;
+    width: 480px;
     background-color: #F5F5F5;
     display: flex;
     flex-direction: column;
@@ -45,39 +45,39 @@
     height: 60px;
 }
 
-#DataModalWrapper .modeler-upper{
+#EventModalWrapper .modeler-upper{
     display: block;
     font-size: 14px;
-    width: 350px;
+    width: 470px;
     border: 1px solid #dadce0;
     background-color: #fff;
 }
 
-#DataModalWrapper .modeler-editor{
+#EventModalWrapper .modeler-editor{
     margin-top: 2px;
     display: block;
     font-size: 14px;
-    width: 350px;
+    width: 470px;
     height: 23px;
     border: 1px solid #dadce0;
     background-color: #fff;
 }
 
-#DataModalWrapper .modeler-upper > div{
+#EventModalWrapper .modeler-upper > div{
     display: inline-block;
     text-align: center;
     height: 20px;
 }
 
-#DataModalWrapper .modeler-editor > div{
+#EventModalWrapper .modeler-editor > div{
     display: inline-block;
     text-align: center;
     height: 23px;
 }
 
-#DataModalWrapper .modeler-editor .key > input{
+#EventModalWrapper .modeler-editor .converter > input{
     padding: 0px;
-    width: 145px;
+    width: 112px;
     border: none;
     outline-color: #333;
     height: 19px;
@@ -87,66 +87,72 @@
     text-align: center;
 }
 
-#DataModalWrapper .key{
+#EventModalWrapper .key{
     position: relative;
     width: 150px;
     height: 100%;
     border-right: 1px solid #dadce0;
 }
 
-#DataModalWrapper .dt{
+#EventModalWrapper .key > select{
+    text-align: center;
+    text-align-last: center;
+    position: absolute;
+    width: 145px;
+    left: 2px;
+    top: 3px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+#EventModalWrapper .dt{
     width: 99px;
     border-right: 1px solid #dadce0;
     height: 100%;
     position: relative;
 }
 
-#DataModalWrapper .dt > select{
+#EventModalWrapper .dt > select{
+    font-size: 12px;
+    text-align: center;
+    text-align-last: center;
     position: absolute;
     width: 95px;
     left: 2px;
     top: 3px;
     border: none;
     cursor: pointer;
-    outline-color: #333;
+    outline: none;
 }
 
-#DataModalWrapper .event{
+#EventModalWrapper .event{
     width: 98px;
     position: relative;
 }
 
-#DataModalWrapper #event-en{
-    /* display: block;
+#EventModalWrapper .modeler-editor .event > input{
+    padding: 0px;
+    width: 93px;
+    border: none;
+    outline-color: #333;
+    height: 19px;
     position: absolute;
-    left: 5px;
-    top: -3px; */
-    margin-top: 6px;
-    margin-left: 20px;
-    float: left;
+    top: 2px;
+    left: 3px;
+    text-align: center;
 }
 
-#DataModalWrapper #event-dis-en{
-    /* display: block;
-    position: absolute;
-    left: 5px;
-    top: -3px; */
-    margin-top: 6px;
-    margin-left: 10px;
-    float: left;
+#EventModalWrapper input:disabled{
+    background-color: #eee;
 }
 
-#DataModalWrapper label{
-    margin-top: 3px;
-    float: left;
-}
-
-#DataModalWrapper .desc{
+#EventModalWrapper .desc{
     margin: 5px 20px;
     font-size: 12px;
 }
 
-#DataModalWrapper .desc::before{
+#EventModalWrapper .desc::before{
     font-size: 1px;
     color: #555;
     /* border-radius: 50%; */
@@ -154,7 +160,7 @@
     margin-right: 5px;
 }
 
-#DataModalWrapper .model-add{
+#EventModalWrapper .model-add{
     margin-top: 10px;
     border: 1px solid #555;
     background-color: transparent;
@@ -162,4 +168,24 @@
     margin-right: 20px;
     padding: 1px 10px;
     float: right;
+}
+
+#EventModalWrapper .converter{
+    position: relative;
+    border-left: 1px solid #dadce0;
+    text-align: center;
+    width: 120px;
+}
+
+#EventModalWrapper .converter select{
+    text-align: center;
+    text-align-last: center;
+    position: absolute;
+    width: 115px;
+    left: 2px;
+    top: 3px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    font-size: 12px;
 }

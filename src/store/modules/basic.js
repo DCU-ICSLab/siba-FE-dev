@@ -23,6 +23,7 @@ const HUB_REG_VALUE_CHANGE = 'basic/HUB_REG_VALUE_CHANGE'
 const HUB_REG_INPUT_CLEAR = 'basic/HUB_REG_INPUT_CLEAR'
 const GET_HUB_AUTH_KEY = 'basic/GET_HUB_AUTH_KEY'
 const DEVICE_LIST_MODAL_CHANGE = 'basic/DEVICE_LIST_MODAL_CHANGE'
+const CHANGE_COPY_STATE = 'basic/CHANGE_COPY_STATE'
 
 /*--------create action--------*/
 export const sbToggle = createAction(SB_TOGGLE);
@@ -42,6 +43,7 @@ export const getDeviceAuthKey = createAction(GET_DEVICE_AUTH_KEY, DeviceAPI.getD
 export const hubRegValueChange = createAction(HUB_REG_VALUE_CHANGE);
 export const hubRegInputClear = createAction(HUB_REG_INPUT_CLEAR);
 export const deviceListModalChange = createAction(DEVICE_LIST_MODAL_CHANGE);
+export const changeCopyState = createAction(CHANGE_COPY_STATE);
 export const getHubAuthKey = createAction(GET_HUB_AUTH_KEY, DeviceAPI.getDeviceAuthKey);
 //export const getVirtualHub = createAction(GET_VIRTUAL_HUB);
 
@@ -63,16 +65,27 @@ const initialState = Map({
     }),
 
     regInput: Map({
-
+        devName: '',
+        authKey: '',
+        //vHubId: null,
+        devType: '3',
+        devDefName: '',
+        category: null
     }),
 
     hubInput: Map({
 
-    })
+    }),
+
+    keyCopy: false
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CHANGE_COPY_STATE]: (state, action) => {
+        return state.set('keyCopy', action.payload);
+    },
     
     [DEVICE_LIST_MODAL_CHANGE]: (state, action) => {
         return state.setIn(['frameState', 'deviceListModal'], !action.payload);
@@ -127,7 +140,7 @@ export default handleActions({
             devName: '',
             authKey: '',
             //vHubId: null,
-            devType: null,
+            devType: '3',
             devDefName: '',
             category: null
         }));

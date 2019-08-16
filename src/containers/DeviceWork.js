@@ -727,6 +727,7 @@ class DeviceWork extends Component {
         //저장이 안됬으면 수행불가능하게 만들어야
         const { deviceActions, devId } = this.props;
         deviceActions.deployDeviceTextBoxGraph(devId);
+        this._deployResChange(true)
     }
 
     _modalChange = () => {
@@ -807,6 +808,14 @@ class DeviceWork extends Component {
         }
     }
 
+    _deployResChange = (arg) => {
+        const { deviceActions } = this.props;
+        deviceActions.deployResChange(arg)
+        if (arg) {
+            setTimeout(() => deviceActions.deployResChange(false), 4000)
+        }
+    }
+
     componentDidMount() {
         const { deviceActions, location } = this.props;
         deviceActions.pageSwitching({ page: 1 })
@@ -848,7 +857,8 @@ class DeviceWork extends Component {
             tempButton,
             isTypeChange,
             childBox,
-            isSaveRes
+            isSaveRes,
+            isDeployRes
         } = this.props;
 
         return (
@@ -880,6 +890,7 @@ class DeviceWork extends Component {
                         typeChange={this._typeChange}
                         childBox={childBox}
                         isSaveRes={isSaveRes}
+                        isDeployRes={isDeployRes}
                     >
 
                         <g>
@@ -977,6 +988,7 @@ export default withRouter(
             isTypeChange: state.device.get('isTypeChange'),
             childBox: state.device.get('childBox'),
             isSaveRes: state.device.get('isSaveRes'),
+            isDeployRes: state.device.get('isDeployRes'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { MdClose, MdCached } from 'react-icons/md'
-import './RuleModalWrapper.css';
+import './EventModalWrapper.css';
 import Modal from 'react-modal';
 
-const RuleModalWrapper = ({ 
+const EventModalWrapper = ({ 
     dataModal, 
     changeDataModal, 
     changeModelAdd, 
@@ -33,15 +33,15 @@ const RuleModalWrapper = ({
                     // right: '70px',
                     marginLeft: 'auto',
                     marginRight: 'auto',
-                    height: '195px',
+                    height: '175px',
                     maxWidth: '520px',
                     overflow: 'hidden'
                     // bottom: '85px',
                 }
             }}>
-            <div id="RuleModalWrapper">
+            <div id="EventModalWrapper">
                 <header>
-                    <span>텍스트박스 적용 규칙 추가</span>
+                    <span>이벤트 발생 조건 추가</span>
                     <button onClick={()=>changeDataModal(false)}>
                         <MdClose/>
                     </button>
@@ -51,7 +51,7 @@ const RuleModalWrapper = ({
                         <div className="key">연결 KEY</div>
                         <div className="dt">적용조건</div>
                         <div className="event">적용 값</div>
-                        <div className="converter">치환 텍스트</div>
+                        <div className="converter">출력 경로</div>
                     </div>
                     <div className="modeler-editor">
                         <div className="key">
@@ -90,20 +90,16 @@ const RuleModalWrapper = ({
                             }} value={ruleAdd.get('fixValue')}></input>
                         </div>
                         <div className="converter">
-                            <input 
-                            disabled={ruleAdd.get('type')==='1'}
-                            name="convert" 
-                            type="text" onChange={(e)=>{
-                                changeModelAdd(e.target.name, e.target.value)
-                            }} value={ruleAdd.get('convert')}></input>
+                            <select name="output" value={ruleAdd.get('output')} onChange={(e)=>changeModelAdd(e.target.name, e.target.value)}>
+                                <option value="1">{'알림톡'}</option>
+                                <option value="2">{'제어'}</option>
+                                <option value="3">{'3rd Server'}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div className="desc">
-                    조건 없음으로 설정 시, KEY값에 대응되는 데이터가 그대로 표출.
-                </div>
-                <div className="desc">
-                    이미 존재하는 RULE과 KEY, 조건, 적용 값이 모두 동일하면 추가 불가.
+                    이미 존재하는 이벤트와 KEY, 조건, 적용 값이 모두 동일하면 추가 불가.
                 </div>
                 <button className="model-add" onClick={addStateRule}>추가</button>
             </div>
@@ -111,4 +107,4 @@ const RuleModalWrapper = ({
     )
 }
 
-export default RuleModalWrapper;
+export default EventModalWrapper;

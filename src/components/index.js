@@ -29,6 +29,7 @@ import TestEndBox from './TestEndBox/TestEndBox';
 import VisibleTargetedBox from './VisibleTargetedBox/VisibleTargetedBox';
 import DataModalWrapper from './DataModalWrapper/DataModalWrapper';
 import RuleModalWrapper from './RuleModalWrapper/RuleModalWrapper';
+import EventModalWrapper from './EventModalWrapper/EventModalWrapper';
 
 export {
     DeviceListModal,
@@ -61,5 +62,6 @@ export {
     AdminPallet,
     VisibleTargetedBox,
     DataModalWrapper,
-    RuleModalWrapper
+    RuleModalWrapper,
+    EventModalWrapper
 }

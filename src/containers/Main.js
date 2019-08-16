@@ -18,6 +18,7 @@ import * as authActions from 'store/modules/auth';
 import * as basicActions from 'store/modules/basic';
 import * as hubActions from 'store/modules/hub';
 import * as deviceActions from 'store/modules/device';
+import * as testActions from 'store/modules/test';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/index';
@@ -30,6 +31,14 @@ var stompClient = null;
 var socket = null;
 
 class Main extends Component {
+
+    _copyAuthenticationKey = () => {
+        const { basicActions } = this.props;
+        basicActions.changeCopyState(true)
+        //if (arg) {
+            setTimeout(() => basicActions.changeCopyState(false), 4000)
+        //}
+    }
 
     _checkUser = () => {
         const tokenValue = localStorage.getItem(ACCESS_TOKEN)
@@ -75,12 +84,18 @@ class Main extends Component {
 
     _showDeivceTestStateChange = (message) => {
         const msg = JSON.parse(message.body)
-        const { deviceActions } = this.props;
+        console.log(msg)
+        const { deviceActions, testActions } = this.props;
         deviceActions.updateTestLog({
             testId:msg.testId,
             finishedAt:msg.finishedAt,
             durationAt:msg.duration,
             status:msg.status
+        });
+
+        testActions.setDevResult({
+            msg: msg.status==='0' ? '명령 집합이 정상적으로 수행되었습니다.' : '명령이 실패하였습니다.\n 논리 오류',
+            status: msg.status==='0' ? 'DEVICE_ACT_SUCCESS' : 'DEVICE_ACT_FAIL'
         });
 
         toast(this._generateToastMessage({
@@ -347,7 +362,8 @@ class Main extends Component {
             hubInput,
             deviceListModal,
             tempDevRepo,
-            location } = this.props;
+            location,
+            keyCopy } = this.props;
 
 
         return (
@@ -382,6 +398,7 @@ class Main extends Component {
                                 <VirtualHub
                                     hub={hub}
                                     key={index}
+                                    copyAuthenticationKey={this._copyAuthenticationKey}
                                     deviceAddModalChange={this._deviceAddModalChange}
                                     foldChange={this._fold}
                                     redirectDevicePage={this._linkDevicePage}
@@ -420,6 +437,9 @@ class Main extends Component {
                     listSize={tempDevRepo.get('list').size}
                 >
                 </DeviceListModal>
+                {keyCopy && <div className="alert-box">
+                    허브 인증키를 클립보드로 복사하였습니다.
+                </div>}
             </Fragment>
         )
     }
@@ -433,6 +453,7 @@ export default withRouter(
             userState: state.auth.get('userState'),
             regInput: state.basic.get('regInput'),
             hubInput: state.basic.get('hubInput'),
+            keyCopy: state.basic.get('keyCopy'),
             sb: state.basic.getIn(['frameState', 'sb']),
             sbTalk: state.basic.getIn(['frameState', 'sbTalk']),
             sbCall: state.basic.getIn(['frameState', 'sbCall']),
@@ -453,6 +474,7 @@ export default withRouter(
             authActions: bindActionCreators(authActions, dispatch),
             hubActions: bindActionCreators(hubActions, dispatch),
             deviceActions: bindActionCreators(deviceActions, dispatch),
+            testActions: bindActionCreators(testActions, dispatch),
         })
     )(Main)
 )

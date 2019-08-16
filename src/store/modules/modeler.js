@@ -18,6 +18,9 @@ const CHANGE_RULE_MODAL = 'modeler/CHANGE_RULE_MODAL'
 const INIT_RULE_ADD = 'modeler/INIT_RULE_ADD'
 const CHANGE_RULE_ADD = 'modeler/CHANGE_RULE_ADD'
 const ADD_STATE_RULE = 'modeler/ADD_STATE_RULE'
+const DELETE_RULE = 'modeler/DELETE_RULE'
+const INIT_EVENT_ADD = 'modeler/INIT_EVENT_ADD'
+const CHANGE_EVENT_MODAL = 'modeler/CHANGE_EVENT_MODAL'
 
 /*--------create action--------*/
 export const changeBtnCategoryPage = createAction(CHANGE_BTN_CATEGORY_PAGE);
@@ -31,7 +34,10 @@ export const boxSelect = createAction(BOX_SELECT);
 export const changeRuleModal = createAction(CHANGE_RULE_MODAL);
 export const initRuleAdd = createAction(INIT_RULE_ADD);
 export const changeRuleAdd = createAction(CHANGE_RULE_ADD);
+export const changeEventModal = createAction(CHANGE_EVENT_MODAL);
 export const addStateRule = createAction(ADD_STATE_RULE, ModelerAPI.addNewRule);
+export const deleteRule = createAction(DELETE_RULE, ModelerAPI.deleteRule)
+export const initEventAdd = createAction(INIT_EVENT_ADD);
 
 
 /*--------state definition--------*/
@@ -43,7 +49,8 @@ const initialState = Map({
             isOpen: false,
             modType: '0'
         }),
-        ruleModal: false
+        ruleModal: false,
+        eventModal: false,
     }),
 
     modelerInfo: Map({
@@ -65,11 +72,22 @@ const initialState = Map({
         fixValue:''
     }),
 
+    eventAdd: Map({
+        key: '',
+        type: '1',
+        output: '1',
+        fixValue:''
+    }),
+
     selectedBox: null
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CHANGE_EVENT_MODAL]: (state, action) => {
+        return state.setIn(['modelerTemp', 'eventModal'], action.payload)
+    },
     
     [CHANGE_RULE_MODAL]: (state, action) => {
         return state.setIn(['modelerTemp', 'ruleModal'], action.payload)
@@ -77,6 +95,15 @@ export default handleActions({
 
     [BOX_SELECT]: (state, action) => {
         return state.set('selectedBox', action.payload)
+    },
+
+    [INIT_EVENT_ADD]: (state, action) => {
+        return state.set('eventAdd', Map({
+            key: '',
+            type: '1',
+            output: '1',
+            fixValue:''
+        }))
     },
 
     [INIT_MODEL_ADD]: (state, action) => {
@@ -158,10 +185,26 @@ export default handleActions({
             const data = action.payload.data.data;
             const idx = state.getIn(['modelerInfo', 'boxRules']).findIndex(box => box.get('boxId') === data.boxId)
 
+            //const palletIdx = state.getIn(['selectedBox', 'pallet']).findIndex(box => box.get('id') === data.boxId)
+
             return state.updateIn(['modelerInfo','boxRules', idx, 'rules'], rules=>
             rules.push(Map(data)))
-            .updateIn(['selectedBox', 'rules'], rules=>
+            .updateIn(['selectedBox','rules'], rules=>
             rules.push(Map(data)))
+        },
+    }),
+
+    ...pender({
+        type: DELETE_RULE,
+        onSuccess: (state, action) => {
+
+            const data = action.payload.data.data;
+            const idx = state.getIn(['modelerInfo', 'boxRules']).findIndex(box => box.get('boxId') === data.boxId)
+
+            return state.updateIn(['modelerInfo','boxRules', idx, 'rules'], rules=>
+            rules.delete(data.idx))
+            .updateIn(['selectedBox', 'rules'], rules=>
+            rules.delete(data.idx))
         },
     }),
 

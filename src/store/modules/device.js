@@ -73,6 +73,10 @@ const FIND_CHILD = 'device/FIND_CHILD'
 const SAVE_RES_CHANGE = 'device/SAVE_RES_CHANGE'
 const CONNECTED_DEV_ALL_CLEAR = 'device/CONNECTED_DEV_ALL_CLEAR'
 
+const DEPLOY_RES_CHANGE = 'device/DEPLOY_RES_CHANGE'
+const DELETE_RULE = 'device/DELETE_RULE'
+const ADD_NEW_RULE = 'device/ADD_NEW_RULE'
+
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
@@ -135,7 +139,10 @@ export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
 export const tpChange = createAction(TP_CHANGE)
 export const findChild = createAction(FIND_CHILD)
 export const saveResChange = createAction(SAVE_RES_CHANGE)
+export const deployResChange = createAction(DEPLOY_RES_CHANGE)
 export const connectedDevAllClear = createAction(CONNECTED_DEV_ALL_CLEAR)
+export const deleteRule = createAction(DELETE_RULE)
+export const addRule = createAction(ADD_NEW_RULE)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -209,11 +216,27 @@ const initialState = Map({
 
     isSaveRes: false,
 
+    isDeployRes: false,
+
     connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [ADD_NEW_RULE]: (state, action) => {
+        const palletIdx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.boxId)
+
+        return state.updateIn(['selectedDevice', 'pallet', palletIdx, 'rules'], rules=>
+        rules.push(Map(action.payload.rule)))
+    },
+
+    [DELETE_RULE]: (state, action) => {
+        const palletIdx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.boxId)
+
+        return state.updateIn(['selectedDevice', 'pallet', palletIdx, 'rules'], rules=>
+        rules.delete(action.payload.idx))
+    },
 
     [CONNECTED_DEV_ALL_CLEAR]: (state, action) => {
         if(state.getIn(['selectedDevice','vHubId'])===action.payload){
@@ -226,6 +249,10 @@ export default handleActions({
 
     [SAVE_RES_CHANGE]: (state, action) => {
         return state.set('isSaveRes', action.payload);
+    },
+
+    [DEPLOY_RES_CHANGE]: (state, action) => {
+        return state.set('isDeployRes', action.payload);
     },
 
     [FIND_CHILD]: (state, action) => {
@@ -706,7 +733,7 @@ export default handleActions({
                                     }) : null
                                 })))
                             }),
-                            rules: box.rules
+                            rules: box.rules!==null ? List(box.rules.map(rule=>Map(rule))) : List([])
                         })
                     })
                 ),

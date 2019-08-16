@@ -31,6 +31,8 @@ const ADD_INTERVAL_SET_BOX = 'test/ADD_INTERVAL_SET_BOX'
 const CHANGE_SIDE_TAB = 'test/CHANGE_SIDE_TAB'
 const CHANGE_ADDON_TAB = 'test/CHANGE_ADDON_TAB'
 const GET_DEVICE_STATE  = 'test/GET_DEVICE_STATE'
+const SET_HUB_RESULT  = 'test/SET_HUB_RESULT'
+const SET_DEV_RESULT  = 'test/SET_DEV_RESULT'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -58,6 +60,9 @@ export const addIntervalSetBox = createAction(ADD_INTERVAL_SET_BOX)
 export const changeSideTab = createAction(CHANGE_SIDE_TAB)
 export const changeAddonTab = createAction(CHANGE_ADDON_TAB)
 export const getDeviceState = createAction(GET_DEVICE_STATE, TestAPI.getDeviceState)
+export const setDevResult = createAction(SET_DEV_RESULT)
+export const setHubResult = createAction(SET_HUB_RESULT)
+
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -84,9 +89,14 @@ const initialState = Map({
     isRes: false,
     tempMessage: '',
 
-    testResult: Map({
+    hubResult: Map({
         msg: '',
-        status: false
+        status: ''
+    }),
+
+    deviceResult: Map({
+        msg: '',
+        status: ''
     }),
 
     isDuplicate: false,
@@ -96,6 +106,14 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [SET_DEV_RESULT]: (state, action) => {
+        return state.set('deviceResult', Map(action.payload))
+    },
+
+    [SET_HUB_RESULT]: (state, action) => {
+        return state.set('hubResult', Map(action.payload))
+    },
 
     [CHANGE_ADDON_TAB]: (state, action) => {
         return state.set('addonTab', action.payload)
@@ -282,7 +300,7 @@ export default handleActions({
                         ))
                     })
                 )
-            );
+            )
         },
     }),
 

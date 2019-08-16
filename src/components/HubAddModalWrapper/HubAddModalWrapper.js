@@ -32,7 +32,7 @@ const HubAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAddMo
                     // left: '70px',
                     // right: '70px',
                     margin: 'auto',
-                    height: '446px',
+                    height: '316px',
                     maxWidth: '800px',
                     overflow: 'hidden'
                     // bottom: '85px',
@@ -40,9 +40,9 @@ const HubAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAddMo
             }}>
             <div id="DeviceAddModalWrapper">
                 <header>
-                    <span className="title">개발용 SIBA 허브 등록</span>
-                    <button className="close-btn" onClick={deviceAddModalChange}>
-                        <MdClose size={16} />
+                    <span>개발용 SIBA 허브 등록</span>
+                    <button onClick={deviceAddModalChange}>
+                        <MdClose/>
                     </button>
                 </header>
                 <div className="wrap">

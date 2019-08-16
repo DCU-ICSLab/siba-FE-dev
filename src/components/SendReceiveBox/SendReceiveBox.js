@@ -4,10 +4,15 @@ import { SendJsonGenerator } from 'utils'
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula, tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { PacmanLoader} from 'react-spinners';
+import {
+    MdSend
+} from 'react-icons/md'
 
 const SendReceiveBox = ({
     children,
-    cmdList
+    cmdList,
+    hubResult,
+    deviceResult
 }) => {
     console.log(cmdList)
     const codeString = SendJsonGenerator(cmdList)
@@ -38,50 +43,50 @@ const SendReceiveBox = ({
             <div className="test-area" style={{
                 borderLeft: '1px solid #dadce0'
             }}>
-                <div className="test-title">
+                <div className="test-title" style={{
+                    borderRight: 'none'
+                }}>
                     <span>응답 데이터</span>
                 </div>
-
-                <div id="TestInfoCard">
-                    <header>
-                        <span className="test-name"><strong></strong></span>
-                        <span className="test-code"># </span>
-                    </header>
-                    <div className="test-card-body">
-                        <div className="duration">
-                        </div>
-                        <div className="finished">
-                        </div>
-                    </div>
-                </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
-                }}>
-                    <div style={{
-                        width: '50%'
-                    }}>
-                        <div className="test-upper">
-                            <span>SIBA IoT hub</span>
-                        </div>
-                        <div className="test-body">
-                            <div>
-                                <span>Http status</span>
-                                <span>200</span>
+                <div className="latest">
+                    <div className="latest-first">
+                        <header>
+                            <span className="step">1</span>
+                            first step. (hub)
+                        </header>
+                        <div className="latest-inner">
+                        <div className="latest-body">
+                            <div className="latest-title">
+                                <MdSend color={'#7C96D9'}/>
+                                <span>status code</span>
                             </div>
-                            <div>
+                            <div className="latest-res-code">{hubResult.get('status')}</div>
+                            <div className="latest-title">
+                                <MdSend color={'#7C96D9'}/>
                                 <span>message</span>
-                                <span>12234ff</span>
                             </div>
+                            <div className="latest-res-msg">{hubResult.get('msg')}</div>
+                        </div>
                         </div>
                     </div>
-                    <div style={{
-                        width: '50%'
-                    }}>
-                        <div className="test-upper">
-                            <span>target device</span>
+                    <div className="latest-second">
+                        <div className="latest-inner">
+                        <header>
+                            <span className="step">2</span>
+                            second step. (device)
+                        </header>
+                        <div className="latest-body">
+                            <div className="latest-title">
+                                <MdSend color={'#7C96D9'}/>
+                                <span>status code</span>
+                            </div>
+                            <div className="latest-res-code">{deviceResult.get('status')}</div>
+                            <div className="latest-title">
+                                <MdSend color={'#7C96D9'}/>
+                                <span>message</span>
+                            </div>
+                            <div className="latest-res-msg">{deviceResult.get('msg')}</div>
                         </div>
-                        <div className="test-body">
                         </div>
                     </div>
                     {/* {isPending && 

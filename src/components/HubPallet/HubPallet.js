@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import './HubPallet.css';
 import moment from 'moment';
+import Moment from 'react-moment';
 
 const HubPallet = ({
     children,
@@ -62,11 +63,9 @@ const HubPallet = ({
                             {logList.map((log, index) => {
 
                                 let msg = 'disconnect'
-                                let className = 'red'
                                 switch(log.get('messageType')){
                                     case '1':
                                         msg = 'connect'
-                                        className = 'green'
                                         break;
                                     default:
                                         break;
@@ -76,7 +75,7 @@ const HubPallet = ({
                                     <tr key={index}>
                                         <td style={{
                                             width: '23px',
-                                            // borderRight: '1px solid #dadce0',
+                                            borderRight: '1px solid #dadce0',
                                             // backgroundColor: '#CEDDED',
                                             fontSize: '10px',
                                             color: '#777'
@@ -90,11 +89,23 @@ const HubPallet = ({
                                             width: '36px',
                                             // borderRight: '1px solid #dadce0'
                                         }}>{log.get('hubId')}</td>
-                                        <td className={className} style={{
+                                        <td style={{
                                             width: '66px',
-                                            textAlign: 'left',
+                                            textAlign: 'center',
                                             paddingLeft: '4px'
-                                        }}>{msg}</td>
+                                        }}>
+                                            <span style={{
+                                                backgroundColor: log.get('messageType')==='1' ? '#6B95DA' : '#444A57',
+                                                color: '#fff',
+                                                fontSize: 10,
+                                                // border: '1px solid #aaa',
+                                                padding: '1px 2px',
+                                                borderRadius: '2px',
+                                                fontWeight: '350',
+                                                width: '58px',
+                                                display: 'block'
+                                            }}>{msg}</span>
+                                        </td>
                                     </tr>
                                 )
                             })}
@@ -115,7 +126,9 @@ const HubPallet = ({
                     </button>
                 </div>
                 <div className="device-repo-wrapper">
-                    <table className="device-repo-list">
+                    <table className="device-repo-list" style={{
+                        borderRight: 'none'
+                    }}>
                         <thead>
                             <tr>
                                 <th style={{
@@ -137,6 +150,7 @@ const HubPallet = ({
                             {
                                 deviceInfo.map((device, index) => {
                                     let typeString = '복합'
+
                                     switch (device.get('devType')) {
                                         case '1':
                                             typeString = '제어'
@@ -149,7 +163,10 @@ const HubPallet = ({
                                     }
 
                                     return (
-                                        <tr key={index} className="dev-row" onClick={(e) => { linkDevicePage(device.get('devId'), device) }}>
+                                        <tr
+                                        key={index} 
+                                        className="dev-row" 
+                                        onClick={(e) => { linkDevicePage(device.get('devId'), device) }}>
                                             <td style={{
                                                 // backgroundColor: '#CEDDED',
                                                 color: '#777',
@@ -158,14 +175,17 @@ const HubPallet = ({
                                             <td>{typeString}</td>
                                             <td>
                                                 {device.get('authKey')}
-
                                             </td>
-                                            <td>Y</td>
-                                            <td>Y</td>
+                                            <td>
+                                                <span className={'dep-state'+(device.get('depDate') ? '-on' : '-off')}>{device.get('depDate') ? 'YES' : 'NO'}</span>
+                                            </td>
+                                            <td>
+                                                <span className={'con-state'+(device.get('vHubId') ? '-on' : '-off')}>{device.get('vHubId') ? 'YES' : 'NO'}</span>
+                                            </td>
                                             <td>{device.get('vhubId') ? device.get('vhubId') : 'none'}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{device.get('modDate') ? moment(device.get('modDate')).format('YYYY-MM-DD HH:mm') : '-'}</td>
+                                            <td>{device.get('depDate') ? moment(device.get('depDate')).format('YYYY-MM-DD HH:mm') : '-'}</td>
+                                            <td>-</td>
                                         </tr>
                                     )
                                 })
