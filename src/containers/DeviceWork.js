@@ -161,7 +161,8 @@ class DeviceWork extends Component {
             type: dragType,
             preorder: info.headText,
             postorder: info.footText,
-            info: this._getInfoData(dragType)
+            info: this._getInfoData(dragType),
+            rules: List([])
         });
 
         //새로 드래그한 박스를 select box로 지정

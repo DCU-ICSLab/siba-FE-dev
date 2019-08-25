@@ -433,6 +433,9 @@ const DevicePallet = ({
                             postText={targetedBox.getIn(['block', 'postorder'])}
                             buttons={targetedBox.getIn(['block', 'info','buttons'])}
                             boxType={targetedBox.getIn(['block','type'])}
+                            changeTextBoxInfo={changeTextBoxInfo}
+                            targetedBox={targetedBox}
+                            type={'0'}
                         />}
                         </div>
                     </div>

@@ -80,6 +80,11 @@ const TestTextBox = ({
                                     getDeviceState(`${index+1}번`, btn.get('cboxId'))
                                 }
 
+                                //센싱 조회 라면
+                                else if(btn.get('btnType')==='3'){
+                                    getDeviceState(`${index+1}번`, btn.get('cboxId'))
+                                }
+
                                 else{
                                     sendCommand(`${index+1}번`, btn.get('cboxId'))
                                 }

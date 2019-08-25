@@ -21,6 +21,16 @@ const ADD_STATE_RULE = 'modeler/ADD_STATE_RULE'
 const DELETE_RULE = 'modeler/DELETE_RULE'
 const INIT_EVENT_ADD = 'modeler/INIT_EVENT_ADD'
 const CHANGE_EVENT_MODAL = 'modeler/CHANGE_EVENT_MODAL'
+const CHANGE_EVENT_ADD = 'modeler/CHANGE_EVENT_ADD'
+const DEV_INPUT_CHANGE = 'modeler/DEV_INPUT_CHANGE'
+const DEV_INPUT_ROW_CHANGE = 'modeler/DEV_INPUT_ROW_CHANGE'
+const CHANGE_EVENT_ADDITIONAL_ADD = 'modeler/CHANGE_EVENT_ADDITIONAL_ADD'
+const ADD_EVENT = 'modeler/ADD_EVENT'
+const SELECT_EVENT = 'modeler/SELECT_EVENT'
+const DELETE_EVENT = 'modeler/DELETE_EVENT'
+const SEND_TO_THIRD_SERVER = 'modeler/SEND_TO_THIRD_SERVER'
+const DOWN_PRIORITY = 'modeler/DOWN_PRIORITY'
+const UP_PRIORITY = 'modeler/UP_PRIORITY'
 
 /*--------create action--------*/
 export const changeBtnCategoryPage = createAction(CHANGE_BTN_CATEGORY_PAGE);
@@ -38,6 +48,16 @@ export const changeEventModal = createAction(CHANGE_EVENT_MODAL);
 export const addStateRule = createAction(ADD_STATE_RULE, ModelerAPI.addNewRule);
 export const deleteRule = createAction(DELETE_RULE, ModelerAPI.deleteRule)
 export const initEventAdd = createAction(INIT_EVENT_ADD);
+export const changeEventAdd = createAction(CHANGE_EVENT_ADD);
+export const devInputChange = createAction(DEV_INPUT_CHANGE)
+export const devInputRowChange = createAction(DEV_INPUT_ROW_CHANGE)
+export const changeEventAdditionalAdd = createAction(CHANGE_EVENT_ADDITIONAL_ADD);
+export const addEvent = createAction(ADD_EVENT, ModelerAPI.addEvent);
+export const selectEvent = createAction(SELECT_EVENT)
+export const deleteEvent = createAction(DELETE_EVENT, ModelerAPI.deleteEvent)
+export const sendToThirdServer = createAction(SEND_TO_THIRD_SERVER, ModelerAPI.sendToThirdServer)
+export const downPrioriy = createAction(DOWN_PRIORITY)
+export const upPrioriy = createAction(UP_PRIORITY)
 
 
 /*--------state definition--------*/
@@ -51,12 +71,15 @@ const initialState = Map({
         }),
         ruleModal: false,
         eventModal: false,
+        selectEvent: null,
+        res: null
     }),
 
     modelerInfo: Map({
         boxRules: List([]),
         devStateModel: List([]),
         sensingDataModel: List([]),
+        events: List([])
     }),
 
     modelAdd: Map({
@@ -66,6 +89,7 @@ const initialState = Map({
     }),
 
     ruleAdd: Map({
+        priority: 0,
         key: '',
         type: '1',
         convert: '',
@@ -73,10 +97,23 @@ const initialState = Map({
     }),
 
     eventAdd: Map({
-        key: '',
-        type: '1',
-        output: '1',
-        fixValue:''
+        dataKey: '',
+        ruleType: '1',
+        outputType: '1',
+        ruleValue:'',
+
+        notifyBoxDTO: Map({
+            headRow: 1,
+            footRow: 1,
+            preText: '',
+            postText: ''
+        }),
+
+        thirdServerDTO: Map({
+            host: '',
+            port: '',
+            path: '',
+        })
     }),
 
     selectedBox: null
@@ -84,6 +121,34 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [UP_PRIORITY]: (state, action) => {
+        return state.setIn(['ruleAdd', 'priority'], action.payload)
+    },
+
+    [DOWN_PRIORITY]: (state, action) => {
+        return state.setIn(['ruleAdd', 'priority'], action.payload)
+    },
+
+    [SELECT_EVENT]: (state, action) => {
+        return state.setIn(['modelerTemp', 'selectEvent'], Map(action.payload))
+    },
+
+    [DEV_INPUT_ROW_CHANGE]: (state, action) => {
+        return state.setIn(['eventAdd', 'notifyBoxDTO', action.payload.key], action.payload.row)
+    },
+
+    [DEV_INPUT_CHANGE]: (state, action) => {
+        return state.setIn(['eventAdd', 'notifyBoxDTO', action.payload.key], action.payload.text)
+    },
+
+    [CHANGE_EVENT_ADD]: (state, action) => {
+        return state.setIn(['eventAdd', action.payload.name], action.payload.value)
+    },
+
+    [CHANGE_EVENT_ADDITIONAL_ADD]: (state, action) => {
+        return state.setIn(['eventAdd', action.payload.category,  action.payload.name], action.payload.value)
+    },
 
     [CHANGE_EVENT_MODAL]: (state, action) => {
         return state.setIn(['modelerTemp', 'eventModal'], action.payload)
@@ -99,10 +164,23 @@ export default handleActions({
 
     [INIT_EVENT_ADD]: (state, action) => {
         return state.set('eventAdd', Map({
-            key: '',
-            type: '1',
-            output: '1',
-            fixValue:''
+            dataKey: action.payload,
+            ruleType: '1',
+            outputType: '1',
+            ruleValue:'',
+
+            notifyBoxDTO: Map({
+                headRow: 1,
+                footRow: 1,
+                preText: '',
+                postText: ''
+            }),
+
+            thirdServerDTO: Map({
+                host: '',
+                port: '',
+                path: '',
+            })
         }))
     },
 
@@ -116,10 +194,11 @@ export default handleActions({
 
     [INIT_RULE_ADD]: (state, action) => {
         return state.set('ruleAdd', Map({
+            priority: state.getIn(['selectedBox','rules']).size+1,
             key: action.payload,
             type: '1',
             convert: '',
-            fixValue:''
+            fixValue:'',
         }))
     },
 
@@ -161,6 +240,19 @@ export default handleActions({
                 }))),
                 devStateModel: List(action.payload.data.data.devStateModel.map(item=>Map(item))),
                 sensingDataModel: List(action.payload.data.data.sensingDataModel.map(item=>Map(item))),
+                events: List(action.payload.data.data.events.map(item=>{
+                    return Map({
+                        eventId: item.eventId,
+                        dataKey: item.dataKey,
+                        devId: item.devId,
+                        outputType: item.outputType,
+                        ruleType: item.ruleType,
+                        ruleValue: item.ruleValue,
+                        notifyBoxDTO: Map(item.notifyBoxDTO),
+                        thirdServerDTO: Map(item.thirdServerDTO),
+                        controlDTO: Map(item.controlDTO),
+                    })
+                }))
             }))
         },
     }),
@@ -205,6 +297,42 @@ export default handleActions({
             rules.delete(data.idx))
             .updateIn(['selectedBox', 'rules'], rules=>
             rules.delete(data.idx))
+        },
+    }),
+
+    ...pender({
+        type: ADD_EVENT,
+        onSuccess: (state, action) => {
+            const data = action.payload.data.data;
+            return state.updateIn(['modelerInfo','events'], events=>
+            events.push(Map(data)))
+        },
+    }),
+
+    ...pender({
+        type: DELETE_EVENT,
+        onSuccess: (state, action) => {
+            const data = action.payload.data.data;
+            const idx = state.getIn(['modelerInfo', 'events']).findIndex(event => event.get('eventId') === data)
+            return state.updateIn(['modelerInfo','events'], events=>
+            events.delete(idx))
+            .setIn(['modelerTemp', 'selectEvent'], null)
+        },
+    }),
+
+    ...pender({
+        type: SEND_TO_THIRD_SERVER,
+        onSuccess: (state, action) => {
+            return state.setIn(['modelerTemp','res'], Map({
+                msg: '3rd 서버와 연결이 성공하였습니다.',
+                status: true
+            }))
+        },
+        onFailure: (state, action) => {
+            return state.setIn(['modelerTemp','res'], Map({
+                msg: '3rd 서버와 연결이 실패하였습니다.',
+                status: false
+            }))
         },
     }),
 

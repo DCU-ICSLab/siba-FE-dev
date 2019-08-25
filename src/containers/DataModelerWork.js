@@ -55,25 +55,34 @@ class DataModelerWork extends Component {
         modelerActions.initModelAdd();
     }
 
+    _getFirstItem = () => {
+        const {modelerInfo} = this.props
+
+        let firstItem = null
+        if(modelerInfo.get('devStateModel').size!==0){
+            firstItem = modelerInfo.getIn(['devStateModel',0,'dataKey'])
+        }
+        else if(modelerInfo.get('sensingDataModel').size!==0){
+            firstItem = modelerInfo.getIn(['sensingDataModel',0,'dataKey'])
+        }
+
+        return firstItem
+    }
+
     _initEventAdd = () => {
         const {modelerActions} = this.props
-        modelerActions.initEventAdd();
+        const firstItem = this._getFirstItem()
+
+        if(firstItem)
+            modelerActions.initEventAdd(firstItem);
     }
 
     _initRuleAdd = () => {
-        const {modelerActions, modelerInfo} = this.props
+        const {modelerActions } = this.props
+        const firstItem = this._getFirstItem()
 
-        let fisrtItem = null
-        if(modelerInfo.get('devStateModel').size!==0){
-            fisrtItem = modelerInfo.getIn(['devStateModel',0,'dataKey'])
-        }
-        else if(modelerInfo.get('sensingDataModel').size!==0){
-            fisrtItem = modelerInfo.getIn(['sensingDataModel',0,'dataKey'])
-        }
-        else{
-            fisrtItem = ''
-        }
-        modelerActions.initRuleAdd(fisrtItem);
+        if(firstItem)
+            modelerActions.initRuleAdd(firstItem);
     }
 
     _changeModelAdd = (name, value) => {
@@ -102,6 +111,14 @@ class DataModelerWork extends Component {
         });
     }
 
+    _changeEventAdd = (name, value) => {
+        const {modelerActions} = this.props
+        modelerActions.changeEventAdd({
+            name: name,
+            value: value
+        });
+    }
+
     _addDataModel = (modType) => {
         console.log(modType)
         const {modelerActions, modelAdd, devId} = this.props
@@ -112,6 +129,8 @@ class DataModelerWork extends Component {
             modType: modType,
             isEv: modelAdd.get('event')==='1',
         })
+
+        this._changeDataModal(false, modType)
     }
 
     _addStateRule = () => {
@@ -125,15 +144,32 @@ class DataModelerWork extends Component {
             ruleType: ruleAdd.get('type'),
             ruleValue: ruleAdd.get('fixValue'),
             mapVal: ruleAdd.get('convert'),
+            priority: ruleAdd.get('priority'),
         }, devId).then(arg=>{
             console.log(arg)
             if(arg.status === 200){
-                console.log(arg.data.data)
                 deviceActions.addRule({
                     boxId: selectedBox.get('boxId'),
                     rule: arg.data.data
                 })
+
+                this._changeRuleModal(false)
             }
+        })
+    }
+
+    _addEvent = () => {
+        const {modelerActions, eventAdd, devId} = this.props
+        modelerActions.addEvent(eventAdd, devId)
+        this._changeEventModal(false)
+    }
+
+    _changeEventAdditionalAdd = (category, e) => {
+        const { modelerActions } = this.props
+        modelerActions.changeEventAdditionalAdd({
+            category: category,
+            name: e.target.name,
+            value: e.target.value,
         })
     }
 
@@ -164,9 +200,68 @@ class DataModelerWork extends Component {
         }
     }
 
+    _changeTextBoxInfo = (event, location) => {
+        const { modelerActions } = this.props;
+        const textareaLineHeight = 20;
+        const minRows = 1
+        const maxRows = 4
+
+        const previousRows = event.target.rows;
+        event.target.rows = minRows; // reset number of rows in textarea 
+
+        const currentRows = ~~(event.target.scrollHeight / textareaLineHeight);
+
+        if (currentRows === previousRows) {
+            event.target.rows = currentRows;
+        }
+
+        if (currentRows > maxRows) {
+            event.target.rows = maxRows;
+            event.target.scrollTop = event.target.scrollHeight;
+            return;
+        }
+
+        const changeRow = currentRows < maxRows ? currentRows : maxRows
+
+        //deviceActions.devTargetTextboxHeightChange({ key: key, height: height })
+
+        let name = 'postText'
+        if(event.target.name === 'preorder') name = 'preText'
+
+        //사본 변경
+        modelerActions.devInputChange({ key: name, text: event.target.value });
+        modelerActions.devInputRowChange({ key: location, row: changeRow });
+    }
+
     _changeBtnCategory = (page) => {
         const {modelerActions} = this.props
         modelerActions.changeBtnCategoryPage(page);
+    }
+
+    _selectEvent = (event) => {
+        const {modelerActions} = this.props
+        modelerActions.selectEvent(event)
+    }
+
+    _deleteEvent = (eventId, type) => {
+        const {modelerActions} = this.props
+        modelerActions.deleteEvent(eventId, type)
+    }
+
+    _sendToThirdServer = (dataset) => {
+        const {modelerActions, eventAdd} = this.props
+        const path = `http://${eventAdd.getIn(['thirdServerDTO', 'host'])}:${eventAdd.getIn(['thirdServerDTO', 'port'])===''?'80': eventAdd.getIn(['thirdServerDTO', 'port'])}/${eventAdd.getIn(['thirdServerDTO', 'path'])}`
+        modelerActions.sendToThirdServer(path, dataset)
+    }
+
+    _upPrioriy = (priority) => {
+        const {modelerActions} = this.props
+        modelerActions.upPrioriy(priority-1);
+    }
+
+    _downPrioriy = (priority) => {
+        const {modelerActions} = this.props
+        modelerActions.downPrioriy(priority+1);
     }
 
     componentDidMount() {
@@ -177,7 +272,9 @@ class DataModelerWork extends Component {
                 isOpen: false,
                 modType: '0',
             }),
-            ruleModal: false
+            ruleModal: false,
+            selectEvent: null,
+            res: null
         })
         modelerActions.getModelerInfo(devId)
         modelerActions.boxSelect(null)
@@ -197,13 +294,16 @@ class DataModelerWork extends Component {
             modelerInfo,
             modelAdd,
             selectedBox,
-            ruleAdd
+            ruleAdd,
+            eventAdd,
+            devType
         } = this.props;
 
         return (
             <Fragment>
                 <SensingPallet
                 page={modelerTemp.get('page')}
+                selectEventObj={modelerTemp.get('selectEvent')}
                 modelerInfo={modelerInfo}
                 changeBtnCategory={this._changeBtnCategory}
                 changeDataModal={this._changeDataModal}
@@ -212,6 +312,8 @@ class DataModelerWork extends Component {
                 changeRuleModal={this._changeRuleModal}
                 changeEventModal={this._changeEventModal}
                 deleteRule={this._deleteRule}
+                selectEvent={this._selectEvent}
+                deleteEvent={this._deleteEvent}
                 >
                 </SensingPallet>
                 <DataModalWrapper
@@ -229,15 +331,23 @@ class DataModelerWork extends Component {
                     ruleAdd={ruleAdd}
                     addStateRule={this._addStateRule}
                     modelerInfo={modelerInfo}
+                    downPrioriy={this._downPrioriy}
+                    upPrioriy={this._upPrioriy}
+                    selectedBox={selectedBox}
                 >
                 </RuleModalWrapper>
                 <EventModalWrapper
                     dataModal={modelerTemp.get('eventModal')}
                     changeDataModal={this._changeEventModal}
-                    changeModelAdd={this._changeRuleAdd}
-                    ruleAdd={ruleAdd}
-                    addStateRule={this._addStateRule}
+                    changeModelAdd={this._changeEventAdd}
+                    eventAdd={eventAdd}
+                    addEvent={this._addEvent}
                     modelerInfo={modelerInfo}
+                    changeTextBoxInfo={this._changeTextBoxInfo}
+                    changeEventAdditionalAdd={this._changeEventAdditionalAdd}
+                    devType={devType}
+                    sendToThirdServer={this._sendToThirdServer}
+                    res={modelerTemp.get('res')}
                 >
                 </EventModalWrapper>
             </Fragment>
@@ -255,7 +365,9 @@ export default withRouter(
             modelerInfo: state.modeler.get('modelerInfo'),
             modelAdd: state.modeler.get('modelAdd'),
             ruleAdd: state.modeler.get('ruleAdd'),
+            eventAdd: state.modeler.get('eventAdd'),
             selectedBox: state.modeler.get('selectedBox'),
+            devType: state.device.getIn(['selectedDevice','devAuthKey']),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

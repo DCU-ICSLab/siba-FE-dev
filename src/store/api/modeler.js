@@ -45,3 +45,32 @@ export const deleteRule = (modId, boxId, idx) =>{
         return res;
     });
 }
+
+export const addEvent = (eventAdd, devId) =>{
+
+    const baseURL = `${API_BASE_URL}/event/${devId}`
+
+    return axios.post(baseURL,eventAdd)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}
+
+export const deleteEvent = (eventId, type) => {
+    const baseURL = `${API_BASE_URL}/event/${eventId}/type/${type}`
+
+    return axios.delete(baseURL)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}
+
+export const sendToThirdServer = (path, dataset) => {
+    return axios.post(path, dataset)
+    .then(res=> {
+        console.log(res);
+        return res;
+    });
+}
