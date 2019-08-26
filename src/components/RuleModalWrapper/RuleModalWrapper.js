@@ -63,7 +63,7 @@ const RuleModalWrapper = ({
                             <div className="bt-set">
                                 <button 
                                 disabled={ruleAdd.get('priority')===1}
-                                onClick={()=>upPrioriy(ruleAdd.get('priority'))}>
+                                onClick={()=>upPrioriy(ruleAdd.get('priority'), 'ruleAdd')}>
                                     <MdExpandLess style={{
                                         position: 'absolute',
                                         left: 0,
@@ -72,7 +72,7 @@ const RuleModalWrapper = ({
                                 </button>
                                 <button
                                 disabled={selectedBox && ruleAdd.get('priority')===selectedBox.get('rules').size+1}
-                                onClick={()=>downPrioriy(ruleAdd.get('priority'))}>
+                                onClick={()=>downPrioriy(ruleAdd.get('priority'), 'ruleAdd')}>
                                     <MdExpandMore style={{
                                         position: 'absolute',
                                         left: 0,

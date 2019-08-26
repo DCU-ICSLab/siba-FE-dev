@@ -36,7 +36,7 @@
     margin: 0 auto;
     margin-top: 15px;
     border: 1px solid #dadce0;
-    width: 480px;
+    width: 510px;
     background-color: #F5F5F5;
     display: flex;
     flex-direction: column;
@@ -49,7 +49,7 @@
     display: block;
     font-size: 12px;
     color: #333;
-    width: 470px;
+    width: 500px;
     border: 1px solid #dadce0;
     background-color: #fff;
 }
@@ -58,7 +58,7 @@
     margin-top: 2px;
     display: block;
     font-size: 14px;
-    width: 470px;
+    width: 500px;
     height: 23px;
     border: 1px solid #dadce0;
     background-color: #fff;
@@ -90,7 +90,7 @@
 
 #EventModalWrapper .key{
     position: relative;
-    width: 150px;
+    width: 140px;
     height: 100%;
     border-right: 1px solid #dadce0;
 }
@@ -99,7 +99,7 @@
     text-align: center;
     text-align-last: center;
     position: absolute;
-    width: 145px;
+    width: 135px;
     left: 2px;
     top: 3px;
     border: none;
@@ -205,7 +205,7 @@
 #EventModalWrapper .temp-textbox-wrapper{
     display: block;
     position: relative;
-    margin: 0 123px;
+    margin: 0 138px;
     height: 100%;
     width: auto;
 }
@@ -238,11 +238,19 @@
     font-weight: 500;
 }
 
-#EventModalWrapper .input-wrap input{
-    width: 200px;
+#EventModalWrapper .input-wrap select{
+    width: 190px;
+    outline: none;
+    padding: 2px;
+    color: #333;
+}
+
+#EventModalWrapper .input-wrap input:disabled{
+    width: 180px;
     outline: none;
     color: #333;
     padding: 2px;
+    border: 1px solid #aaa;
 }
 
 #EventModalWrapper .input-desc{
@@ -324,4 +332,51 @@
 
 #EventModalWrapper .code-select:hover{
     background-color: #f1f1f1;
+}
+
+#EventModalWrapper .priority > span{
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 3px;
+    font-size: 13px;
+    color: #333;
+    font-weight: 400;
+    text-align: center;
+    width: 25px;
+}
+
+#EventModalWrapper .bt-set{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#EventModalWrapper .priority .bt-set > button{
+    width: 14px;
+    height: 12px;
+    text-align: center;
+    font-size: 14px;
+    position: relative;
+    outline: none;
+    border: none;
+    background-color: transparent;
+    cursor: default;
+}
+
+#EventModalWrapper .priority .bt-set > button:not([disalbed]){
+    cursor: pointer;
+}
+
+#EventModalWrapper .priority .bt-set > button:not([disalbed]):hover{
+    background-color: #f1f1f1;
+}
+
+#EventModalWrapper .priority{
+    position: relative;
+    width: 39px;
+    height: 100%;
+    border-right: 1px solid #dadce0;
 }

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { MdClose, MdCached } from 'react-icons/md'
+import { MdClose, MdExpandLess, MdExpandMore } from 'react-icons/md'
 import './EventModalWrapper.css';
 import Modal from 'react-modal';
 import { VisibleTargetedBox } from 'components';
@@ -20,7 +20,11 @@ const EventModalWrapper = ({
     devType,
     addEvent,
     res,
-    sendToThirdServer
+    sendToThirdServer,
+    upPrioriy,
+    downPrioriy,
+    deviceInfo,
+    devName
 }) => {
 
     let DynamicHeight = 145;
@@ -29,23 +33,23 @@ const EventModalWrapper = ({
 
     switch (eventAdd.get('outputType')) {
         case '1':
-            DynamicHeight+=(eventAdd.getIn(['notifyBoxDTO', 'headRow'])*20 + eventAdd.getIn(['notifyBoxDTO', 'footRow'])*20)
+            DynamicHeight += (eventAdd.getIn(['notifyBoxDTO', 'headRow']) * 20 + eventAdd.getIn(['notifyBoxDTO', 'footRow']) * 20)
             break;
         case '2':
             DynamicHeight = 159
             break;
         case '3':
             DynamicHeight = 333
-            modelerInfo.get('devStateModel').some(state=>{
-                if(state.get('dataKey')===eventAdd.get('dataKey')){
+            modelerInfo.get('devStateModel').some(state => {
+                if (state.get('dataKey') === eventAdd.get('dataKey')) {
                     dataType = state.get('dataType')
                     return true;
                 }
                 return false
             })
-            if(!dataType){
-                modelerInfo.get('sensingDataModel').some(state=>{
-                    if(state.get('dataKey')===eventAdd.get('dataKey')){
+            if (!dataType) {
+                modelerInfo.get('sensingDataModel').some(state => {
+                    if (state.get('dataKey') === eventAdd.get('dataKey')) {
                         dataType = state.get('dataType')
                         return true;
                     }
@@ -80,7 +84,7 @@ const EventModalWrapper = ({
                     marginLeft: 'auto',
                     marginRight: 'auto',
                     height: 175 + DynamicHeight,
-                    maxWidth: '520px',
+                    maxWidth: '550px',
                     overflow: 'hidden'
                     // bottom: '85px',
                 }
@@ -94,22 +98,46 @@ const EventModalWrapper = ({
                 </header>
                 <div className="model-data-area">
                     <div className="modeler-upper">
+                        <div className="priority">순위</div>
                         <div className="key">연결 KEY</div>
                         <div className="dt">적용조건</div>
                         <div className="event">적용 값</div>
                         <div className="converter">출력 경로</div>
                     </div>
                     <div className="modeler-editor">
+                        <div className="priority">
+                            <span>{eventAdd.get('priority')}</span>
+                            <div className="bt-set">
+                                <button
+                                    disabled={eventAdd.get('priority') === 1}
+                                    onClick={() => upPrioriy(eventAdd.get('priority'), 'eventAdd')}>
+                                    <MdExpandLess style={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: -1
+                                    }} />
+                                </button>
+                                <button
+                                    disabled={eventAdd.get('priority') === modelerInfo.get('events').size + 1}
+                                    onClick={() => downPrioriy(eventAdd.get('priority'), 'eventAdd')}>
+                                    <MdExpandMore style={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        top: -2
+                                    }} />
+                                </button>
+                            </div>
+                        </div>
                         <div className="key">
                             {(modelerInfo.get('devStateModel').size !== 0 || modelerInfo.get('sensingDataModel').size !== 0) &&
                                 <select name="dataKey"
                                     value={eventAdd.get('dataKey')}
                                     onChange={(e) => changeModelAdd(e.target.name, e.target.value)}>
                                     {
-                                    modelerInfo.get('devStateModel').size !== 0 &&
-                                    <option value={modelerInfo.getIn(['devStateModel', 0, 'dataKey'])} key={0}>
-                                        {modelerInfo.getIn(['devStateModel', 0, 'dataKey'])}
-                                    </option>}
+                                        modelerInfo.get('devStateModel').size !== 0 &&
+                                        <option value={modelerInfo.getIn(['devStateModel', 0, 'dataKey'])} key={0}>
+                                            {modelerInfo.getIn(['devStateModel', 0, 'dataKey'])}
+                                        </option>}
                                     {
                                         modelerInfo.get('devStateModel').map((item, index) => {
                                             if (index !== 0)
@@ -117,14 +145,14 @@ const EventModalWrapper = ({
                                         })
                                     }
                                     {
-                                    modelerInfo.get('sensingDataModel').size !== 0 && 
-                                    <option value={modelerInfo.getIn(['sensingDataModel', 0, 'dataKey'])} key={modelerInfo.get('devStateModel').size}>
-                                        {modelerInfo.getIn(['sensingDataModel', 0, 'dataKey'])}
-                                    </option>}
+                                        modelerInfo.get('sensingDataModel').size !== 0 &&
+                                        <option value={modelerInfo.getIn(['sensingDataModel', 0, 'dataKey'])} key={modelerInfo.get('devStateModel').size}>
+                                            {modelerInfo.getIn(['sensingDataModel', 0, 'dataKey'])}
+                                        </option>}
                                     {
                                         modelerInfo.get('sensingDataModel').map((item, index) => {
                                             if (index !== 0)
-                                                return <option value={item.get('dataKey')} key={modelerInfo.get('devStateModel').size+index}>{item.get('dataKey')}</option>
+                                                return <option value={item.get('dataKey')} key={modelerInfo.get('devStateModel').size + index}>{item.get('dataKey')}</option>
                                         })
                                     }
                                 </select>}
@@ -190,25 +218,47 @@ const EventModalWrapper = ({
                         </div>
                         <div className="input-sets">
                             <div className="input-wrap">
-                                <span style={{width: 120}}>이벤트 코드</span>
-                                <input></input>
+                                <span style={{ width: 120 }}>타겟 디바이스</span>
+                                <select name="devName" value={eventAdd.getIn(['controlDTO', 'devName'])} onChange={(e) => changeEventAdditionalAdd('controlDTO', e)}>
+                                    <option value={devName+'#'+devType} key={0}>
+                                        {devName}
+                                    </option>
+                                    {
+                                        deviceInfo.map((item,index)=>{
+                                            console.log(item.toJS())
+                                            if(devName !== item.get('devName'))
+                                            return(
+                                                <option value={item.get('devName')+'#'+item.get('authKey')} key={index+1}>
+                                                    {item.get('devName')}
+                                                </option>
+                                            )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                            <div className="input-desc" style={{
+                                marginLeft: 120
+                            }}>제어가 발생하는 디바이스를 선택하세요.</div>
+                            <div className="input-wrap">
+                                <span style={{ width: 120 }}>이벤트 코드</span>
+                                <input disabled={true}></input>
                                 <button className="code-select">선택</button>
                             </div>
                             <div className="input-desc" style={{
                                 marginLeft: 120
                             }}>이벤트 발생 시 수행하고자 하는 코드를 선택하세요.</div>
-                            <Fragment>
+                            {/* <Fragment>
                                 <div className="input-wrap" style={{
                                     marginTop: 9
                                 }}>
-                                    <span style={{width: 120}}>1번 파라미터</span>
+                                    <span style={{ width: 120 }}>1번 파라미터</span>
                                     <input></input>
                                 </div>
                                 <div className="input-wrap">
-                                    <span style={{width: 120}}>2번 파라미터</span>
+                                    <span style={{ width: 120 }}>2번 파라미터</span>
                                     <input></input>
                                 </div>
-                            </Fragment>
+                            </Fragment> */}
                         </div>
                     </Fragment>
                 }
@@ -222,38 +272,38 @@ const EventModalWrapper = ({
                             <div className="input-wrap">
                                 <span>host 주소</span>
                                 <input
-                                name="host"
-                                value={eventAdd.getIn(['thirdServerDTO', 'host'])}
-                                onChange={(e)=>changeEventAdditionalAdd('thirdServerDTO', e)}></input>
+                                    name="host"
+                                    value={eventAdd.getIn(['thirdServerDTO', 'host'])}
+                                    onChange={(e) => changeEventAdditionalAdd('thirdServerDTO', e)}></input>
                             </div>
                             <div className="input-desc">데이터를 수신할 호스트의 IP주소를 기입하세요.</div>
                             <div className="input-wrap">
                                 <span>포트</span>
                                 <input
-                                name="port"
-                                value={eventAdd.getIn(['thirdServerDTO', 'port'])}
-                                onChange={(e)=>changeEventAdditionalAdd('thirdServerDTO', e)}></input>
+                                    name="port"
+                                    value={eventAdd.getIn(['thirdServerDTO', 'port'])}
+                                    onChange={(e) => changeEventAdditionalAdd('thirdServerDTO', e)}></input>
                             </div>
                             <div className="input-desc">데이터를 수신할 호스트의 포트를 기입하세요. 미 기입시 80포트 사용</div>
                             <div className="input-wrap">
                                 <span>URL</span>
                                 <input
-                                name="path"
-                                value={eventAdd.getIn(['thirdServerDTO', 'path'])}
-                                onChange={(e)=>changeEventAdditionalAdd('thirdServerDTO', e)}></input>
+                                    name="path"
+                                    value={eventAdd.getIn(['thirdServerDTO', 'path'])}
+                                    onChange={(e) => changeEventAdditionalAdd('thirdServerDTO', e)}></input>
                             </div>
                             <div className="test-area">
-                                <button 
-                                className="test-btn"
-                                onClick={()=>sendToThirdServer({
-                                    devType: devType,
-                                    mac: 'AA:BB:CC:DD:EE:FF',
-                                    data: dataTypeConvert
-                                })}>Test Connection (POST)</button>
+                                <button
+                                    className="test-btn"
+                                    onClick={() => sendToThirdServer({
+                                        devType: devType,
+                                        mac: 'AA:BB:CC:DD:EE:FF',
+                                        data: dataTypeConvert
+                                    })}>Test Connection (POST)</button>
                                 <div className="msg">
-                                    {res===null && <span>{'수신할 서버와의 연결 테스트를 수행해주세요.'}</span>}
+                                    {res === null && <span>{'수신할 서버와의 연결 테스트를 수행해주세요.'}</span>}
                                     {res && res.get('status') && <span className="success-msg">{res.get('msg')}</span>}
-                                    {res && res.get('status')===false && <span className="fail-msg">{res.get('msg')}</span>}
+                                    {res && res.get('status') === false && <span className="fail-msg">{res.get('msg')}</span>}
                                 </div>
                                 <div className="json-area">
                                     <SyntaxHighlighter

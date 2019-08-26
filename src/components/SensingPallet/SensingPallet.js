@@ -401,8 +401,8 @@ const SensingPallet = ({
                                                     <div className="e-title">적용 규칙</div>
                                                     <div className="event-line-left"></div>
                                                     <div className="event-line-right"></div>
-                                                    {event.get('outputType') !== '1' && <div className="event-elem">{GetRuleType(event.get('ruleType'))}</div>}
-                                                    {event.get('outputType') !== '1' && <div className="event-elem">{event.get('ruleValue')}</div>}
+                                                    {event.get('outputType') !== '0' && <div className="event-elem">{GetRuleType(event.get('ruleType'))}</div>}
+                                                    {event.get('outputType') !== '0' && <div className="event-elem">{event.get('ruleValue')}</div>}
                                                 </div>
                                                 <div className="event-output">
                                                     <div className="e-title">OUTPUT</div>

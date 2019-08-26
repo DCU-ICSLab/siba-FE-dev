@@ -70,11 +70,15 @@ class DataModelerWork extends Component {
     }
 
     _initEventAdd = () => {
-        const {modelerActions} = this.props
+        const {modelerActions, devName, authKey} = this.props
         const firstItem = this._getFirstItem()
 
         if(firstItem)
-            modelerActions.initEventAdd(firstItem);
+            modelerActions.initEventAdd({
+                dataKey: firstItem,
+                devName: devName,
+                authKey: authKey
+            });
     }
 
     _initRuleAdd = () => {
@@ -166,11 +170,28 @@ class DataModelerWork extends Component {
 
     _changeEventAdditionalAdd = (category, e) => {
         const { modelerActions } = this.props
-        modelerActions.changeEventAdditionalAdd({
-            category: category,
-            name: e.target.name,
-            value: e.target.value,
-        })
+
+        if(e.target.name === 'devName'){
+            const set = e.target.value.split('#')
+            modelerActions.changeEventAdditionalAdd({
+                category: category,
+                name: 'devName',
+                value: set[0],
+            })
+            modelerActions.changeEventAdditionalAdd({
+                category: category,
+                name: 'authKey',
+                value: set[1],
+            })
+            console.log(set[0])
+        }
+        else{
+            modelerActions.changeEventAdditionalAdd({
+                category: category,
+                name: e.target.name,
+                value: e.target.value,
+            })
+        }
     }
 
     _changeDataModal = (isOpen, modType) => {
@@ -254,14 +275,20 @@ class DataModelerWork extends Component {
         modelerActions.sendToThirdServer(path, dataset)
     }
 
-    _upPrioriy = (priority) => {
+    _upPrioriy = (priority, name) => {
         const {modelerActions} = this.props
-        modelerActions.upPrioriy(priority-1);
+        modelerActions.upPrioriy({
+            name: name,
+            value: priority-1
+        });
     }
 
-    _downPrioriy = (priority) => {
+    _downPrioriy = (priority, name) => {
         const {modelerActions} = this.props
-        modelerActions.downPrioriy(priority+1);
+        modelerActions.downPrioriy({
+            name: name,
+            value: priority+1
+        });
     }
 
     componentDidMount() {
@@ -296,7 +323,9 @@ class DataModelerWork extends Component {
             selectedBox,
             ruleAdd,
             eventAdd,
-            devType
+            devType,
+            deviceInfo,
+            devName
         } = this.props;
 
         return (
@@ -348,6 +377,10 @@ class DataModelerWork extends Component {
                     devType={devType}
                     sendToThirdServer={this._sendToThirdServer}
                     res={modelerTemp.get('res')}
+                    downPrioriy={this._downPrioriy}
+                    upPrioriy={this._upPrioriy}
+                    deviceInfo={deviceInfo}
+                    devName={devName}
                 >
                 </EventModalWrapper>
             </Fragment>
@@ -361,6 +394,8 @@ export default withRouter(
         // props 로 넣어줄 스토어 상태값
         state => ({
             devId: state.device.getIn(['selectedDevice', 'devId']),
+            devName: state.device.getIn(['selectedDevice', 'devName']),
+            authKey: state.device.getIn(['selectedDevice', 'devAuthKey']),
             modelerTemp: state.modeler.get('modelerTemp'),
             modelerInfo: state.modeler.get('modelerInfo'),
             modelAdd: state.modeler.get('modelAdd'),
@@ -368,6 +403,7 @@ export default withRouter(
             eventAdd: state.modeler.get('eventAdd'),
             selectedBox: state.modeler.get('selectedBox'),
             devType: state.device.getIn(['selectedDevice','devAuthKey']),
+            deviceInfo: state.auth.getIn(['userState','deviceInfo']),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

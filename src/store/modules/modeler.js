@@ -97,6 +97,7 @@ const initialState = Map({
     }),
 
     eventAdd: Map({
+        priority: 0,
         dataKey: '',
         ruleType: '1',
         outputType: '1',
@@ -113,6 +114,12 @@ const initialState = Map({
             host: '',
             port: '',
             path: '',
+        }),
+
+        controlDTO: Map({
+            devName: '',
+            authKey: '',
+            evCode: null
         })
     }),
 
@@ -123,11 +130,11 @@ const initialState = Map({
 export default handleActions({
 
     [UP_PRIORITY]: (state, action) => {
-        return state.setIn(['ruleAdd', 'priority'], action.payload)
+        return state.setIn([action.payload.name, 'priority'], action.payload.value)
     },
 
     [DOWN_PRIORITY]: (state, action) => {
-        return state.setIn(['ruleAdd', 'priority'], action.payload)
+        return state.setIn([action.payload.name, 'priority'], action.payload.value)
     },
 
     [SELECT_EVENT]: (state, action) => {
@@ -164,7 +171,8 @@ export default handleActions({
 
     [INIT_EVENT_ADD]: (state, action) => {
         return state.set('eventAdd', Map({
-            dataKey: action.payload,
+            priority: state.getIn(['modelerInfo','events']).size+1,
+            dataKey: action.payload.dataKey,
             ruleType: '1',
             outputType: '1',
             ruleValue:'',
@@ -180,6 +188,12 @@ export default handleActions({
                 host: '',
                 port: '',
                 path: '',
+            }),
+
+            controlDTO: Map({
+                devName: action.payload.devName,
+                authKey: action.payload.authKey,
+                evCode: null
             })
         }))
     },
@@ -243,6 +257,7 @@ export default handleActions({
                 events: List(action.payload.data.data.events.map(item=>{
                     return Map({
                         eventId: item.eventId,
+                        priority: item.priority,
                         dataKey: item.dataKey,
                         devId: item.devId,
                         outputType: item.outputType,
