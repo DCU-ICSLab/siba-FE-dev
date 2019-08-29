@@ -78,12 +78,12 @@ class TestWork extends Component {
         testActions.cancelReservation(vHubId, resId);
     }
 
-    _sendCommand = (arg, boxId) => {
-        const { testActions, devId } = this.props;
+    _sendCommand = (arg, boxId, boxType) => {
+        const { testActions, devId, cmdList } = this.props;
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
         if (boxId !== null)
-            testActions.sendCommand(devId, boxId)
+            testActions.sendCommand(devId, boxId, cmdList)
         else {
             testActions.setTextboxEnd(true);
         }
@@ -432,8 +432,6 @@ class TestWork extends Component {
             deviceResult
         } = this.props;
 
-        console.log(connectedDev.toJS())
-
         return (
             <Fragment>
                 <TestPallet
@@ -525,7 +523,7 @@ class TestWork extends Component {
                             setRef={this._setRef}
                             renderVisibleBox={this._renderVisibleBox}
                             testLogList={selectedDevice.get('testLogList')}>
-                            <g>
+                            {pallet && <g>
                                 {pallet.map((boxInfo, index) => {
                                     return (
                                         <TextBox
@@ -535,7 +533,7 @@ class TestWork extends Component {
                                             index={index}
                                             isEvent={false} />)
                                 })}
-                            </g>
+                            </g>}
 
                             {
                                 linkers.map((linkerInfo, index) => {

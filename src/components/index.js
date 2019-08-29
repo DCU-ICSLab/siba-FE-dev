@@ -30,6 +30,7 @@ import VisibleTargetedBox from './VisibleTargetedBox/VisibleTargetedBox';
 import DataModalWrapper from './DataModalWrapper/DataModalWrapper';
 import RuleModalWrapper from './RuleModalWrapper/RuleModalWrapper';
 import EventModalWrapper from './EventModalWrapper/EventModalWrapper';
+import MapModalWrapper from './MapModalWrapper/MapModalWrapper';
 
 export {
     DeviceListModal,
@@ -63,5 +64,6 @@ export {
     VisibleTargetedBox,
     DataModalWrapper,
     RuleModalWrapper,
-    EventModalWrapper
+    EventModalWrapper,
+    MapModalWrapper
 }

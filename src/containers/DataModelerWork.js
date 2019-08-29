@@ -11,12 +11,27 @@ import {
     SensingPallet,
     DataModalWrapper,
     RuleModalWrapper,
-    EventModalWrapper
+    EventModalWrapper,
+    MapModalWrapper
 } from 'components';
 import TextBox from 'components/TextBox/TextBox';
 import Linker from 'components/TextBox/Linker';
 
 class DataModelerWork extends Component {
+
+    _setRef = (ref) => {
+
+        //if(modelerTemp.get('mapModal')){
+            //if(this.mapArea){
+                if(ref){
+                const g = ref.childNodes[0]
+                const rect = g.getBBox();
+                ref.style.height = rect.height + rect.y + 20 + 'px';
+                ref.style.width = rect.width + rect.x + 20 + 'px';
+                }
+            //}
+        //}
+    }
 
     _deleteRule = (modId, boxId, idx) => {
         const {modelerActions, deviceActions} = this.props
@@ -70,14 +85,15 @@ class DataModelerWork extends Component {
     }
 
     _initEventAdd = () => {
-        const {modelerActions, devName, authKey} = this.props
+        const {modelerActions, devName, authKey, devId} = this.props
         const firstItem = this._getFirstItem()
 
         if(firstItem)
             modelerActions.initEventAdd({
                 dataKey: firstItem,
                 devName: devName,
-                authKey: authKey
+                authKey: authKey,
+                devId: devId
             });
     }
 
@@ -183,14 +199,22 @@ class DataModelerWork extends Component {
                 name: 'authKey',
                 value: set[1],
             })
-            console.log(set[0])
+            modelerActions.changeEventAdditionalAdd({
+                category: category,
+                name: 'devId',
+                value: set[2],
+            })
         }
         else{
+            console.log(e.target.name)
+            console.log(e.target.value)
             modelerActions.changeEventAdditionalAdd({
                 category: category,
                 name: e.target.name,
                 value: e.target.value,
             })
+            if(e.target.name === 'evCode')
+                this._changeSelectMap(false)
         }
     }
 
@@ -291,6 +315,19 @@ class DataModelerWork extends Component {
         });
     }
 
+    _changeSelectMap = (arg) => {
+        const {modelerActions, eventAdd, devId, selectedDevice} = this.props;
+        if(arg){
+            const targetDevId = eventAdd.getIn(['controlDTO','devId'])
+            console.log(targetDevId)
+            if(devId!==targetDevId)
+                modelerActions.getDeviceMap(targetDevId)
+            else
+                modelerActions.copyMapDevice(selectedDevice)
+        }
+        modelerActions.changeMapModal(arg)
+    }
+
     componentDidMount() {
         const {modelerActions, devId} = this.props;
         modelerActions.initModelerTemp({
@@ -300,6 +337,7 @@ class DataModelerWork extends Component {
                 modType: '0',
             }),
             ruleModal: false,
+            mapModal: false,
             selectEvent: null,
             res: null
         })
@@ -312,6 +350,16 @@ class DataModelerWork extends Component {
     }
 
     componentDidUpdate(){
+        const { modelerTemp } = this.props;
+
+        if(modelerTemp.get('mapModal')){
+            if(this.mapArea){
+                const g = this.mapArea.childNodes[0]
+                const rect = g.getBBox();
+                this.mapArea.style.height = rect.height + rect.y + 20 + 'px';
+                this.mapArea.style.width = rect.width + rect.x + 20 + 'px';
+            }
+        }
     }
 
     render() {
@@ -325,7 +373,9 @@ class DataModelerWork extends Component {
             eventAdd,
             devType,
             deviceInfo,
-            devName
+            devName,
+            pallet,
+            linkers
         } = this.props;
 
         return (
@@ -381,8 +431,20 @@ class DataModelerWork extends Component {
                     upPrioriy={this._upPrioriy}
                     deviceInfo={deviceInfo}
                     devName={devName}
+                    changeSelectMap={this._changeSelectMap}
                 >
                 </EventModalWrapper>
+                <MapModalWrapper
+                    dataModal={modelerTemp.get('mapModal')}
+                    changeSelectMap={this._changeSelectMap}
+                    devName={eventAdd.getIn(['controlDTO', 'devName'])}
+                    devId={eventAdd.getIn(['controlDTO', 'devId'])}
+                    changeEventAdditionalAdd={this._changeEventAdditionalAdd}
+                    pallet={pallet}
+                    linkers={linkers}
+                    setRef={this._setRef}
+                >
+                </MapModalWrapper>
             </Fragment>
         )
     }
@@ -404,6 +466,9 @@ export default withRouter(
             selectedBox: state.modeler.get('selectedBox'),
             devType: state.device.getIn(['selectedDevice','devAuthKey']),
             deviceInfo: state.auth.getIn(['userState','deviceInfo']),
+            pallet: state.modeler.getIn(['mapDevice', 'pallet']),
+            linkers: state.modeler.getIn(['mapDevice', 'linkers']),
+            selectedDevice: state.device.get('selectedDevice'),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

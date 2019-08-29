@@ -1,0 +1,39 @@
+#MapModalWrapper > header{
+    color: #fff;
+    background-color: #555555;
+    height: 25px;
+}
+
+#MapModalWrapper > header > span{
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+#MapModalWrapper > header > button{
+    float: right;
+    outline: none;
+    border: none;
+    height: 100%;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+#MapModalWrapper > header > button:hover{
+    color: #333;
+}
+
+#MapModalWrapper .graph-area{
+    border: 1px solid #dadce0;
+    position: absolute;
+    top: 26px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    overflow: scroll;
+
+    background: linear-gradient(0deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px repeat padding-box border-box, linear-gradient(90deg, #F3F3F3 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 40px 40px, linear-gradient(0deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, linear-gradient(90deg, #F9F9F9 1px, rgba(0, 0, 0, 0) 1px) -1px -1px / 10px 10px, #fff;
+    background-repeat: repeat;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    font-size: 12px;
+}

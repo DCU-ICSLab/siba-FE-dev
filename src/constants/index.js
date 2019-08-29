@@ -37,4 +37,18 @@ export const BUTTON_TYPE = [{
     name: 'select',
     headText: '조회 박스 입니다.',
     footText: ''
+},
+{
+    type: 7,
+    name: 'judge',
+    headText: '$==$',
+    footText: ''
+},
+{
+    type: 8,
+    name: 'End',
+    headText: '',
+    footText: ''
 }];
+
+

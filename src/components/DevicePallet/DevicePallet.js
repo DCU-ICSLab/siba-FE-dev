@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import './DevicePallet.css';
 import { DraggableTextBox, FocusBox, TargetBox } from 'components/TextBox/TextBoxHelper';
-import {VisibleTargetedBox} from 'components';
+import { VisibleTargetedBox } from 'components';
 import {
     MdAdd,
     MdBuild,
@@ -15,6 +15,47 @@ import {
 import DraggableLinker from 'components/TextBox/DraggableLinker';
 import GetButtonType from 'utils/GetButtonType'
 import { BUTTON_TYPE } from 'constants/index';
+
+const JudgeEditor = ({ changeJudgeInfo, targetedBox }) => {
+    const preText = targetedBox.getIn(['block', 'preorder'])
+    console.log(preText);
+    const tempText = preText.split('$')
+    const sVal = tempText[0]
+    const comparison = tempText[1]
+    const cVal = tempText[2]
+    return (<div className="judge-area">
+        <div className="judge-item">
+            <div className="judge-ct">상태 값</div>
+            <div className="judge-in">
+                <input value={sVal}
+                    onChange={(e) => changeJudgeInfo(e.target.value + '$' + comparison + '$' + cVal, targetedBox.getIn(['block', 'id']))}>
+                </input>
+            </div>
+        </div>
+        <div className="judge-item">
+            <div className="judge-ct">연산</div>
+            <div className="judge-in">
+                <select name="preorder"
+                    value={comparison}
+                    onChange={(e) => changeJudgeInfo(sVal + '$' + e.target.value + '$' + cVal, targetedBox.getIn(['block', 'id']))}>
+                    {/* <option value="1">{'조건 없음'}</option> */}
+                    <option value="==">{'== (eq)'}</option>
+                    <option value="!=">{'!= (ne)'}</option>
+                    <option value=">">{'> (gt)'}</option>
+                    <option value="<">{'< (lt)'}</option>
+                </select>
+            </div>
+        </div>
+        <div className="judge-item">
+            <div className="judge-ct">비교 값</div>
+            <div className="judge-in">
+                <input value={cVal}
+                    onChange={(e) => changeJudgeInfo(sVal + '$' + comparison + '$' + e.target.value, targetedBox.getIn(['block', 'id']))}>
+                </input>
+            </div>
+        </div>
+    </div>)
+}
 
 const TypeCheck = ({ label, value, text, tempButton, targetedBox, buttonTypeChange }) => {
     return (
@@ -93,7 +134,8 @@ const DevicePallet = ({
     findChild,
     isSaveRes,
     isDeployRes,
-    addonOpen }) => {
+    addonOpen,
+    changeJudgeInfo }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
 
@@ -121,6 +163,8 @@ const DevicePallet = ({
                             {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={4} /> */}
                             <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={5} option={haveEntry} />
                             <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} />
+                            <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={7} />
+                            <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={8} />
                             {/* <DraggableTextBox dragStart={dragStart} dragOver={dragOver} type={6} /> */}
                         </div>
                     </div>
@@ -162,21 +206,42 @@ const DevicePallet = ({
                                             <td>{(type === 3 || type === 2).toString()}</td>
                                         </tr>
                                         <tr>
-                                            <td>head text</td>
-                                            <td>
-                                                <textarea
-                                                    spellCheck="false"
-                                                    name="preorder"
-                                                    style={{
-                                                        imeMode: 'active' //default는 한글
-                                                    }}
-                                                    rows={targetedBox.getIn(['block', 'headRow'])}
-                                                    value={targetedBox.getIn(['block', 'preorder'])}
-                                                    onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height', 'headRow', targetedBox.getIn(['block', 'headRow'])) }}>
-                                                </textarea>
-                                            </td>
+                                            {
+                                                type !== 7  && <Fragment>
+                                                    <td>head text</td>
+                                                    <td>
+                                                        <textarea
+                                                            spellCheck="false"
+                                                            name="preorder"
+                                                            style={{
+                                                                imeMode: 'active' //default는 한글
+                                                            }}
+                                                            rows={targetedBox.getIn(['block', 'headRow'])}
+                                                            value={targetedBox.getIn(['block', 'preorder'])}
+                                                            onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height', 'headRow', targetedBox.getIn(['block', 'headRow'])) }}>
+                                                        </textarea>
+                                                    </td>
+                                                </Fragment>
+                                            }
+                                            {
+                                                type == 7  && <Fragment>
+                                                    <td>statement</td>
+                                                    <td>
+                                                        <textarea
+                                                            spellCheck="false"
+                                                            name="preorder"
+                                                            style={{
+                                                                imeMode: 'active' //default는 한글
+                                                            }}
+                                                            rows={targetedBox.getIn(['block', 'headRow'])}
+                                                            value={(targetedBox.getIn(['block', 'preorder'])).replace(/\$/g,' ')}
+                                                            onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height', 'headRow', targetedBox.getIn(['block', 'headRow'])) }}>
+                                                        </textarea>
+                                                    </td>
+                                                </Fragment>
+                                            }
                                         </tr>
-                                        <tr>
+                                        {type!==7 && <tr>
                                             <td>foot text</td>
                                             <td>
                                                 <textarea
@@ -190,7 +255,7 @@ const DevicePallet = ({
                                                     onChange={(e) => { changeTextBoxInfo(e, targetedBox.getIn(['block', 'id']), 'height', 'footRow', targetedBox.getIn(['block', 'footRow'])) }}>
                                                 </textarea>
                                             </td>
-                                        </tr>
+                                        </tr>}
                                         {(type === 2 || type === 3) &&
                                             <Fragment>
                                                 <tr>
@@ -425,27 +490,31 @@ const DevicePallet = ({
                     </header>
                     <div className="temp-textbox">
                         <div className="temp-textbox-wrapper">
-                        {targetedBox && 
-                        <VisibleTargetedBox
-                            headRows={targetedBox.getIn(['block', 'headRow'])}
-                            footRows={targetedBox.getIn(['block', 'footRow'])}
-                            preText={targetedBox.getIn(['block', 'preorder'])}
-                            postText={targetedBox.getIn(['block', 'postorder'])}
-                            buttons={targetedBox.getIn(['block', 'info','buttons'])}
-                            boxType={targetedBox.getIn(['block','type'])}
-                            changeTextBoxInfo={changeTextBoxInfo}
-                            targetedBox={targetedBox}
-                            type={'0'}
-                        />}
+                            {targetedBox &&
+                                <VisibleTargetedBox
+                                    headRows={targetedBox.getIn(['block', 'headRow'])}
+                                    footRows={targetedBox.getIn(['block', 'footRow'])}
+                                    preText={targetedBox.getIn(['block', 'preorder'])}
+                                    postText={targetedBox.getIn(['block', 'postorder'])}
+                                    buttons={targetedBox.getIn(['block', 'info', 'buttons'])}
+                                    boxType={targetedBox.getIn(['block', 'type'])}
+                                    changeTextBoxInfo={changeTextBoxInfo}
+                                    targetedBox={targetedBox}
+                                    type={'0'}
+                                />}
                         </div>
                     </div>
                     <div className="btn-set-wrapper-body" style={{
-                        top: targetedBox ? 
-                        149+targetedBox.getIn(['block', 'info','buttons']).size*18 + targetedBox.getIn(['block', 'headRow'])*20 + targetedBox.getIn(['block', 'footRow'])*20
-                        : 189
+                        top: targetedBox ?
+                            129 + targetedBox.getIn(['block', 'info', 'buttons']).size * 18 + targetedBox.getIn(['block', 'headRow']) * 20 + targetedBox.getIn(['block', 'footRow']) * 20
+                            : 189
                     }}>
                         {
-                            (targetedBox && (targetedBox.getIn(['block','type'])===1 || targetedBox.getIn(['block','type'])===5)) &&
+                            (targetedBox && targetedBox.getIn(['block', 'type']) === 7) &&
+                            <JudgeEditor targetedBox={targetedBox} changeJudgeInfo={changeJudgeInfo} />
+                        }
+                        {
+                            (targetedBox && (targetedBox.getIn(['block', 'type']) === 1 || targetedBox.getIn(['block', 'type']) === 5)) &&
                             <Fragment>
                                 {targetedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
                                     return (
@@ -558,38 +627,38 @@ const DevicePallet = ({
                         </div>
                         <div className="sec-row">
                             <div className="sec-left">하위 박스</div>
-                            <div className="sec-right">{tempButton.get('childId') ? '#'+tempButton.get('childId') : 'child is not exist (End)'}</div>
+                            <div className="sec-right">{tempButton.get('childId') ? '#' + tempButton.get('childId') : 'child is not exist (End)'}</div>
                         </div>
                         <div className="ch-info">
-                        {tempButton.get('childId') && <VisibleTargetedBox
-                            headRows={childBox.get('headRow')}
-                            footRows={childBox.get('footRow')}
-                            preText={childBox.get('preorder')}
-                            postText={childBox.get('postorder')}
-                            buttons={childBox.getIn(['info','buttons'])}
-                            boxType={childBox.get('type')}
-                        />}
+                            {tempButton.get('childId') && <VisibleTargetedBox
+                                headRows={childBox.get('headRow')}
+                                footRows={childBox.get('footRow')}
+                                preText={childBox.get('preorder')}
+                                postText={childBox.get('postorder')}
+                                buttons={childBox.getIn(['info', 'buttons'])}
+                                boxType={childBox.get('type')}
+                            />}
                         </div>
                     </div>
                 </div>}
 
-                {
-                isSaveRes && 
+            {
+                isSaveRes &&
                 //true && 
                 <div className="alert-box">
                     <span>텍스트 박스 그래프 저장이 성공적으로 수행되었습니다 :)</span>
                 </div>
-                }
+            }
 
-                {
-                isDeployRes && 
+            {
+                isDeployRes &&
                 //true && 
                 <div className="alert-box" style={{
                     width: 380
                 }}>
                     <span>스킬 서버로 텍스트 박스 그래프 배포가 성공적으로 수행되었습니다. :)</span>
                 </div>
-                }
+            }
         </div>
     )
 }

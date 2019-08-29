@@ -504,6 +504,58 @@
     background-color: #7DB2E5;
 }
 
+#DevicePallet .judge-area{
+    background-color: #fff;
+    margin-left: 3px;
+    margin-right: 3px;
+    border: 1px solid #dadce0;
+    padding: 2px;
+    height: 100px;
+    border-radius: 2px;
+}
+
+#DevicePallet .judge-item{
+    margin-top: 5px;
+    margin-bottom: 3px;
+    position: relative;
+    height: 23px;
+}
+
+#DevicePallet .judge-ct{
+    position: absolute;
+    top: 0;
+    left: 8px;
+    display: inline-block;
+    color: #333;
+    width: 40px;
+    /* height: px; */
+}
+
+#DevicePallet .judge-in{
+    position: absolute;
+    top: 0;
+    left: 60px;
+    display: inline-block;
+    border: 1px solid #dadce0;
+    width: 145px;
+    height: 20px;
+}
+
+#DevicePallet .judge-in > select{
+    outline: none;
+    width: 142px;
+    border: 0;
+    text-align: center;
+}
+
+#DevicePallet .judge-in > input{
+    padding: 1px;
+    padding-left: 5px;
+    outline: none;
+    width: 132px;
+    border: 0;
+}
+
 /* #DevicePallet .btn-option > label > input{
     background-color: transparent;
 } */

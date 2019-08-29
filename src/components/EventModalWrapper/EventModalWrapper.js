@@ -24,7 +24,8 @@ const EventModalWrapper = ({
     upPrioriy,
     downPrioriy,
     deviceInfo,
-    devName
+    devName,
+    changeSelectMap
 }) => {
 
     let DynamicHeight = 145;
@@ -228,7 +229,7 @@ const EventModalWrapper = ({
                                             console.log(item.toJS())
                                             if(devName !== item.get('devName'))
                                             return(
-                                                <option value={item.get('devName')+'#'+item.get('authKey')} key={index+1}>
+                                                <option value={item.get('devName')+'#'+item.get('authKey')+'#'+item.get('devId')} key={index+1}>
                                                     {item.get('devName')}
                                                 </option>
                                             )
@@ -241,8 +242,8 @@ const EventModalWrapper = ({
                             }}>제어가 발생하는 디바이스를 선택하세요.</div>
                             <div className="input-wrap">
                                 <span style={{ width: 120 }}>이벤트 코드</span>
-                                <input disabled={true}></input>
-                                <button className="code-select">선택</button>
+                                <input disabled={true} value={eventAdd.getIn(['controlDTO', 'evCode'])}></input>
+                                <button className="code-select" onClick={()=>changeSelectMap(true)}>선택</button>
                             </div>
                             <div className="input-desc" style={{
                                 marginLeft: 120

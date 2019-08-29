@@ -106,7 +106,57 @@ class DeviceWork extends Component {
                             eventCode: null
                         }),
                         Map({
-                            code: codeIdCounter+1,
+                            code: codeIdCounter + 1,
+                            name: '',
+                            idx: 1,
+                            type: '0',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                    ])
+                }
+                deviceActions.devCodeIdCnt(codeIdCounter + 2);
+                break;
+            case 7: //judge
+                additionalInfo = {
+                    buttons: List([
+                        Map({
+                            code: codeIdCounter,
+                            name: '',
+                            idx: 0,
+                            type: '7',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                        Map({
+                            code: codeIdCounter + 1,
+                            name: '',
+                            idx: 1,
+                            type: '7',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                    ])
+                }
+                deviceActions.devCodeIdCnt(codeIdCounter + 2);
+                break;
+            case 8: //select
+                additionalInfo = {
+                    buttons: List([
+                        Map({
+                            code: codeIdCounter,
+                            name: '',
+                            idx: 0,
+                            type: '0',
+                            linker: null,
+                            isSpread: true,
+                            eventCode: null
+                        }),
+                        Map({
+                            code: codeIdCounter + 1,
                             name: '',
                             idx: 1,
                             type: '0',
@@ -119,6 +169,7 @@ class DeviceWork extends Component {
                 deviceActions.devCodeIdCnt(codeIdCounter + 2);
                 break;
             default:
+                break;
         }
 
         return additionalInfo;
@@ -514,10 +565,10 @@ class DeviceWork extends Component {
 
             //버튼에서 연결하는 linker가 있다면(select가 아닌 경우)
             //if(selectedBox.get('type')!==6){
-                this._changeLinkerSrc({
-                    x: pos.translateX,
-                    y: pos.translateY,
-                }, selectedBox)
+            this._changeLinkerSrc({
+                x: pos.translateX,
+                y: pos.translateY,
+            }, selectedBox)
             //}
 
             //연결되어진 linker가 있다면
@@ -547,7 +598,7 @@ class DeviceWork extends Component {
 
     _changeLinkerSrc = (pos, box) => {
         const { deviceActions } = this.props;
-        console.log('change src')
+        //console.log('change src')
         const buttons = box.getIn(['block', 'info', 'buttons'])
         const type = box.getIn(['block', 'type']);
         const sz = buttons.size
@@ -560,6 +611,19 @@ class DeviceWork extends Component {
                     m: {
                         x: pos.x + 18 + index * 32,
                         y: pos.y + dynamicHeight + 70 + 18 * (sz - 1),
+                    }
+                })
+            })
+        }
+        else if(type==7){
+            buttons.map((button, index) => {
+                if(index==1)
+                    index=5
+                button.get('linker') && deviceActions.devLinkerSrcChange({
+                    code: button.get('code'),
+                    m: {
+                        x: pos.x + 18 + index * 32,
+                        y: pos.y + 54 + 26
                     }
                 })
             })
@@ -578,7 +642,7 @@ class DeviceWork extends Component {
 
     _changeLinkerDest = (pos) => {
         const { deviceActions, selectedBox } = this.props;
-        console.log('change dest')
+        //console.log('change dest')
         selectedBox.getIn(['block', 'parentBox']).map(box => {
             deviceActions.devLinkerDestChange({
                 code: box.get('code'),
@@ -588,6 +652,19 @@ class DeviceWork extends Component {
                 }
             })
         })
+    }
+
+    _changeJudgeInfo = (item, id) => {
+        const { deviceActions } = this.props;
+        //사본 변경
+        deviceActions.devInputChange({ key: 'preorder', text: item });
+
+        //원본 변경
+        deviceActions.devInputJudgeChange({
+            key: 'preorder',
+            text: item,
+            id: id,
+        });
     }
 
     //텍스트 박스 내부 정보를 변경할 때 사용하기 위함
@@ -739,6 +816,8 @@ class DeviceWork extends Component {
     _pageSwitching = (page) => {
         const { deviceActions } = this.props;
         deviceActions.pageSwitching({ page: page })
+        if (page === 1)
+            deviceActions.clearSelectAndTaget();
     }
 
     _buttonTypeChange = (e, idx) => {
@@ -892,6 +971,7 @@ class DeviceWork extends Component {
                         childBox={childBox}
                         isSaveRes={isSaveRes}
                         isDeployRes={isDeployRes}
+                        changeJudgeInfo={this._changeJudgeInfo}
                     >
 
                         <g>

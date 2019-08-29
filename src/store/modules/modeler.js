@@ -4,6 +4,7 @@ import { createAction, handleActions } from 'redux-actions';
 import { Map, List } from 'immutable';
 import { pender } from 'redux-pender';
 import * as ModelerAPI from 'store/api/modeler';
+import * as DeviceAPI from 'store/api/device';
 
 /*--------action type--------*/
 const CHANGE_BTN_CATEGORY_PAGE = 'modeler/CHANGE_BTN_CATEGORY_PAGE'; 
@@ -31,6 +32,9 @@ const DELETE_EVENT = 'modeler/DELETE_EVENT'
 const SEND_TO_THIRD_SERVER = 'modeler/SEND_TO_THIRD_SERVER'
 const DOWN_PRIORITY = 'modeler/DOWN_PRIORITY'
 const UP_PRIORITY = 'modeler/UP_PRIORITY'
+const CHANGE_MAP_MODAL = 'modeler/CHANGE_MAP_MODAL'
+const GET_DEVICE_MAP = 'modeler/GET_DEVICE_MAP'
+const COPY_MAP_DEVICE = 'modeler/COPY_MAP_DEVICE'
 
 /*--------create action--------*/
 export const changeBtnCategoryPage = createAction(CHANGE_BTN_CATEGORY_PAGE);
@@ -58,6 +62,9 @@ export const deleteEvent = createAction(DELETE_EVENT, ModelerAPI.deleteEvent)
 export const sendToThirdServer = createAction(SEND_TO_THIRD_SERVER, ModelerAPI.sendToThirdServer)
 export const downPrioriy = createAction(DOWN_PRIORITY)
 export const upPrioriy = createAction(UP_PRIORITY)
+export const changeMapModal = createAction(CHANGE_MAP_MODAL)
+export const getDeviceMap = createAction(GET_DEVICE_MAP, DeviceAPI.getDeviceDetail)
+export const copyMapDevice = createAction(COPY_MAP_DEVICE)
 
 
 /*--------state definition--------*/
@@ -71,6 +78,7 @@ const initialState = Map({
         }),
         ruleModal: false,
         eventModal: false,
+        mapModal: false,
         selectEvent: null,
         res: null
     }),
@@ -119,15 +127,22 @@ const initialState = Map({
         controlDTO: Map({
             devName: '',
             authKey: '',
-            evCode: null
+            devId: null,
+            evCode: undefined
         })
     }),
+
+    mapDevice: null,
 
     selectedBox: null
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [COPY_MAP_DEVICE]: (state, action) => {
+        return state.set('mapDevice', action.payload);
+    },
 
     [UP_PRIORITY]: (state, action) => {
         return state.setIn([action.payload.name, 'priority'], action.payload.value)
@@ -165,6 +180,10 @@ export default handleActions({
         return state.setIn(['modelerTemp', 'ruleModal'], action.payload)
     },
 
+    [CHANGE_MAP_MODAL]: (state, action) => {
+        return state.setIn(['modelerTemp', 'mapModal'], action.payload)
+    },
+
     [BOX_SELECT]: (state, action) => {
         return state.set('selectedBox', action.payload)
     },
@@ -193,7 +212,8 @@ export default handleActions({
             controlDTO: Map({
                 devName: action.payload.devName,
                 authKey: action.payload.authKey,
-                evCode: null
+                devId: action.payload.devId,
+                evCode: ''
             })
         }))
     },
@@ -348,6 +368,69 @@ export default handleActions({
                 msg: '3rd 서버와 연결이 실패하였습니다.',
                 status: false
             }))
+        },
+    }),
+
+    ...pender({
+        type: GET_DEVICE_MAP,
+        onSuccess: (state, action) => {
+            const dataset =  Map({
+                vHubId: action.payload.data.data.vhubId,
+                devId: action.payload.data.data.devId,
+                devAuthKey: action.payload.data.data.devAuthKey,
+                blockIdCounter: action.payload.data.data.blockIdCounter,
+                devName: action.payload.data.data.devName,
+                codeIdCounter: action.payload.data.data.codeIdCounter,
+                haveEntry: action.payload.data.data.haveEntry,
+                eventCodeIdCounter: action.payload.data.data.eventCodeIdCounter,
+                testLogList: List(action.payload.data.data.testLogList.map(log=>Map(log))),
+                pallet: List(
+                    action.payload.data.data.pallet.map(box=>{
+                        return Map({
+                            id: box.id,
+                            //height: box.height,
+                            linked: box.linked,
+                            linking: box.linking,
+                            pos: Map(box.pos),
+                            postorder: box.postorder,
+                            preorder: box.preorder,
+                            headRow: box.headRow,
+                            footRow: box.footRow,
+                            type: box.type,
+                            parentBox: List(box.parentBox.map(pbox=>Map(pbox))),
+                            info: Map({
+                                buttons: List(box.info.buttons.map(btn=>Map({
+                                    code: btn.code,
+                                    eventCode: btn.eventCode,
+                                    name:btn.name,
+                                    idx: btn.idx,
+                                    isSpread: btn.isSpread,
+                                    type: btn.type,
+                                    linker: btn.linker ? Map({
+                                        childId: btn.linker.childId,
+                                        code: btn.linker.code,
+                                        parentId: btn.linker.parentId,
+                                        m: Map(btn.linker.m),
+                                        z: Map(btn.linker.z)
+                                    }) : null
+                                })))
+                            }),
+                            rules: box.rules!==null ? List(box.rules.map(rule=>Map(rule))) : List([])
+                        })
+                    })
+                ),
+                linkers: List(
+                    action.payload.data.data.linkers.map(linker=>Map({
+                        childId: linker.childId,
+                        code: linker.code,
+                        parentId: linker.parentId,
+                        m: Map(linker.m),
+                        z: Map(linker.z)
+                    }))
+                ),  
+            })
+
+            return state.set('mapDevice', dataset);
         },
     }),
 

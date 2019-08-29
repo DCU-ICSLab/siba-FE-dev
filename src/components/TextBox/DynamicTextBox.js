@@ -25,7 +25,7 @@ class DynamicTextBox extends Component{
             <Fragment>
                 <g onMouseEnter={isEvent ? (e)=>focus(e, x,y, id) : undefined}
                 className="noselect">
-                    <TextBoxHeader x={x} y={y} id={id} />
+                    <TextBoxHeader x={x} y={y} id={id} type={type}/>
                     <g className="text-box">
                         <rect rx={10}  ry={10} x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',
@@ -37,7 +37,7 @@ class DynamicTextBox extends Component{
                     </g>
                     <DynamicTextBoxInner x={x} y={y} preorder={preorder} postorder={postorder}/>}
                 </g>
-                {type!==6 && (isEvent || boxInfo.getIn(['info', 'buttons', 0, 'linker'])) && <TextBoxButton
+                {(type!==6 && type!==8) && (isEvent || boxInfo.getIn(['info', 'buttons', 0, 'linker'])) && <TextBoxButton
                     x={x}
                     y={y}
                     type={0}

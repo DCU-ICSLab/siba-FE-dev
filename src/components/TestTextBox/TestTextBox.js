@@ -86,7 +86,7 @@ const TestTextBox = ({
                                 }
 
                                 else{
-                                    sendCommand(`${index+1}번`, btn.get('cboxId'))
+                                    sendCommand(`${index+1}번`, btn.get('cboxId'), boxType)
                                 }
                             }}>
                             {index+1}

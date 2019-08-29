@@ -76,6 +76,8 @@ const CONNECTED_DEV_ALL_CLEAR = 'device/CONNECTED_DEV_ALL_CLEAR'
 const DEPLOY_RES_CHANGE = 'device/DEPLOY_RES_CHANGE'
 const DELETE_RULE = 'device/DELETE_RULE'
 const ADD_NEW_RULE = 'device/ADD_NEW_RULE'
+const CLEAR_SELECT_AND_TARGET = 'device/CLEAR_SELECT_AND_TARGET'
+const DEV_INPUT_JUDGE_CHANGE = 'device/DEV_INPUT_JUDGE_CHANGE'
 
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
@@ -143,6 +145,8 @@ export const deployResChange = createAction(DEPLOY_RES_CHANGE)
 export const connectedDevAllClear = createAction(CONNECTED_DEV_ALL_CLEAR)
 export const deleteRule = createAction(DELETE_RULE)
 export const addRule = createAction(ADD_NEW_RULE)
+export const clearSelectAndTaget = createAction(CLEAR_SELECT_AND_TARGET)
+export const devInputJudgeChange = createAction(DEV_INPUT_JUDGE_CHANGE)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -223,6 +227,10 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [CLEAR_SELECT_AND_TARGET]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
 
     [ADD_NEW_RULE]: (state, action) => {
         const palletIdx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.boxId)
@@ -405,6 +413,7 @@ export default handleActions({
                     linkedId: null,
                     //height: 20,
                     parentBox: List([]),
+                    rules: List([]),
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
                     linking: false, // 다른 텍스트를 링크 하는지
@@ -522,6 +531,15 @@ export default handleActions({
                 .setIn([idx, action.payload.rowName],action.payload.row)
         )
     },
+
+    //원본
+    [DEV_INPUT_JUDGE_CHANGE]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','pallet']).findIndex(box => box.get('id') === action.payload.id)
+        return state.updateIn(['selectedDevice', 'pallet'], pallet =>
+            pallet.setIn([idx, action.payload.key],action.payload.text)
+        )
+    },
+
 
     //사본
     [DEV_BTN_INFO_CHANGE]: (state, action) => {

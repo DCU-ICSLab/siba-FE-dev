@@ -25,7 +25,7 @@ class TimeTextBox extends Component{
             <Fragment>
                 <g onMouseEnter={isEvent ? (e)=>focus(e, x,y, id) : undefined}
                 className="noselect">
-                    <TextBoxHeader x={x} y={y} id={id} />
+                    <TextBoxHeader x={x} y={y} id={id} type={boxInfo.get('type')}/>
                     <g className="text-box">
                         <rect rx={10}  ry={10} x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',

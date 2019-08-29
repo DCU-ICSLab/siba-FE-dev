@@ -5,6 +5,7 @@ import TimeTextBox from './TimeTextBox';
 import ButtonTextBox from './ButtonTextBox';
 import EntryTextBox from './EntryTextBox';
 import DynamicTextBox from './DynamicTextBox';
+import JudgeBox from './JudgeBox';
 //import EndBox from './EndBox';
 
 //dumb 컴포넌트지만 rendering 최적화를 위해 class로 구성
@@ -17,7 +18,7 @@ class TextBox extends Component {
 
     render() {
 
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus, isEvent, isSelect} = this.props;
+        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus, isEvent, isSelect, isCheckable, controlCheck} = this.props;
         const type = boxInfo.get('type')
         return (
             <Fragment>
@@ -31,7 +32,9 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isCheckable={isCheckable}
+                controlCheck={controlCheck}/>}
                 {type === 2 && 
                 <DynamicTextBox
                 isSelect={isSelect}
@@ -64,8 +67,32 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isCheckable={isCheckable}
+                controlCheck={controlCheck}/>}
                 {type === 6 && 
+                <DynamicTextBox
+                isSelect={isSelect}
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}
+                isEvent={isEvent}/>}
+                {type === 7 && 
+                <JudgeBox
+                isSelect={isSelect}
+                boxInfo={boxInfo}
+                dragStart={dragStart}
+                dropSwap={dropSwap}
+                tempBox={tempBox}
+                index={index}
+                addBtnFunc={addBtnFunc}
+                focus={focus}
+                isEvent={isEvent}/>}
+                {type === 8 && 
                 <DynamicTextBox
                 isSelect={isSelect}
                 boxInfo={boxInfo}
