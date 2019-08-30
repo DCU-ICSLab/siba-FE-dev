@@ -39,7 +39,9 @@ const VisibleTargetedBox = ({
             break;
     }
 
-    const judge = preText.split('$')
+    let judge = null;
+    if(preText)
+        judge = preText.split('$')
 
     return (
         <div id="VisibleTargetedBox" style={{

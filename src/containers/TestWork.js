@@ -79,11 +79,11 @@ class TestWork extends Component {
     }
 
     _sendCommand = (arg, boxId, boxType) => {
-        const { testActions, devId, cmdList } = this.props;
+        const { testActions, devId } = this.props;
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
         if (boxId !== null)
-            testActions.sendCommand(devId, boxId, cmdList)
+            testActions.sendCommand(devId, boxId)
         else {
             testActions.setTextboxEnd(true);
         }
@@ -107,7 +107,7 @@ class TestWork extends Component {
 
         //자식요소가 있다면
         if (cboxId !== null)
-            testActions.sendCommand(devId, cboxId)
+            testActions.sendCommand(devId, cboxId, tempMessage)
 
         //없다면
         else {

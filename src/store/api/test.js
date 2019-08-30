@@ -2,11 +2,11 @@ import axios from 'axios';
 import { API_BASE_URL } from 'constants/index';
 
 //테스트 시작
-export const startTest = (devId, boxId) =>{
+export const startTest = (devId, boxId, text) =>{
 
     const baseURL = `${API_BASE_URL}/test/${devId}/box/${boxId}`
 
-    return axios.get(baseURL)
+    return axios.post(baseURL,text ? {text: text} : {text:null})
     .then(res=> {
         console.log(res);
         return res;
