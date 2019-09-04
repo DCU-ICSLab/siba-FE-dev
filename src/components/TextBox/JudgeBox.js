@@ -12,7 +12,7 @@ class JudgeBox extends Component {
     }
 
     render() {
-        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent, isSelect, isCheckable, controlCheck } = this.props;
+        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent, isSelect, isCheckable, controlCheck, isDrag} = this.props;
         let x = !isSelect ? boxInfo.getIn(['pos', 'x']) + 20 : 10;
         let y = !isSelect ? boxInfo.getIn(['pos', 'y']) + 20 : 10;
         let id = boxInfo.get('id');
@@ -27,7 +27,7 @@ class JudgeBox extends Component {
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onMouseEnter={isEvent ? (e) => focus(e, x, y, id) : undefined}
+                <g onMouseEnter={isEvent ? (isDrag ? undefined: (e) => focus(e, x, y, id)) : undefined}
                     className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} type={boxInfo.get('type')}/>
                     <g className="text-box">

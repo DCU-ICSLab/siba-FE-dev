@@ -25,7 +25,8 @@ const EventModalWrapper = ({
     downPrioriy,
     deviceInfo,
     devName,
-    changeSelectMap
+    changeSelectMap,
+    devId
 }) => {
 
     let DynamicHeight = 145;
@@ -220,13 +221,14 @@ const EventModalWrapper = ({
                         <div className="input-sets">
                             <div className="input-wrap">
                                 <span style={{ width: 120 }}>타겟 디바이스</span>
-                                <select name="devName" value={eventAdd.getIn(['controlDTO', 'devName'])} onChange={(e) => changeEventAdditionalAdd('controlDTO', e)}>
-                                    <option value={devName+'#'+devType} key={0}>
+                                <select 
+                                    name="devName" 
+                                    onChange={(e) => changeEventAdditionalAdd('controlDTO', e)}>
+                                    <option value={devName+'#'+devType+'#'+devId} key={0}>
                                         {devName}
                                     </option>
                                     {
                                         deviceInfo.map((item,index)=>{
-                                            console.log(item.toJS())
                                             if(devName !== item.get('devName'))
                                             return(
                                                 <option value={item.get('devName')+'#'+item.get('authKey')+'#'+item.get('devId')} key={index+1}>

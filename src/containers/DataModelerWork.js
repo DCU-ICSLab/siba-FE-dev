@@ -26,8 +26,8 @@ class DataModelerWork extends Component {
                 if(ref){
                 const g = ref.childNodes[0]
                 const rect = g.getBBox();
-                ref.style.height = rect.height + rect.y + 20 + 'px';
-                ref.style.width = rect.width + rect.x + 20 + 'px';
+                ref.style.height = rect.height + rect.y + 40 + 'px';
+                ref.style.width = rect.width + rect.x + 40 + 'px';
                 }
             //}
         //}
@@ -187,8 +187,14 @@ class DataModelerWork extends Component {
     _changeEventAdditionalAdd = (category, e) => {
         const { modelerActions } = this.props
 
+        console.log(category)
+        console.log(e.target.value)
+
         if(e.target.name === 'devName'){
             const set = e.target.value.split('#')
+            console.log(set[0])
+            console.log(set[1])
+            console.log(set[2])
             modelerActions.changeEventAdditionalAdd({
                 category: category,
                 name: 'devName',
@@ -375,7 +381,8 @@ class DataModelerWork extends Component {
             deviceInfo,
             devName,
             pallet,
-            linkers
+            linkers,
+            devId
         } = this.props;
 
         return (
@@ -432,6 +439,7 @@ class DataModelerWork extends Component {
                     deviceInfo={deviceInfo}
                     devName={devName}
                     changeSelectMap={this._changeSelectMap}
+                    devId={devId}
                 >
                 </EventModalWrapper>
                 <MapModalWrapper

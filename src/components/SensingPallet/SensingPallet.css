@@ -620,8 +620,9 @@
     border-top: 1px solid #dadce0;
 }
 
-#SensingPallet .fix-val{
+#SensingPallet .fix-value{
     margin-left: 10px;
+    /* width: auto; */
 }
 
 #SensingPallet .define-selector{
@@ -836,4 +837,19 @@
     margin-left: 8px;
     font-weight: 400;
     font-size: 11px;
+}
+
+#SensingPallet .target-val{
+    margin-top: 7px;
+    margin-left: 8px;
+    margin-bottom: 15px;
+}
+
+#SensingPallet .target-val > span{
+    border: 1px solid #aaa;
+    padding: 1px 10px;
+    border-radius: 3px;
+    background-color: #E7E7E7;
+    font-weight: 500;
+    color: #333;
 }

@@ -18,7 +18,20 @@ class TextBox extends Component {
 
     render() {
 
-        const { boxInfo, dragStart, dropSwap, tempBox, index, addBtnFunc, focus, isEvent, isSelect, isCheckable, controlCheck} = this.props;
+        const { 
+            boxInfo, 
+            dragStart, 
+            dropSwap, 
+            tempBox, 
+            index, 
+            addBtnFunc, 
+            focus, 
+            isEvent, 
+            isSelect, 
+            isCheckable, 
+            controlCheck,
+            isDragging
+        } = this.props;
         const type = boxInfo.get('type')
         return (
             <Fragment>
@@ -34,7 +47,8 @@ class TextBox extends Component {
                 focus={focus}
                 isEvent={isEvent}
                 isCheckable={isCheckable}
-                controlCheck={controlCheck}/>}
+                controlCheck={controlCheck}
+                isDrag={isDragging}/>}
                 {type === 2 && 
                 <DynamicTextBox
                 isSelect={isSelect}
@@ -45,7 +59,8 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isDrag={isDragging}/>}
                 {type === 3 && 
                 <TimeTextBox
                 isSelect={isSelect}
@@ -56,7 +71,8 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isDrag={isDragging}/>}
                 {type === 5 && 
                 <EntryTextBox 
                 isSelect={isSelect}
@@ -69,7 +85,8 @@ class TextBox extends Component {
                 focus={focus}
                 isEvent={isEvent}
                 isCheckable={isCheckable}
-                controlCheck={controlCheck}/>}
+                controlCheck={controlCheck}
+                isDrag={isDragging}/>}
                 {type === 6 && 
                 <DynamicTextBox
                 isSelect={isSelect}
@@ -80,7 +97,8 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isDrag={isDragging}/>}
                 {type === 7 && 
                 <JudgeBox
                 isSelect={isSelect}
@@ -91,7 +109,8 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isDrag={isDragging}/>}
                 {type === 8 && 
                 <DynamicTextBox
                 isSelect={isSelect}
@@ -102,7 +121,8 @@ class TextBox extends Component {
                 index={index}
                 addBtnFunc={addBtnFunc}
                 focus={focus}
-                isEvent={isEvent}/>}
+                isEvent={isEvent}
+                isDrag={isDragging}/>}
                 {/* {type === 6 && 
                 <EndBox
                 boxInfo={boxInfo}

@@ -434,7 +434,7 @@ const SensingPallet = ({
                                     <div className="value">
                                         {selectEventObj && <span>
                                             <span className="fix-op">{GetRuleType(selectEventObj.get('ruleType'))}</span>
-                                            <span className="fix-val">{selectEventObj.get('ruleValue')}</span>
+                                            <span className="fix-value">{selectEventObj.get('ruleValue')}</span>
                                         </span>}
                                         {!selectEventObj && <span>-</span>}
                                     </div>
@@ -484,6 +484,31 @@ const SensingPallet = ({
                                                 <div className="key">path</div>
                                                 <div className="value">
                                                     <span>{GetOutputType(selectEventObj.get('path'))}</span>
+                                                </div>
+                                            </div>
+                                        </Fragment>
+                                    }
+                                    {
+                                        selectEventObj && selectEventObj.get('outputType') === '2' &&
+                                        <Fragment>
+                                            <div className="row">
+                                                <div className="key">target</div>
+                                            </div>
+                                            <div className="target-val">
+                                                <span>{selectEventObj.getIn(['controlDTO','authKey'])}</span>
+                                            </div>
+                                            <div className="row">
+                                                <div className="key">event code</div>
+                                                <div className="value">
+                                                    <span>{selectEventObj.getIn(['controlDTO','evCode'])}</span>
+                                                </div>
+                                            </div>
+                                            <div className="row" style={{
+                                                marginBottom: 10
+                                            }}>
+                                                <div className="key">call function</div>
+                                                <div className="value">
+                                                    <span>action_{selectEventObj.getIn(['controlDTO','evCode'])}</span>
                                                 </div>
                                             </div>
                                         </Fragment>

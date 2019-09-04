@@ -79,6 +79,9 @@ const ADD_NEW_RULE = 'device/ADD_NEW_RULE'
 const CLEAR_SELECT_AND_TARGET = 'device/CLEAR_SELECT_AND_TARGET'
 const DEV_INPUT_JUDGE_CHANGE = 'device/DEV_INPUT_JUDGE_CHANGE'
 
+const DELETE_BUTTON_TARGETED = 'device/DELETE_BUTTON_TARGETED'
+const DELETE_BUTTON_SRC = 'device/DELETE_BUTTON_SRC'
+
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
@@ -147,6 +150,8 @@ export const deleteRule = createAction(DELETE_RULE)
 export const addRule = createAction(ADD_NEW_RULE)
 export const clearSelectAndTaget = createAction(CLEAR_SELECT_AND_TARGET)
 export const devInputJudgeChange = createAction(DEV_INPUT_JUDGE_CHANGE)
+export const deleteButtonTargeted = createAction(DELETE_BUTTON_TARGETED)
+export const deleteButtonSrc = createAction(DELETE_BUTTON_SRC)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -227,6 +232,14 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [DELETE_BUTTON_SRC]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
+
+    [DELETE_BUTTON_TARGETED]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
 
     [CLEAR_SELECT_AND_TARGET]: (state, action) => {
         return state.set('selectedBox', null).set('targetedBox', null)

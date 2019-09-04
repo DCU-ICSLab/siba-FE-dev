@@ -72,7 +72,7 @@ const TypeCheck = ({ label, value, text, tempButton, targetedBox, buttonTypeChan
     )
 }
 
-const ButtonCard = ({ button, idx, addonOpen, setTempBtn, tempButton, findChild }) => {
+const ButtonCard = ({ button, idx, addonOpen, setTempBtn, tempButton, findChild, deleteButton }) => {
 
 
     return (
@@ -80,7 +80,7 @@ const ButtonCard = ({ button, idx, addonOpen, setTempBtn, tempButton, findChild 
             backgroundColor: tempButton && tempButton.get('idx') === idx ? '#F1DF26' : '#4994DB'
         }}>
             <span>{idx + 1}번 버튼 <span> (event code: {button.get('eventCode')})</span></span>
-            <button className="btn-obj-del">
+            <button className="btn-obj-del" onClick={(e)=>deleteButton(e, idx)}>
                 <MdClose />
             </button>
             <div style={{
@@ -135,7 +135,8 @@ const DevicePallet = ({
     isSaveRes,
     isDeployRes,
     addonOpen,
-    changeJudgeInfo }) => {
+    changeJudgeInfo,
+    deleteButton }) => {
 
     let type = targetedBox && targetedBox.getIn(['block', 'type']);
 
@@ -525,7 +526,8 @@ const DevicePallet = ({
                                             addonOpen={addonOpen}
                                             setTempBtn={setTempBtn}
                                             idx={index}
-                                            tempButton={tempButton} />
+                                            tempButton={tempButton} 
+                                            deleteButton={deleteButton}/>
                                     )
                                 })}
                                 {targetedBox.getIn(['block', 'info', 'buttons']).size !== 9 && <div style={{

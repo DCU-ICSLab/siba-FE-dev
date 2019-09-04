@@ -750,6 +750,19 @@ class DeviceWork extends Component {
         return true;
     }
 
+    _deleteButton= (e, index) => {
+        e.stopPropagation();
+        /*const { deviceActions } = this.props;
+        //연결되는 linker가 존재 한다면
+        this._deleteLinkerDest()
+
+        deviceActions.deleteButtonTargeted()
+        deviceActions.deleteButtonSrc()
+
+        //연결하는 linker가 존재 한다면
+        this._deleteLinkerSrc()*/
+    }
+
     //텍스트 박스 삭제
     _deleteTextBox = (e, id) => {
         e.stopPropagation();
@@ -972,6 +985,7 @@ class DeviceWork extends Component {
                         isSaveRes={isSaveRes}
                         isDeployRes={isDeployRes}
                         changeJudgeInfo={this._changeJudgeInfo}
+                        deleteButton={this._deleteButton}
                     >
 
                         <g>
@@ -984,7 +998,8 @@ class DeviceWork extends Component {
                                         index={index}
                                         addBtnFunc={this._addBtnFunc}
                                         focus={this._focus}
-                                        isEvent={true} />)
+                                        isEvent={true} 
+                                        isDragging={isDragging}/>)
                             })}
                         </g>
 
