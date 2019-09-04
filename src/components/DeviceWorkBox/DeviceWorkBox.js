@@ -17,7 +17,7 @@ const DeviceWorkBox = ({ children, vHubId, devName, pageSwitching, page }) => {
                 텍스트 박스 정의
             </BoxButton>
             <BoxButton enabled={page===2} left={97} width={80} onClick={(e)=>pageSwitching(2)}>
-                센싱 페이지 정의
+                데이터 모델 정의
             </BoxButton>
             <BoxButton enabled={page===3} left={189} width={80} onClick={(e)=>pageSwitching(3)}>
                 디바이스 테스트

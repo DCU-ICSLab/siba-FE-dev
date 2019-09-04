@@ -30,6 +30,9 @@ const CHANGE_INTERVAL_SET = 'test/CHANGE_INTERVAL_SET'
 const ADD_INTERVAL_SET_BOX = 'test/ADD_INTERVAL_SET_BOX'
 const CHANGE_SIDE_TAB = 'test/CHANGE_SIDE_TAB'
 const CHANGE_ADDON_TAB = 'test/CHANGE_ADDON_TAB'
+const GET_DEVICE_STATE = 'test/GET_DEVICE_STATE'
+const SET_HUB_RESULT = 'test/SET_HUB_RESULT'
+const SET_DEV_RESULT = 'test/SET_DEV_RESULT'
 
 /*--------create action--------*/
 export const cancelTest = createAction(CANCEL_TEST, TestAPI.cancelTest);
@@ -56,6 +59,10 @@ export const changeIntervalSet = createAction(CHANGE_INTERVAL_SET)
 export const addIntervalSetBox = createAction(ADD_INTERVAL_SET_BOX)
 export const changeSideTab = createAction(CHANGE_SIDE_TAB)
 export const changeAddonTab = createAction(CHANGE_ADDON_TAB)
+export const getDeviceState = createAction(GET_DEVICE_STATE, TestAPI.getDeviceState)
+export const setDevResult = createAction(SET_DEV_RESULT)
+export const setHubResult = createAction(SET_HUB_RESULT)
+
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -82,9 +89,14 @@ const initialState = Map({
     isRes: false,
     tempMessage: '',
 
-    testResult: Map({
+    hubResult: Map({
         msg: '',
-        status: false
+        status: ''
+    }),
+
+    deviceResult: Map({
+        msg: '',
+        status: ''
     }),
 
     isDuplicate: false,
@@ -94,6 +106,14 @@ const initialState = Map({
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [SET_DEV_RESULT]: (state, action) => {
+        return state.set('deviceResult', Map(action.payload))
+    },
+
+    [SET_HUB_RESULT]: (state, action) => {
+        return state.set('hubResult', Map(action.payload))
+    },
 
     [CHANGE_ADDON_TAB]: (state, action) => {
         return state.set('addonTab', action.payload)
@@ -266,21 +286,26 @@ export default handleActions({
 
             const boxInfo = action.payload.data.data;
 
-            return state.update('testBoxList', boxes =>
-                boxes.push(
-                    Map({
-                        boxId: boxInfo.boxId,
-                        preText: boxInfo.preText,
-                        postText: boxInfo.postText,
-                        boxType: boxInfo.boxType,
-                        enable: true,
-                        time: Date.now(),
-                        buttons: List(boxInfo.buttons.map(btn =>
-                            Map(btn)
-                        ))
-                    })
+            if (boxInfo) {
+                return state.update('testBoxList', boxes =>
+                    boxes.push(
+                        Map({
+                            boxId: boxInfo.boxId,
+                            preText: boxInfo.preText,
+                            postText: boxInfo.postText,
+                            boxType: boxInfo.boxType,
+                            enable: true,
+                            time: Date.now(),
+                            buttons: List(boxInfo.buttons.map(btn =>
+                                Map(btn)
+                            ))
+                        })
+                    )
                 )
-            );
+            }
+            else {
+                return state.set('isEnd', true);
+            }
         },
     }),
 
@@ -340,6 +365,48 @@ export default handleActions({
                         enable: true,
                         time: Date.now(),
                         buttons: List([])
+                    })
+                )
+            );
+        },
+    }),
+
+    ...pender({
+        type: GET_DEVICE_STATE,
+        onSuccess: (state, action) => {
+            const boxInfo = action.payload.data.data;
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: boxInfo.boxId,
+                        preText: boxInfo.preText,
+                        postText: boxInfo.postText,
+                        boxType: boxInfo.boxType,
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List(boxInfo.buttons.map(btn =>
+                            Map(btn)
+                        ))
+                    })
+                )
+            );
+        },
+        onFailure: (state, action) => {
+            const boxInfo = action.payload.data.data;
+
+            return state.update('testBoxList', boxes =>
+                boxes.push(
+                    Map({
+                        boxId: boxInfo.boxId,
+                        preText: boxInfo.preText,
+                        postText: boxInfo.postText,
+                        boxType: boxInfo.boxType,
+                        enable: true,
+                        time: Date.now(),
+                        buttons: List(boxInfo.buttons.map(btn =>
+                            Map(btn)
+                        ))
                     })
                 )
             );

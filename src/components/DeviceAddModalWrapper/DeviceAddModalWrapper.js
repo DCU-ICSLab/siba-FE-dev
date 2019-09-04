@@ -12,6 +12,8 @@ const CheckBox = ({ children }) => {
 }
 
 const DeviceAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAddModalChange, valueInput, createDevice }) => {
+
+    console.log(regInput.toJS())
     return (
         <Modal
             isOpen={deviceModal}
@@ -40,11 +42,17 @@ const DeviceAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAd
             }}>
             <div id="DeviceAddModalWrapper">
                 <header>
+                    <span>신규 개발 디바이스 등록</span>
+                    <button onClick={deviceAddModalChange}>
+                        <MdClose/>
+                    </button>
+                </header>
+                {/* <header>
                     <span className="title">신규 개발 디바이스 등록</span>
                     <button className="close-btn" onClick={deviceAddModalChange}>
                         <MdClose size={16} />
                     </button>
-                </header>
+                </header> */}
                 <div className="wrap">
                     <div className="category">기본 정보 (필수 입력)</div>
                     <div className="wrap-item">
@@ -78,16 +86,16 @@ const DeviceAddModalWrapper = ({ deviceModal, refreshAuthKey, regInput, deviceAd
                                     size={14}>
                                 </MdCached>
                             </button>
-                            <div className="input-info">디바이스를 식별하는 16자리 키 값, init함수의 인자 값으로 사용.</div>
+                            <div className="input-info">디바이스를 식별하는 32자리 키 값, init 함수의 인자 값으로 사용.</div>
                         </div>
                     </div>
                     <div className="wrap-item">
                         <div className="input-title must">
                             <span>디바이스 타입</span>
                         </div>
-                        <input type="radio" name="type" value="1" /><span className="radio"> 제어 타입</span>
-                        <input type="radio" name="type" value="2" /><span className="radio"> 센싱 타입</span>
-                        <input type="radio" name="type" value="3" /><span className="radio"> 제어+센싱 타입</span>
+                        <input type="radio" name="devType" value="1" checked={regInput.get('devType')==='1'} onChange={valueInput}/><span className="radio"> 제어 타입</span>
+                        <input type="radio" name="devType" value="2" checked={regInput.get('devType')==='2'} onChange={valueInput}/><span className="radio"> 센싱 타입</span>
+                        <input type="radio" name="devType" value="3" checked={regInput.get('devType')==='3'} onChange={valueInput}/><span className="radio"> 제어+센싱 타입</span>
                     </div>
                     <div className="category">상세 정보 (선택 입력)</div>
                     <div className="wrap-item">

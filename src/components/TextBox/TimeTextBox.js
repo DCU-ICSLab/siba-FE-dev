@@ -11,7 +11,7 @@ class TimeTextBox extends Component{
     }
 
     render() {
-        const { boxInfo, index, addBtnFunc, focus, isEvent, isSelect } = this.props;
+        const { boxInfo, index, addBtnFunc, focus, isEvent, isSelect, isDrag } = this.props;
         let x = !isSelect ? boxInfo.getIn(['pos', 'x']) + 20 : 10;
         let y = !isSelect ? boxInfo.getIn(['pos', 'y']) + 20 : 10;
         let id = boxInfo.get('id');
@@ -23,9 +23,9 @@ class TimeTextBox extends Component{
 
         return (
             <Fragment>
-                <g onMouseEnter={isEvent ? (e)=>focus(e, x,y, id) : undefined}
+                <g onMouseEnter={isEvent ? (isDrag ? undefined: (e) => focus(e, x, y, id)) : undefined}
                 className="noselect">
-                    <TextBoxHeader x={x} y={y} id={id} />
+                    <TextBoxHeader x={x} y={y} id={id} type={boxInfo.get('type')}/>
                     <g className="text-box">
                         <rect rx={10}  ry={10} x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',

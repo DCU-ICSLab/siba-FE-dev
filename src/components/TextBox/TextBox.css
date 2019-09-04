@@ -79,3 +79,45 @@
     /* color: #2B84D9; */
     border-radius: 4px;
 }
+
+.state-val{
+    border: 1px solid #dadce0;
+    border-radius: 3px;
+    margin-top: 5px;
+    display: inline-block;
+    width: 77px;
+    margin-right: 2px;
+    text-align: center;
+    color: #333;
+}
+
+.state-val > header{
+    background-color: #dadce0;
+}
+
+.state-op{
+    border: 1px solid #dadce0;
+    border-radius: 3px;
+    display: inline-block;
+    width: 21px;
+    margin-right: 2px;
+    text-align: center;
+    color: #333;
+}
+
+.state-op > header{
+    background-color: #dadce0;
+}
+
+.fix-val{
+    border: 1px solid #dadce0;
+    border-radius: 3px;
+    display: inline-block;
+    width: 77px;
+    text-align: center;
+    color: #333;
+}
+
+.fix-val > header{
+    background-color: #dadce0;
+}

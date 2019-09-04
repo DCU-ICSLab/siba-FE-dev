@@ -9,81 +9,72 @@ import {
     MdBugReport,
     MdEdit,
     MdClose,
+    MdClear,
+    MdCreate
 } from 'react-icons/md'
+import { VisibleTargetedBox } from 'components';
+import { Progress } from 'react-sweet-progress';
+import "react-sweet-progress/lib/style.css";
+import GetRuleType from '../../utils/GetRuleType';
+import GetOutputType from '../../utils/GetOutputType';
+import GetDataByte from '../../utils/GetDataByte';
 
-const DataModelRecord = ({ item, index }) => {
+const DataModelRecord = ({ item, index, isNull, dataTypeText }) => {
     let dataType = '';
-    switch (item.get('dataType')) {
-        case '1':
-            dataType = 'BYTE (1)'
-            break;
-        case '1':
-            dataType = 'INTEGER (4)'
-            break;
-        case '1':
-            dataType = 'LONG (8)'
-            break;
-        case '1':
-            dataType = 'DOUBLE (8)'
-            break;
-        case '1':
-            dataType = 'STRING (10)'
-            break;
-        default:
-            dataType = 'CHAR (1)'
-            break;
+    if (!isNull) {
+        dataType = dataTypeText
     }
 
     return (
-        <Fragment>
+        <div id="record">
             <div style={{
                 width: 26,
-                borderRight: '1px solid #888',
-            }}>{index + 1}</div>
+                // backgroundColor: '#CEDDED'
+            }}>{isNull ? '-' : index + 1}</div>
             <div style={{
                 width: 108,
-                borderRight: '1px solid #888',
-            }}>{item.get('dataKey')}</div>
+            }}>{isNull ? '-' : item.get('dataKey')}</div>
             <div style={{
                 width: 109,
-                borderRight: '1px solid #888',
-            }}>{dataType}</div>
-            <div style={{
-                width: 60
-            }}></div>
-        </Fragment>
+            }}>{isNull ? '-' : dataType}</div>
+            <div className="record-editable">
+                {
+                    !isNull && <Fragment>
+                        <button className="model-edit">
+                            <MdCreate />
+                        </button>
+                        <button className="model-del">
+                            <MdClear />
+                        </button>
+                    </Fragment>
+                }
+            </div>
+        </div>
     )
 }
 
-const ButtonCard = ({ typeName }) => {
+const ButtonCard = ({ item, buttonSelect, selectedBox }) => {
+
+    if (selectedBox)
+        console.log(selectedBox.toJS())
+    console.log(item.toJS())
+
     return (
         <div className="btn-obj" style={{
-            // backgroundColor: tempButton && tempButton.get('idx') === idx ? '#F1DF26' : '#4994DB'
-            backgroundColor: '#4994DB'
+            // backgroundColor: selectedButton && selectedButton.get('btnCode') === item.get('btnCode') ? '#F1DF26' : '#4994DB'
+            backgroundColor: selectedBox && selectedBox.get('boxId') === item.get('boxId') ? '#F1DF26' : '#DDDDDD'
         }}>
-            <span>1번 버튼 <span> (event code: 12)</span></span>
-            <button className="btn-obj-del">
-                <MdClose />
-            </button>
+            <span>ID: {item.get('boxId')}</span>
             <div style={{
                 marginTop: 15
             }}>
-                <span className="btn-obj-type">{typeName}</span>
-                {/* <button
+                <span className="btn-obj-type">정의규칙 갯수: {item.get('rules').size}</span>
+                <button
                     className="edit-btn"
-                    onClick={(e) => {
-                        findChild(button.getIn(['linker', 'childId']))
-                        addonOpen(true)
-                        setTempBtn({
-                            childId: button.getIn(['linker', 'childId']),
-                            eventCode: button.get('eventCode'),
-                            name: button.get('name'),
-                            type: button.get('type'),
-                            idx: idx,
-                        })
-                    }}><MdEdit style={{
+                    onClick={() => buttonSelect(item)}>
+                    <MdEdit style={{
                         paddingTop: 2
-                    }} /> Edit</button> */}
+                    }} /> Edit</button>
             </div>
         </div>
     )
@@ -94,7 +85,15 @@ const SensingPallet = ({
     modelerInfo,
     page,
     changeBtnCategory,
-    changeDataModal
+    changeDataModal,
+    buttonSelect,
+    selectedBox,
+    changeRuleModal,
+    deleteRule,
+    changeEventModal,
+    selectEvent,
+    selectEventObj,
+    deleteEvent
 }) => {
 
     return (
@@ -111,8 +110,19 @@ const SensingPallet = ({
                             <span>디바이스 상태 모델 정의</span>
                         </header>
                         <div className="model-body">
-                            <div>10 model dataset is define</div>
-                            <div>10 model dataset is define</div>
+                            <div className="model-info-up">
+                                <strong style={{color: '#7C95D8'}}>[{modelerInfo.get('devStateModel').size}]</strong> dataset is define <span>({modelerInfo.get('devStateModel').size}sets/30sets)</span></div>
+                            <div className="model-info-down">
+                                <Progress
+                                    status="success"
+                                    percent={Math.round(modelerInfo.get('devStateModel').size/30*100)}
+                                    theme={{
+                                        success: {
+                                            color: '#aaa',
+                                            symbol: Math.round(modelerInfo.get('devStateModel').size/30*100) + '%',
+                                        }
+                                    }} />
+                            </div>
                         </div>
                         <div className="model-table">
                             <header>
@@ -128,14 +138,24 @@ const SensingPallet = ({
                                 }}>DATA TYPE</div>
                                 <div style={{
                                     width: '25%'
-                                }}>USE</div>
+                                }}></div>
                             </header>
                             <div className="model-table-body">
                                 <div className="data-model">
                                     {
                                         modelerInfo.get('devStateModel').map((item, index) => {
-                                            return (<DataModelRecord item={item} key={index} index={index} />)
+                                            const dataSet = GetDataByte(item.get('dataType'))
+                                            return (
+                                            <DataModelRecord 
+                                            item={item} 
+                                            key={index} 
+                                            index={index} 
+                                            isNull={false} 
+                                            dataTypeText={dataSet.text}/>)
                                         })
+                                    }
+                                    {
+                                        modelerInfo.get('devStateModel').size === 0 && <DataModelRecord isNull={true} />
                                     }
                                 </div>
                                 <button
@@ -152,8 +172,19 @@ const SensingPallet = ({
                             <span>센싱 데이터 모델 정의</span>
                         </header>
                         <div className="model-body">
-                            <div>10 model dataset is define</div>
-                            <div>10 model dataset is define</div>
+                            <div className="model-info-up">
+                                <strong style={{color: '#7C95D8'}}>[{modelerInfo.get('sensingDataModel').size}]</strong> dataset is define <span>({modelerInfo.get('sensingDataModel').size}sets/10sets)</span></div>
+                            <div className="model-info-down">
+                                <Progress
+                                    status="success"
+                                    percent={Math.round(modelerInfo.get('sensingDataModel').size/10*100)}
+                                    theme={{
+                                        success: {
+                                            color: '#aaa',
+                                            symbol: Math.round(modelerInfo.get('sensingDataModel').size/10*100) + '%',
+                                        }
+                                    }} />
+                            </div>
                         </div>
                         <div className="model-table">
                             <header>
@@ -169,14 +200,24 @@ const SensingPallet = ({
                                 }}>DATA TYPE</div>
                                 <div style={{
                                     width: '25%'
-                                }}>USE</div>
+                                }}></div>
                             </header>
                             <div className="model-table-body">
                                 <div className="data-model">
                                     {
                                         modelerInfo.get('sensingDataModel').map((item, index) => {
-                                            return (<DataModelRecord item={item} key={index} index={index}/>)
+                                            const dataSet = GetDataByte(item.get('dataType'))
+                                            return (
+                                            <DataModelRecord 
+                                            item={item} 
+                                            key={index} 
+                                            index={index} 
+                                            isNull={false}
+                                            dataTypeText={dataSet.text}/>)
                                         })
+                                    }
+                                    {
+                                        modelerInfo.get('sensingDataModel').size === 0 && <DataModelRecord isNull={true} />
                                     }
                                 </div>
                                 <button className="dt-adder"
@@ -189,63 +230,147 @@ const SensingPallet = ({
                     <div className="up-editor">
                         <div className="button-set">
                             <header>
-                                <span>조회 버튼 집합</span>
+                                <span>조회 박스 집합</span>
                             </header>
-                            <div className="button-set-div">
+                            {/* <div className="button-set-div">
                                 <button
                                     disabled={page === '1'}
-                                    onClick={() => changeBtnCategory('1')}
+                                    onClick={() => {
+                                        changeBtnCategory('1')
+                                        buttonSelect(null)
+                                    }}
                                     style={{
                                         backgroundColor: page === '1' ? '#fff' : '#E4E4E4'
                                     }}>조회-디바이스</button>
                                 <button
                                     disabled={page === '2'}
-                                    onClick={() => changeBtnCategory('2')}
+                                    onClick={() => {
+                                        changeBtnCategory('2')
+                                        buttonSelect(null)
+                                    }}
                                     style={{
                                         left: 100,
                                         backgroundColor: page === '2' ? '#fff' : '#E4E4E4'
                                     }}>조회-센싱</button>
-                            </div>
-                            <span>total button count: {(page === '1' && modelerInfo) && modelerInfo.get('deviceStateBtn').size}{(page === '2' && modelerInfo) && modelerInfo.get('sensingBtn').size}</span>
+                            </div> */}
+                            <span>select box count: {modelerInfo && modelerInfo.get('boxRules').size}</span>
                             <div className="btn-area">
                                 {
-                                    page === '1' && modelerInfo && modelerInfo.get('deviceStateBtn').map((item, index) => {
-                                        return <ButtonCard key={index} typeName={'조회-디바이스 버튼'} />
-                                    })
-                                }
-                                {
-                                    page === '2' && modelerInfo && modelerInfo.get('sensingBtn').map((item, index) => {
-                                        return <ButtonCard key={index} typeName={'조회-센싱 버튼'} />
+                                    modelerInfo && modelerInfo.get('boxRules').map((item, index) => {
+                                        return (
+                                            <ButtonCard
+                                                key={index}
+                                                buttonSelect={buttonSelect}
+                                                item={item}
+                                                selectedBox={selectedBox} />
+                                        )
                                     })
                                 }
                             </div>
                         </div>
                         <div className="req-text">
+                            {/* {!selectedBox && <div className="req-text-shadow"></div>} */}
                             <header>
-                                <span>결과 텍스트박스</span>
+                                <span>조회 박스 세부정보</span>
                             </header>
                             <div className="req-body">
-                                <div className="req-box-area">
-
+                                <div className="temp-textbox">
+                                    <div className="temp-textbox-wrapper">
+                                        {selectedBox &&
+                                            <VisibleTargetedBox
+                                                headRows={selectedBox.get('headRow')}
+                                                footRows={selectedBox.get('footRow')}
+                                                postText={selectedBox.get('postText')}
+                                                preText={selectedBox.get('preText')}
+                                                //buttons={selectedBox.getIn(['block', 'info', 'buttons'])}
+                                                boxType={selectedBox.get('type')}
+                                                type={'1'}
+                                            />}
+                                    </div>
                                 </div>
-                                <div className="req-body-title">연결된 데이터 모델</div>
+                                <div className="req-body-title">텍스트박스 적용 규칙</div>
                                 <div className="link-model-table">
-                                    {/* <header>
-                                        <div style={{
-                                            borderRight: '1px solid #888',
-                                            width: '8%'
-                                        }}>IDX</div>
-                                        <div style={{
-                                            borderRight: '1px solid #888'
-                                        }}>KEY</div>
-                                        <div style={{
-                                            borderRight: '1px solid #888'
-                                        }}>DATA TYPE</div>
-                                        <div style={{
-                                            width: '25%'
-                                        }}>USE</div>
-                                    </header> */}
+                                    <header>
+                                        <div className="m-order" style={{
+                                            backgroundColor: '#DBDCE0',
+                                            borderRight: '1px solid #DBDCE0'
+                                        }}>순위</div>
+                                        <div className="m-key">KEY</div>
+                                        <div className="m-op">OP</div>
+                                        <div className="m-value">VALUE</div>
+                                        <div className="m-edit"></div>
+                                    </header>
+                                    <Fragment>
+                                        {
+                                            selectedBox && selectedBox.get('rules').map((item, index) => {
+                                                let rule = ''
+                                                switch (item.get('ruleType')) {
+                                                    case '1':
+                                                        rule = '-'
+                                                        break;
+                                                    case '2':
+                                                        rule = '=='
+                                                        break;
+                                                    case '3':
+                                                        rule = '!='
+                                                        break;
+                                                    case '4':
+                                                        rule = '>'
+                                                        break;
+                                                    case '5':
+                                                        rule = '<'
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                                return (
+                                                    <div className="rule" key={index}>
+                                                        <div className="m-order">{index + 1}</div>
+                                                        <div className="m-key">{item.get('dataKey')}</div>
+                                                        <div className="m-op">{rule}</div>
+                                                        <div className="m-value">{rule === '-' ? '-' : item.get('ruleValue')}</div>
+                                                        <div className="m-edit">
+                                                            <button className="model-edit">
+                                                                <MdCreate />
+                                                            </button>
+                                                            <button
+                                                                className="model-del"
+                                                                onClick={() => deleteRule(item.get('modId'), item.get('boxId'), index)}>
+                                                                <MdClear />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        {
+                                            selectedBox && selectedBox.get('rules').size === 0 &&
+                                            <div className="rule">
+                                                <div className="m-order">-</div>
+                                                <div className="m-key">-</div>
+                                                <div className="m-op">-</div>
+                                                <div className="m-value">-</div>
+                                                <div className="m-edit">-</div>
+                                            </div>
+                                        }
+                                        {
+                                            !selectedBox &&
+                                            <div className="rule">
+                                                <div className="m-order">-</div>
+                                                <div className="m-key">-</div>
+                                                <div className="m-op">-</div>
+                                                <div className="m-value">-</div>
+                                                <div className="m-edit">-</div>
+                                            </div>
+                                        }
+                                    </Fragment>
                                 </div>
+                                {selectedBox &&
+                                    <button
+                                        className="add-rule"
+                                        onClick={() => changeRuleModal(true)}
+                                        disabled={modelerInfo.get('devStateModel').size === 0 && modelerInfo.get('sensingDataModel').size === 0}>규칙 추가</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -253,12 +378,147 @@ const SensingPallet = ({
                     <div className="down-editor">
                         <header>
                             <span>이벤트 정의기</span>
+                            <button
+                                className="event-adder"
+                                onClick={() => { changeEventModal(true) }}
+                                disabled={modelerInfo.get('devStateModel').size === 0 && modelerInfo.get('sensingDataModel').size === 0}>이벤트 추가</button>
                         </header>
                         <div className="event-area">
-
+                            <div className="event-list">
+                                {
+                                    modelerInfo.get('events').map((event, index) => {
+                                        return (
+                                            <div className="event-define" key={index}>
+                                                <div className="event-idx">
+                                                    <span>{index + 1}</span>
+                                                </div>
+                                                <div className="sensing-type">
+                                                    <div className="e-title">KEY</div>
+                                                    <div className="event-line-right"></div>
+                                                    <div className="event-elem">{event.get('dataKey')}</div>
+                                                </div>
+                                                <div className="sensing-rule">
+                                                    <div className="e-title">적용 규칙</div>
+                                                    <div className="event-line-left"></div>
+                                                    <div className="event-line-right"></div>
+                                                    {event.get('outputType') !== '0' && <div className="event-elem">{GetRuleType(event.get('ruleType'))}</div>}
+                                                    {event.get('outputType') !== '0' && <div className="event-elem">{event.get('ruleValue')}</div>}
+                                                </div>
+                                                <div className="event-output">
+                                                    <div className="e-title">OUTPUT</div>
+                                                    <div className="event-line-left"></div>
+                                                    <div className="event-elem">{GetOutputType(event.get('outputType'))}</div>
+                                                </div>
+                                                <button className="define-selector" onClick={e => selectEvent(event)}></button>
+                                                {selectEventObj && selectEventObj.get('eventId') === event.get('eventId') && <div className="define-shadow"></div>}
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                         <div className="event-helper">
-
+                            <header>
+                                <span>이벤트 정보</span>
+                            </header>
+                            <div className="event-helper-body">
+                                <div className="row">
+                                    <div className="key">KEY</div>
+                                    <div className="value">
+                                        {selectEventObj && <span>{selectEventObj.get('dataKey')}</span>}
+                                        {!selectEventObj && <span>-</span>}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="key">적용 규칙</div>
+                                    <div className="value">
+                                        {selectEventObj && <span>
+                                            <span className="fix-op">{GetRuleType(selectEventObj.get('ruleType'))}</span>
+                                            <span className="fix-value">{selectEventObj.get('ruleValue')}</span>
+                                        </span>}
+                                        {!selectEventObj && <span>-</span>}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="key">OUTPUT</div>
+                                    <div className="value">
+                                        {selectEventObj && <span>{GetOutputType(selectEventObj.get('outputType'))}</span>}
+                                        {!selectEventObj && <span>-</span>}
+                                    </div>
+                                </div>
+                                <div className="output-area">
+                                    {
+                                        selectEventObj && selectEventObj.get('outputType') === '1' &&
+                                        <div className="temp-textbox">
+                                            <div className="temp-textbox-wrapper" style={{
+                                                margin: '0 20px'
+                                            }}>
+                                                <VisibleTargetedBox
+                                                    headRows={selectEventObj.getIn(['notifyBoxDTO', 'headRow'])}
+                                                    footRows={selectEventObj.getIn(['notifyBoxDTO', 'footRow'])}
+                                                    postText={selectEventObj.getIn(['notifyBoxDTO', 'postText'])}
+                                                    preText={selectEventObj.getIn(['notifyBoxDTO', 'preText'])}
+                                                    //buttons={selectedBox.getIn(['block', 'info', 'buttons'])}
+                                                    boxType={'2'}
+                                                    type={'1'}
+                                                />
+                                            </div>
+                                        </div>
+                                    }
+                                    {
+                                        selectEventObj && selectEventObj.get('outputType') === '3' &&
+                                        <Fragment>
+                                            <div className="row">
+                                                <div className="key">host</div>
+                                                <div className="value">
+                                                    <span>{GetOutputType(selectEventObj.get('host'))}</span>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="key">port</div>
+                                                <div className="value">
+                                                    <span>{GetOutputType(selectEventObj.get('port'))}</span>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="key">path</div>
+                                                <div className="value">
+                                                    <span>{GetOutputType(selectEventObj.get('path'))}</span>
+                                                </div>
+                                            </div>
+                                        </Fragment>
+                                    }
+                                    {
+                                        selectEventObj && selectEventObj.get('outputType') === '2' &&
+                                        <Fragment>
+                                            <div className="row">
+                                                <div className="key">target</div>
+                                            </div>
+                                            <div className="target-val">
+                                                <span>{selectEventObj.getIn(['controlDTO','authKey'])}</span>
+                                            </div>
+                                            <div className="row">
+                                                <div className="key">event code</div>
+                                                <div className="value">
+                                                    <span>{selectEventObj.getIn(['controlDTO','evCode'])}</span>
+                                                </div>
+                                            </div>
+                                            <div className="row" style={{
+                                                marginBottom: 10
+                                            }}>
+                                                <div className="key">call function</div>
+                                                <div className="value">
+                                                    <span>action_{selectEventObj.getIn(['controlDTO','evCode'])}</span>
+                                                </div>
+                                            </div>
+                                        </Fragment>
+                                    }
+                                    {selectEventObj && <div className="output-btn-set">
+                                        <button className="event-edit">편집</button>
+                                        <button className="event-del" onClick={() => deleteEvent(selectEventObj.get('eventId'), selectEventObj.get('outputType'))}>삭제</button>
+                                    </div>}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

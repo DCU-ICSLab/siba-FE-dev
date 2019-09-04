@@ -11,7 +11,7 @@ class EndBox extends Component {
     }
 
     render() {
-        const { boxInfo, dragStart, dropSwap, tempBox, index, focus } = this.props;
+        const { boxInfo, dragStart, dropSwap, tempBox, index, focus, isDrag } = this.props;
         let x = boxInfo.getIn(['pos', 'x']) + 20;
         let y = boxInfo.getIn(['pos', 'y']) + 20;
         let id = boxInfo.get('id');
@@ -20,7 +20,7 @@ class EndBox extends Component {
 
         return (
             <Fragment>
-                <g onMouseEnter={(e)=>focus(e, x, y, index)}
+                <g onMouseEnter={isEvent ? (isDrag ? undefined: (e) => focus(e, x, y, id)) : undefined}
                     className="noselect">
                     <TextBoxHeader x={x} y={y} id={id} />
                     <g className="text-box">

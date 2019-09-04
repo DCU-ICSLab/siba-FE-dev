@@ -74,7 +74,13 @@ const LogicalDevice = ({ dev, repoDeletion,hubId, redirectDevicePage }) => {
     )
 }
 
-const VirtualHub = ({ hub, redirectDevicePage, foldChange, deviceListModalChange, repoDeletion }) => {
+const VirtualHub = ({ 
+    hub, 
+    redirectDevicePage, 
+    foldChange, 
+    copyAuthenticationKey,
+    deviceListModalChange, 
+    repoDeletion }) => {
 
     const size = hub.get('devices').size;
     const fold = hub.get('fold');
@@ -100,7 +106,7 @@ const VirtualHub = ({ hub, redirectDevicePage, foldChange, deviceListModalChange
                             marginLeft: 30,
                         }}>Disconnected</span>
                     </div> */}
-                    <CopyToClipboard text={hub.get('hubKey')} onCopy={() => {}}>
+                    <CopyToClipboard text={hub.get('hubKey')} onCopy={copyAuthenticationKey}>
                         <button className="key-copy-btn">인증키 복사</button>
                     </CopyToClipboard>
                 </div>}

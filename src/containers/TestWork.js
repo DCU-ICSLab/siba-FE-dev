@@ -29,6 +29,14 @@ class TestWork extends Component {
         const { testActions, devId } = this.props;
         this._cancelTest();
         testActions.startTest(devId, 0);
+        this._setHubResult({
+            msg: '',
+            status: ''
+        })
+        this._setDevResult({
+            msg: '',
+            status: ''
+        })
     }
 
     _cancelTest = () => {
@@ -37,6 +45,14 @@ class TestWork extends Component {
         testActions.testboxInit();
         testActions.setTextboxEnd(false);
         testActions.setSendState(false)
+        this._setHubResult({
+            msg: '',
+            status: ''
+        })
+        this._setDevResult({
+            msg: '',
+            status: ''
+        })
     }
 
     _scrollToBottom = () => {
@@ -52,7 +68,7 @@ class TestWork extends Component {
         testActions.setResState(true)
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
-        testActions.getReservation(connectedDev.getIn([0,'devMac']),vHubId)
+        testActions.getReservation(connectedDev.getIn([0, 'devMac']), vHubId)
     }
 
     _cancelReservation = (arg, resId) => {
@@ -62,7 +78,7 @@ class TestWork extends Component {
         testActions.cancelReservation(vHubId, resId);
     }
 
-    _sendCommand = (arg, boxId) => {
+    _sendCommand = (arg, boxId, boxType) => {
         const { testActions, devId } = this.props;
         testActions.textBoxEnableChange();
         testActions.addUserTextbox({ text: arg })
@@ -75,11 +91,11 @@ class TestWork extends Component {
     }
 
     _sendCommandWithDynamic = () => {
-        const { testActions, tempMessage, testBoxList, devId} = this.props;
+        const { testActions, tempMessage, testBoxList, devId } = this.props;
 
         testActions.saveTempAdditionalType({
             type: '2',
-            value: parseInt(tempMessage,10),
+            value: parseInt(tempMessage, 10),
         })
 
         testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
@@ -90,8 +106,8 @@ class TestWork extends Component {
         const cboxId = testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId'])
 
         //자식요소가 있다면
-        if(cboxId !== null)
-            testActions.sendCommand(devId, cboxId)
+        if (cboxId !== null)
+            testActions.sendCommand(devId, cboxId, tempMessage)
 
         //없다면
         else {
@@ -109,14 +125,14 @@ class TestWork extends Component {
 
         testActions.saveTempAdditionalType({
             type: '1',
-            value: parseInt(timeFormat.get('date').format('x'),10),
+            value: parseInt(timeFormat.get('date').format('x'), 10),
         })
 
         testActions.textBoxEnableChange(); //시간 설정 박스 화면에서 hide
         testActions.addUserTextbox({ text: ts }) //사용자 답 텍스트 박스 추가
 
         //자식요소가 있다면
-        if(timeSetter.get('cboxId') !== null){
+        if (timeSetter.get('cboxId') !== null) {
             //testActions.sendCommand(devId, testBoxList.getIn([testBoxList.size - 1, 'buttons', 0, 'cboxId']))
             //testActions.setTextboxEnd(true);
             testActions.changeIntervalSet({
@@ -154,7 +170,7 @@ class TestWork extends Component {
         })
 
         let userText = '';
-        switch(arg){
+        switch (arg) {
             case '1':
                 userText = '1회 실행'
                 break;
@@ -171,7 +187,7 @@ class TestWork extends Component {
         testActions.addUserTextbox({ text: userText }) //사용자 답 텍스트 박스 추가
 
         //자식요소가 있다면
-        if(isIntervalSet.get('cboxId') !== null){
+        if (isIntervalSet.get('cboxId') !== null) {
             testActions.sendCommand(isIntervalSet.get('devId'), isIntervalSet.get('cboxId'))
         }
         //없다면
@@ -243,7 +259,7 @@ class TestWork extends Component {
         this.chatScroll = ref
     }
 
-    _setGraphRef= (ref) => {
+    _setGraphRef = (ref) => {
         this.graphDiv = ref
     }
 
@@ -288,16 +304,38 @@ class TestWork extends Component {
         })
     }
 
+    _setHubResult = (arg) => {
+        const { testActions } = this.props;
+        testActions.setHubResult(arg);
+    }
+
+    _setDevResult = (arg) => {
+        const { testActions } = this.props;
+        testActions.setDevResult(arg);
+    }
+
     _sendCommandToHub = () => {
         const { testActions, cmdList, connectedDev, devId, vHubId, selectedDevice, deviceActions, userId } = this.props
         console.log('test send');
-        if (connectedDev.size === 1){
+        if (connectedDev.size === 1) {
             testActions.setSendState(true)
-            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0,'devMac']), vHubId, devId, userId).then((data)=>{
-                if(data.status===200){
+            testActions.sendBuildingJson(cmdList, connectedDev.getIn([0, 'devMac']), vHubId, devId, userId).then((data) => {
+
+                if (data.status === 200) {
                     console.log('push new log')
                     console.log(data.data)
-                    deviceActions.pushTestLog(data.data);
+                    if (data.data.data !== null)
+                        deviceActions.pushTestLog(data.data);
+                    this._setHubResult({
+                        msg: '명령이 허브까지 도달하였습니다.',
+                        status: 'HttpStatus.OK (200)'
+                    })
+                }
+                else {
+                    this._setHubResult({
+                        msg: '명령이 허브까지 도달 못하였거나, 허브내에서 오류가 발생하였습니다.',
+                        status: 'HttpStatus.INTERNAL_SERVER_ERROR (500)'
+                    })
                 }
             })
         }
@@ -329,19 +367,27 @@ class TestWork extends Component {
 
         const boxInfo = pallet.get(pallet.findIndex((box) => box.get('id') === boxId));
 
-        let x = boxInfo.getIn(['pos', 'x']) + 20 -3;
-        let y = boxInfo.getIn(['pos', 'y'])-3;
+        let x = boxInfo.getIn(['pos', 'x']) + 20 - 3;
+        let y = boxInfo.getIn(['pos', 'y']) - 3;
         let id = boxInfo.get('id');
         let type = boxInfo.get('type')
-        let additionalHeight = (type===1 || type===5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker'])===null ? 0 : 16)
+        let additionalHeight = (type === 1 || type === 5) ? 32 : (boxInfo.getIn(['info', 'buttons', 0, 'linker']) === null ? 0 : 16)
         let dynamicHeight = boxInfo.get('headRow') * 20 + boxInfo.get('footRow') * 20;
         let buttonSize = boxInfo.getIn(['info', 'buttons']).size;
-        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight+3//base height + button counts*18
-        let EntrySt = type===5 ? 10 : 0
+        let height = 45 + 18 * (buttonSize - 1) + dynamicHeight + 20 + additionalHeight + 3//base height + button counts*18
+        let EntrySt = type === 5 ? 10 : 0
 
-        
-        this.graphDiv.scrollTop = y-EntrySt-10
-        this.graphDiv.scrollLeft = x-10
+
+        this.graphDiv.scrollTop = y - EntrySt - 10
+        this.graphDiv.scrollLeft = x - 10
+    }
+
+    _getDeviceState = (arg, boxId) => {
+        const { testActions, devId, connectedDev, vHubId } = this.props;
+        testActions.setResState(true)
+        testActions.textBoxEnableChange();
+        testActions.addUserTextbox({ text: arg })
+        testActions.getDeviceState(connectedDev.getIn([0, 'devMac']), vHubId, devId, boxId)
     }
 
     componentDidMount() {
@@ -359,7 +405,7 @@ class TestWork extends Component {
 
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         this._scrollToBottom()
         this._moveTestMap()
     }
@@ -381,10 +427,10 @@ class TestWork extends Component {
             isSend,
             tempMessage,
             tab,
-            addonTab
+            addonTab,
+            hubResult,
+            deviceResult
         } = this.props;
-
-        console.log(connectedDev.toJS())
 
         return (
             <Fragment>
@@ -422,7 +468,8 @@ class TestWork extends Component {
                                             saveTempType={this._saveTempType}
                                             getReservationInfo={this._getReservationInfo}
                                             cancelReservation={this._cancelReservation}
-                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}>
+                                            sendCommandWithTimeWithInterval={this._sendCommandWithTimeWithInterval}
+                                            getDeviceState={this._getDeviceState}>
                                         </TestTextBox>
                                         {!box.get('enable') &&
                                             <TestUserTextBox
@@ -466,17 +513,17 @@ class TestWork extends Component {
                         }
                     </TestWindow>
                     <TestBox>
-                        <TestToolBox 
-                        addonTab={addonTab}
-                        changeAddonTab={this._changeAddonTab}
-                        tab={tab}
-                        changeSideTab={this._changeSideTab}
-                        devName={selectedDevice.get('devName')}
-                        setGraphRef={this._setGraphRef}
-                        setRef={this._setRef} 
-                        renderVisibleBox={this._renderVisibleBox}
-                        testLogList={selectedDevice.get('testLogList')}>
-                            <g>
+                        <TestToolBox
+                            addonTab={addonTab}
+                            changeAddonTab={this._changeAddonTab}
+                            tab={tab}
+                            changeSideTab={this._changeSideTab}
+                            devName={selectedDevice.get('devName')}
+                            setGraphRef={this._setGraphRef}
+                            setRef={this._setRef}
+                            renderVisibleBox={this._renderVisibleBox}
+                            testLogList={selectedDevice.get('testLogList')}>
+                            {pallet && <g>
                                 {pallet.map((boxInfo, index) => {
                                     return (
                                         <TextBox
@@ -486,7 +533,7 @@ class TestWork extends Component {
                                             index={index}
                                             isEvent={false} />)
                                 })}
-                            </g>
+                            </g>}
 
                             {
                                 linkers.map((linkerInfo, index) => {
@@ -499,6 +546,8 @@ class TestWork extends Component {
                                 })}
                         </TestToolBox>
                         <SendReceiveBox
+                            hubResult={hubResult}
+                            deviceResult={deviceResult}
                             cmdList={cmdList}
                         >
 
@@ -533,9 +582,11 @@ export default withRouter(
             addonTab: state.test.get('addonTab'),
             isIntervalSet: state.test.get('isIntervalSet'),
             tempMessage: state.test.get('tempMessage'),
+            hubResult: state.test.get('hubResult'),
+            deviceResult: state.test.get('deviceResult'),
             isDuplicate: state.test.get('isDuplicate'),
             connectedDev: state.device.get('connectedDev'),
-            userId: state.auth.getIn(['userState', 'user', 'userId']), 
+            userId: state.auth.getIn(['userState', 'user', 'userId']),
         }),
         // props 로 넣어줄 액션 생성함수
         dispatch => ({

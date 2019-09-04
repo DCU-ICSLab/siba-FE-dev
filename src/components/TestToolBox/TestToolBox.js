@@ -29,7 +29,7 @@ const TestInfoCard = ({log, devName})=>{
             </header>
             <div className="test-card-body">
                 <div className="duration">
-                    <MdAccessTime/> Duration: {log.get('durationAt') ? <span>{log.get('durationAt')} sec</span> : '-'} 
+                    <MdAccessTime/> Duration: {log.get('durationAt') ? <span>{Math.abs(log.get('durationAt'))} sec</span> : '0sec'} 
                 </div>
                 <div className="finished">
                     <MdCheckCircle/><span> Finished: </span>

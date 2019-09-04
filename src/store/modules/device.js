@@ -73,6 +73,15 @@ const FIND_CHILD = 'device/FIND_CHILD'
 const SAVE_RES_CHANGE = 'device/SAVE_RES_CHANGE'
 const CONNECTED_DEV_ALL_CLEAR = 'device/CONNECTED_DEV_ALL_CLEAR'
 
+const DEPLOY_RES_CHANGE = 'device/DEPLOY_RES_CHANGE'
+const DELETE_RULE = 'device/DELETE_RULE'
+const ADD_NEW_RULE = 'device/ADD_NEW_RULE'
+const CLEAR_SELECT_AND_TARGET = 'device/CLEAR_SELECT_AND_TARGET'
+const DEV_INPUT_JUDGE_CHANGE = 'device/DEV_INPUT_JUDGE_CHANGE'
+
+const DELETE_BUTTON_TARGETED = 'device/DELETE_BUTTON_TARGETED'
+const DELETE_BUTTON_SRC = 'device/DELETE_BUTTON_SRC'
+
 /*--------create action--------*/
 export const devSelect = createAction(DEV_SELECT);
 export const devDragStart = createAction(DEV_DRAG_START);
@@ -135,7 +144,14 @@ export const tempBtnClear = createAction(TEMP_BTN_CLEAR)
 export const tpChange = createAction(TP_CHANGE)
 export const findChild = createAction(FIND_CHILD)
 export const saveResChange = createAction(SAVE_RES_CHANGE)
+export const deployResChange = createAction(DEPLOY_RES_CHANGE)
 export const connectedDevAllClear = createAction(CONNECTED_DEV_ALL_CLEAR)
+export const deleteRule = createAction(DELETE_RULE)
+export const addRule = createAction(ADD_NEW_RULE)
+export const clearSelectAndTaget = createAction(CLEAR_SELECT_AND_TARGET)
+export const devInputJudgeChange = createAction(DEV_INPUT_JUDGE_CHANGE)
+export const deleteButtonTargeted = createAction(DELETE_BUTTON_TARGETED)
+export const deleteButtonSrc = createAction(DELETE_BUTTON_SRC)
 
 /*--------state definition--------*/
 const initialState = Map({
@@ -149,6 +165,7 @@ const initialState = Map({
         //텍스트 블록을 담기 위한 배열
         pallet: List([]),
         linkers: List([]),
+        resultBoxes: List([]),
 
         //블록 아이디를 발급해주기 위함
         blockIdCounter: 1,
@@ -208,11 +225,39 @@ const initialState = Map({
 
     isSaveRes: false,
 
+    isDeployRes: false,
+
     connectedDev: List([])
 });
 
 /*--------reducer--------*/
 export default handleActions({
+
+    [DELETE_BUTTON_SRC]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
+
+    [DELETE_BUTTON_TARGETED]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
+
+    [CLEAR_SELECT_AND_TARGET]: (state, action) => {
+        return state.set('selectedBox', null).set('targetedBox', null)
+    },
+
+    [ADD_NEW_RULE]: (state, action) => {
+        const palletIdx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.boxId)
+
+        return state.updateIn(['selectedDevice', 'pallet', palletIdx, 'rules'], rules=>
+        rules.push(Map(action.payload.rule)))
+    },
+
+    [DELETE_RULE]: (state, action) => {
+        const palletIdx = state.getIn(['selectedDevice', 'pallet']).findIndex(box => box.get('id') === action.payload.boxId)
+
+        return state.updateIn(['selectedDevice', 'pallet', palletIdx, 'rules'], rules=>
+        rules.delete(action.payload.idx))
+    },
 
     [CONNECTED_DEV_ALL_CLEAR]: (state, action) => {
         if(state.getIn(['selectedDevice','vHubId'])===action.payload){
@@ -225,6 +270,10 @@ export default handleActions({
 
     [SAVE_RES_CHANGE]: (state, action) => {
         return state.set('isSaveRes', action.payload);
+    },
+
+    [DEPLOY_RES_CHANGE]: (state, action) => {
+        return state.set('isDeployRes', action.payload);
     },
 
     [FIND_CHILD]: (state, action) => {
@@ -377,6 +426,7 @@ export default handleActions({
                     linkedId: null,
                     //height: 20,
                     parentBox: List([]),
+                    rules: List([]),
                     id: action.payload.id,
                     linked: false, //다른 텍스트 박스로 부터 링크되어 지는지
                     linking: false, // 다른 텍스트를 링크 하는지
@@ -494,6 +544,15 @@ export default handleActions({
                 .setIn([idx, action.payload.rowName],action.payload.row)
         )
     },
+
+    //원본
+    [DEV_INPUT_JUDGE_CHANGE]: (state, action) => {
+        const idx = state.getIn(['selectedDevice','pallet']).findIndex(box => box.get('id') === action.payload.id)
+        return state.updateIn(['selectedDevice', 'pallet'], pallet =>
+            pallet.setIn([idx, action.payload.key],action.payload.text)
+        )
+    },
+
 
     //사본
     [DEV_BTN_INFO_CHANGE]: (state, action) => {
@@ -704,7 +763,8 @@ export default handleActions({
                                         z: Map(btn.linker.z)
                                     }) : null
                                 })))
-                            })
+                            }),
+                            rules: box.rules!==null ? List(box.rules.map(rule=>Map(rule))) : List([])
                         })
                     })
                 ),
@@ -716,7 +776,7 @@ export default handleActions({
                         m: Map(linker.m),
                         z: Map(linker.z)
                     }))
-                ),        
+                ),  
             })
 
             return state.merge({

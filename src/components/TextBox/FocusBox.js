@@ -17,14 +17,14 @@ const FocusBox = ({
     const x = selectedBox.get('x');
     const y = selectedBox.get('y');
     const type = selectedBox.getIn(['block', 'type'])
-
+    const additional = type===7 ? 18 : 0
     const baseHeight = (type===1 || type ===5) ? 96 : 83;
     const id = selectedBox.getIn(['block', 'id'])
     const size = type === 1 || type === 5 ? selectedBox.getIn(['block', 'info', 'buttons']).size : 1;
-    const dynamicHeight=selectedBox.getIn(['block', 'headRow'])*20 + selectedBox.getIn(['block', 'footRow'])*20;
+    const dynamicHeight=selectedBox.getIn(['block', 'headRow'])*20 + selectedBox.getIn(['block', 'footRow'])*20 - additional;
     const height = baseHeight + 18 * (size - 1) +dynamicHeight //base height + button counts*18
     const dynamicWidth = (size >= 5 ? (size - 5) * 32 + 17 - (size == 9 ? 32 : 0) : 0);
-    const width = 181 + dynamicWidth;
+    const width = 181 + dynamicWidth + additional;
 
     return (
         <g
@@ -60,7 +60,9 @@ const FocusBox = ({
                 </Fragment>}
 
             {/* link button */}
-            {!isDragging && (type===1 || type === 5) && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+            {!isDragging && (type===1 || type === 5 || type === 7) && selectedBox.getIn(['block', 'info', 'buttons']).map((button, index) => {
+                if(type === 7 && index === 1)
+                    index = 5
                 return (
                     <g key={index}>
                         <ellipse cx={x + 38 + index * 32} cy={y + height - 16.5} rx="14" ry="11"
@@ -132,7 +134,7 @@ const FocusBox = ({
             {/* delete */}
             {!isDragging && type !== 5 && <Fragment>
                 <g>
-                    <circle id="delete-btn" cx={x + 198 + dynamicWidth} cy={y} r={8}
+                    <circle id="delete-btn" cx={x + 198 + dynamicWidth+additional} cy={y} r={8}
                         style={{ fill: '#97A9B8', stroke: '#000', strokeWidth: 0, cursor: 'pointer' }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.fill = '#000'
@@ -143,7 +145,7 @@ const FocusBox = ({
                         onClick={(e) => { deleteTextBox(e, id) }}>
                     </circle>
                 </g>
-                <g transform={`translate(${x + 192 + dynamicWidth}, ${y - 8})`}>
+                <g transform={`translate(${x + 192 + dynamicWidth+additional}, ${y - 8})`}>
                     <foreignObject pointerEvents="none" style={{ overflow: 'visible' }}
                         width={15} height={15}>
                         <div><MdClear style={{ color: '#fff' }} /></div>

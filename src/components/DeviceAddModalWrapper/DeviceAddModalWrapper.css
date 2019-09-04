@@ -3,7 +3,34 @@
     cursor: default;
 }
 
-#DeviceAddModalWrapper header{
+#DeviceAddModalWrapper > header{
+    color: #fff;
+    background-color: #555555 !important;
+    height: 20px !important;
+    display: block;
+}
+
+#DeviceAddModalWrapper > header > span{
+    width: 100%;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+#DeviceAddModalWrapper > header > button{
+    float: right;
+    outline: none;
+    border: none;
+    height: 100%;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+#DeviceAddModalWrapper > header > button:hover{
+    color: #333;
+}
+
+/* #DeviceAddModalWrapper header{
     background-color: #fff;
     padding: 5px;
     border-bottom: 1px solid #dadce0;
@@ -32,7 +59,7 @@
 #DeviceAddModalWrapper .close-btn:hover{
     background-color: #dadce0;
     color: #fff
-}
+} */
 
 #DeviceAddModalWrapper .wrap{
     font-size: 13px;
@@ -42,6 +69,7 @@
 #DeviceAddModalWrapper .wrap-item{
     margin-bottom: 20px;
     margin-left: 10px;
+    font-size: 12px;
 }
 
 #DeviceAddModalWrapper .category{
@@ -51,6 +79,7 @@
     background-color: #EEEEEE;
     font-weight: 500;
     margin-bottom: 15px;
+    font-size: 12px;
 }
 
 #DeviceAddModalWrapper .input-title{

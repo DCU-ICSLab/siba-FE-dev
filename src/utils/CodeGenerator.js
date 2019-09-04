@@ -68,9 +68,9 @@ size_t ${funcName}_${eventCode}(size_t before, sb_dataset data[2], size_t data_l
 
 SIBA siba;
 
-//your router information
-const char* ssid = "your SIBA hub ssid";
-const char* pwd = "your SIBA hub password";
+//define your router information
+const char* ssid = ""; //your SIBA hub ssid
+const char* pwd = ""; //your SIBA hub password
 
 //your device's key for authentication
 const char* hw_auth_key = "${selectedDevices.get('devAuthKey')}";
@@ -88,6 +88,14 @@ void add_sensing_group() {
     
 }
 
+void init_device_state() {
+    /* define device state model
+    * example) siba.init_state("key", value);
+    * ----------------------------------------------
+    */
+
+}
+
 void setup() {
     Serial.begin(115200); //board's baud rate
 
@@ -103,6 +111,7 @@ void setup() {
 
     add_sensing_group(); //add all sensing event
 
+    siba.init_regist(init_device_state);
 
     //connect SIBA IoT platform
     #if ENV

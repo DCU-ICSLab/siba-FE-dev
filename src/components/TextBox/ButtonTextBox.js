@@ -12,7 +12,18 @@ class ButtonTextBox extends Component {
     }
 
     render() {
-        const { boxInfo, tempBox, index, addBtnFunc, focus, isEvent, isSelect } = this.props;
+        const { 
+            boxInfo, 
+            tempBox, 
+            index, 
+            addBtnFunc, 
+            focus, 
+            isEvent, 
+            isSelect, 
+            isCheckable, 
+            controlCheck,
+            isDrag
+        } = this.props;
         let x = !isSelect ? boxInfo.getIn(['pos', 'x']) + 20 : 10;
         let y = !isSelect ? boxInfo.getIn(['pos', 'y']) + 20 : 10;
         let id = boxInfo.get('id');
@@ -27,9 +38,9 @@ class ButtonTextBox extends Component {
         return (
             <Fragment>
                 {/* onMouseDown={(e) => dragStart(e, x, y, index)} onMouseUp={(e) => { dropSwap(e, index) }} */}
-                <g onMouseEnter={isEvent ? (e) => focus(e, x, y, id) : undefined}
+                <g onMouseEnter={isEvent ? (isDrag ? undefined: (e) => focus(e, x, y, id)) : undefined}
                     className="noselect">
-                    <TextBoxHeader x={x} y={y} id={id} />
+                    <TextBoxHeader x={x} y={y} id={id} type={boxInfo.get('type')}/>
                     <g className="text-box">
                         <rect rx={10}  ry={10} x={x} y={y} width={175} height={height} style={{
                             stroke: '#000',
@@ -54,7 +65,10 @@ class ButtonTextBox extends Component {
                             index={index}
                             height={height}
                             button={button}
-                            type={1}>
+                            evCode = {button.get('eventCode')}
+                            type={button.get('type')}
+                            isCheckable={isCheckable}
+                            controlCheck={controlCheck}>
                             {index + 1}
                         </TextBoxButton>
                     })}

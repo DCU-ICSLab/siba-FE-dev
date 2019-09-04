@@ -11,8 +11,6 @@
     color: #fff;
     background-color: #555555;
     height: 25px;
-
-
 }
 
 #DataModalWrapper > header > span{
@@ -164,4 +162,9 @@
     margin-right: 20px;
     padding: 1px 10px;
     float: right;
+    cursor: pointer;
+}
+
+#DataModalWrapper .model-add:hover{
+    background-color: #f1f1f1;
 }
